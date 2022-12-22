@@ -1,3 +1,5 @@
+import moment from 'moment';
+import 'moment/min/locales';
 import { Core } from './core';
 import { DateTime } from '@easepick/datetime';
 
@@ -175,7 +177,9 @@ export default class Calendar {
 
     const monthName = document.createElement('div');
     monthName.className = 'month-name';
-    monthName.innerHTML = `<span>${date.toLocaleString(this.picker.options.lang, { month: 'long' })}</span> ${date.format('YYYY')}`;
+    // monthName.innerHTML = `<span>${date.toLocaleString(this.picker.options.lang, { month: 'long' })}</span> ${date.format('YYYY')}`;
+    moment.locale(this.picker.options.lang);
+    monthName.innerHTML = `<span>${moment(date).format('MMMM')}</span> ${date.format('YYYY')}`;
     element.appendChild(monthName);
 
     const prevMonth = document.createElement('button');

@@ -37,5 +37,8 @@
     "name": "Rinat G.",
     "email": "easepick@jsx4.com"
   },
-  "license": "GPL-2.0-or-later"
+  "license": "GPL-2.0-or-later",
+  "dependencies": {
+    "moment": "^2.29.4"
+  }
 }

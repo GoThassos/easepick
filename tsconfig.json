@@ -5,6 +5,7 @@
     "module": "esnext",
     "target": "esnext",
     "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
     "emitDeclarationOnly": true,
     "composite": true,
     "paths": {

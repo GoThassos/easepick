@@ -7,7 +7,7 @@ easepick
 
 ## Features
 
-- No dependencies
+- ~~No dependencies~~ (moment.js)
 - Uses [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM)
 - Supports plugins
 

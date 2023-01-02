@@ -310,7 +310,7 @@ export class Core {
    * @param date
    */
   public setDate(date: Date | string | number): void {
-    const d = new DateTime(date, this.options.format);
+    const d = new DateTime(date, this.options.format, this.options.lang);
     this.options.date = d.clone();
 
     this.updateValues();
@@ -441,7 +441,7 @@ export class Core {
    * @param date
    */
   public gotoDate(date: Date | string | number): void {
-    const toDate = new DateTime(date, this.options.format);
+    const toDate = new DateTime(date, this.options.format, this.options.lang);
     toDate.setDate(1);
     this.calendars[0] = toDate.clone();
     this.renderAll();
@@ -475,7 +475,7 @@ export class Core {
     }
 
     if (this.options.date) {
-      this.calendars[0] = new DateTime(this.options.date, this.options.format);
+      this.calendars[0] = new DateTime(this.options.date, this.options.format, this.options.lang);
     } else {
       this.calendars[0] = new DateTime();
     }

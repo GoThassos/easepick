@@ -106,4 +106,4 @@ git commit -m "$new_tag"
 git tag -a $new_tag -m "$new_tag"
 git push --follow-tags
 
-npm publish --workspaces #--access=public
+npm publish --workspaces --access=public

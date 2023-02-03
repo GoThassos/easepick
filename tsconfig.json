@@ -10,7 +10,7 @@
     "emitDeclarationOnly": true,
     "composite": true,
     "paths": {
-      "@easepick/*": [
+      "@gothassos/*": [
         "./packages/*/src/index.ts"
       ]
     }

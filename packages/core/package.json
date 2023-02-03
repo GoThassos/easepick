@@ -1,12 +1,12 @@
 {
-  "name": "@easepick/core",
+  "name": "@gothassos/easepick-core",
   "description": "The core of easepick.",
   "version": "1.2.1",
   "main": "dist/index.umd.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@easepick/datetime": "^1.1.0"
+    "@gothassos/easepick-datetime": "^1.1.0"
   },
   "author": {
     "name": "Rinat G.",

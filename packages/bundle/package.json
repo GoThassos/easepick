@@ -1,20 +1,20 @@
 {
-  "name": "@easepick/bundle",
+  "name": "@gothassos/easepick-bundle",
   "description": "easepick bundle.",
   "version": "1.2.1",
   "main": "dist/index.umd.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@easepick/core": "^1.1.0",
-    "@easepick/datetime": "^1.1.0",
-    "@easepick/base-plugin": "^1.1.0",
-    "@easepick/kbd-plugin": "^1.1.0",
-    "@easepick/lock-plugin": "^1.1.0",
-    "@easepick/preset-plugin": "^1.1.0",
-    "@easepick/range-plugin": "^1.1.0",
-    "@easepick/time-plugin": "^1.1.0",
-    "@easepick/amp-plugin": "^1.1.0"
+    "@gothassos/easepick-core": "^1.1.0",
+    "@gothassos/easepick-datetime": "^1.1.0",
+    "@gothassos/easepick-base-plugin": "^1.1.0",
+    "@gothassos/easepick-kbd-plugin": "^1.1.0",
+    "@gothassos/easepick-lock-plugin": "^1.1.0",
+    "@gothassos/easepick-preset-plugin": "^1.1.0",
+    "@gothassos/easepick-range-plugin": "^1.1.0",
+    "@gothassos/easepick-time-plugin": "^1.1.0",
+    "@gothassos/easepick-amp-plugin": "^1.1.0"
   },
   "author": {
     "name": "Rinat G.",

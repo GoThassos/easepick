@@ -1,5 +1,5 @@
-import { DateTime } from '@easepick/datetime';
-import { IBaseConfig } from '@easepick/base-plugin';
+import { DateTime } from '@gothassos/easepick-datetime';
+import { IBaseConfig } from '@gothassos/easepick-base-plugin';
 
 export interface ITimeConfig extends IBaseConfig {
   native?: boolean;
@@ -10,7 +10,7 @@ export interface ITimeConfig extends IBaseConfig {
   format12?: boolean;
 }
 
-declare module '@easepick/core' {
+declare module '@gothassos/easepick-core' {
   interface Core {
     getDate(): DateTime;
     getStartDate(): DateTime;
@@ -21,7 +21,7 @@ declare module '@easepick/core' {
   }
 }
 
-declare module '@easepick/core/dist/types' {
+declare module '@gothassos/easepick-core/dist/types' {
   interface IPickerConfig {
     TimePlugin?: ITimeConfig;
   }

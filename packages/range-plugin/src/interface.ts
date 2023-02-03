@@ -1,5 +1,5 @@
-import { DateTime } from '@easepick/datetime';
-import { IBaseConfig } from '@easepick/base-plugin';
+import { DateTime } from '@gothassos/easepick-datetime';
+import { IBaseConfig } from '@gothassos/easepick-base-plugin';
 
 export interface IRangeConfig extends IBaseConfig {
   elementEnd?: HTMLElement | string;
@@ -21,7 +21,7 @@ export interface IRangeConfig extends IBaseConfig {
   documentClick?: boolean | (() => void);
 }
 
-declare module '@easepick/core' {
+declare module '@gothassos/easepick-core' {
   interface Core {
     setStartDate(date: Date | string | number): void;
     setEndDate(date: Date | string | number): void;
@@ -31,7 +31,7 @@ declare module '@easepick/core' {
   }
 }
 
-declare module '@easepick/core/dist/types' {
+declare module '@gothassos/easepick-core/dist/types' {
   interface IPickerConfig {
     RangePlugin?: IRangeConfig;
   }

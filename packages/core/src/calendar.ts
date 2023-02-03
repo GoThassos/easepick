@@ -1,7 +1,7 @@
 import moment from 'moment';
 import 'moment/min/locales';
 import { Core } from './core';
-import { DateTime } from '@easepick/datetime';
+import { DateTime } from '@gothassos/easepick-datetime';
 
 export default class Calendar {
   public picker: Core;

@@ -30,7 +30,7 @@ const output = (name) => {
 * Licensed under the terms of GNU General Public License Version 2 or later. (http://www.gnu.org/licenses/gpl.html)
 */`,
       globals(id) {
-        if (/^@easepick\//.test(id)) {
+        if (/^@gothassos\//.test(id)) {
           return 'easepick';
         }
 
@@ -61,7 +61,7 @@ const getPackageConfig = (name) => {
         }
       }),
       resolve({
-        resolveOnly: [/^@easepick\/.*$/]
+        resolveOnly: [/^@gothassos\/.*$/]
       }),
       typescript({
         tsconfig: `packages/${name}/tsconfig.json`,
@@ -75,7 +75,7 @@ const getPackageConfig = (name) => {
       ENV_PROD && terser(),
     ],
     external(id) {
-      return /^@easepick\//.test(id);
+      return /^@gothassos\//.test(id);
     }
   };
 }
@@ -92,7 +92,7 @@ export default [
   getPackageConfig('kbd-plugin'),
   getPackageConfig('amp-plugin'),
 
-  // @easepick/bundle
+  // @gothassos/bundle
   {
     input: 'packages/bundle/src/index.ts',
     output: output('bundle'),
@@ -103,8 +103,8 @@ export default [
         }
       }),
       resolve({
-        dedupe: ['@easepick/base-plugin'],
-        resolveOnly: [/^@easepick\/.*$/]
+        dedupe: ['@gothassos/base-plugin'],
+        resolveOnly: [/^@gothassos\/.*$/]
       }),
       typescript({
         tsconfig: 'packages/bundle/tsconfig.json',

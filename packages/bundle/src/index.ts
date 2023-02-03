@@ -1,11 +1,11 @@
-import { DateTime } from '@easepick/datetime';
-import { easepick, create } from '@easepick/core';
-import { LockPlugin } from '@easepick/lock-plugin';
-import { PresetPlugin } from '@easepick/preset-plugin';
-import { RangePlugin } from '@easepick/range-plugin';
-import { TimePlugin } from '@easepick/time-plugin';
-import { KbdPlugin } from '@easepick/kbd-plugin';
-import { AmpPlugin } from '@easepick/amp-plugin';
+import { DateTime } from '@gothassos/easepick-datetime';
+import { easepick, create } from '@gothassos/easepick-core';
+import { LockPlugin } from '@gothassos/easepick-lock-plugin';
+import { PresetPlugin } from '@gothassos/easepick-preset-plugin';
+import { RangePlugin } from '@gothassos/easepick-range-plugin';
+import { TimePlugin } from '@gothassos/easepick-time-plugin';
+import { KbdPlugin } from '@gothassos/easepick-kbd-plugin';
+import { AmpPlugin } from '@gothassos/easepick-amp-plugin';
 import './index.scss';
 
 export {

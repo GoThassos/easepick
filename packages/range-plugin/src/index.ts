@@ -1,5 +1,5 @@
-import { DateTime } from '@easepick/datetime';
-import { BasePlugin, IEventDetail, IPlugin } from '@easepick/base-plugin';
+import { DateTime } from '@gothassos/easepick-datetime';
+import { BasePlugin, IEventDetail, IPlugin } from '@gothassos/easepick-base-plugin';
 import { IRangeConfig } from './interface';
 import './index.scss';
 

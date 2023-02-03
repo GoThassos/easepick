@@ -1,5 +1,5 @@
 {
-  "name": "easepick",
+  "name": "@gothassos/easepick",
   "version": "1.2.1",
   "private": true,
   "devDependencies": {
@@ -28,7 +28,8 @@
     "dev": "rollup --config --environment BUILD:development",
     "prod": "rollup --config --environment BUILD:production",
     "clean:build": "rm -rf packages/*/dist",
-    "test": "jest"
+    "test": "jest",
+    "publish": "./scripts/publish.sh"
   },
   "workspaces": [
     "packages/*"

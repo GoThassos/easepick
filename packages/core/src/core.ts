@@ -389,7 +389,10 @@ export class Core {
    * @param date 
    */
   public renderAll(date?: DateTime): void {
-    this.trigger('render', { view: 'Container', date: (date || this.calendars[0]).clone() });
+    const cloneDefined = typeof(date || this.calendars[0]).clone === "function";
+    if (cloneDefined) {
+      this.trigger('render', { view: 'Container', date: (date || this.calendars[0]).clone() });
+    }
   }
 
   /**

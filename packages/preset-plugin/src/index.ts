@@ -44,8 +44,8 @@ export class PresetPlugin extends BasePlugin implements IPlugin {
 
       const lastMonth = () => {
         const d1 = date.clone();
-        d1.setMonth(d1.getMonth() - 1);
         d1.setDate(1);
+        d1.setMonth(d1.getMonth() - 1);
 
         const d2 = new Date(date.getFullYear(), date.getMonth(), 0);
 

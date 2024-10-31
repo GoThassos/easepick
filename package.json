@@ -1,6 +1,6 @@
 {
   "name": "@gothassos/easepick",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "private": false,
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.0.4",

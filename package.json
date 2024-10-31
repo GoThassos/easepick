@@ -40,7 +40,6 @@
   },
   "license": "GPL-2.0-or-later",
   "dependencies": {
-    "caniuse-lite": "^1.0.30001676",
     "moment": "^2.29.4"
   }
 }

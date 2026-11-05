@@ -1,6 +1,6 @@
 {
   "name": "@gothassos/easepick",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": false,
   "devDependencies": {
     "@eslint/js": "^10.0.1",

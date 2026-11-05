@@ -33,6 +33,7 @@
     "prod": "rollup --config --bundleConfigAsCjs --environment BUILD:production",
     "clean:build": "rm -rf packages/*/dist",
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "lint": "eslint packages",
     "typecheck": "node node_modules/typescript7/bin/tsc -p tsconfig.typecheck.json",
     "publish": "./scripts/publish.sh"

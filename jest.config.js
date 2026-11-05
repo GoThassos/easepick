@@ -3,6 +3,8 @@ module.exports = {
   roots: ['<rootDir>/packages'],
   transform: {
     '^.+\\.tsx?$': ['ts-jest', {
+      // TypeScript 6 defaults `types` to []; tests use Jest globals and require().
+      tsconfig: { types: ['jest', 'node'] },
       diagnostics: {
         ignoreCodes: ['TS151001'],
       },

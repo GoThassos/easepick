@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "outDir": "dist",
     "module": "esnext",
     "target": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
+    "strict": false,
+    "noUncheckedSideEffectImports": false,
     "esModuleInterop": true,
     "emitDeclarationOnly": true,
     "composite": true,

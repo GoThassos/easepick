@@ -10,6 +10,20 @@ const path = require('path');
 const pkg = require('./package.json');
 const ENV_PROD = process.env.BUILD === 'production';
 
+// Drop `import './index.scss'` from emitted .d.ts files: types do not need
+// styles, and TypeScript 6 (noUncheckedSideEffectImports on by default)
+// reports them as errors in consumers' projects.
+const stripStyleImportsFromDeclarations = () => ({
+  name: 'strip-style-imports-from-declarations',
+  generateBundle(_, bundle) {
+    for (const file of Object.values(bundle)) {
+      if (file.type === 'asset' && file.fileName.endsWith('.d.ts')) {
+        file.source = String(file.source).replace(/^import ['"][^'"]+\.s?css['"];\r?\n/gm, '');
+      }
+    }
+  },
+});
+
 const output = (name) => {
   const pkg = require(path.join(__dirname, `packages/${name}/package.json`));
 
@@ -76,6 +90,7 @@ const getPackageConfig = (name) => {
         minimize: ENV_PROD,
       }),
       ENV_PROD && terser(),
+      stripStyleImportsFromDeclarations(),
     ],
     external(id) {
       return /^@gothassos\//.test(id);
@@ -122,6 +137,7 @@ export default [
         minimize: ENV_PROD,
       }),
       ENV_PROD && terser(),
+      stripStyleImportsFromDeclarations(),
     ],
   },
 ]

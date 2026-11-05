@@ -4,6 +4,12 @@ import { RangePlugin } from '@gothassos/easepick-range-plugin';
 import { ITimeConfig } from './interface';
 import './index.scss';
 
+interface ITimeSlots {
+  input: DateTime | null;
+  start: DateTime | null;
+  end: DateTime | null;
+}
+
 export class TimePlugin extends BasePlugin implements IPlugin {
   public options: ITimeConfig = {
     native: false,
@@ -16,13 +22,13 @@ export class TimePlugin extends BasePlugin implements IPlugin {
 
   public rangePlugin: RangePlugin;
 
-  public timePicked = {
+  public timePicked: ITimeSlots = {
     input: null,
     start: null,
     end: null,
   }
 
-  public timePrePicked = {
+  public timePrePicked: ITimeSlots = {
     input: null,
     start: null,
     end: null,
@@ -193,7 +199,7 @@ export class TimePlugin extends BasePlugin implements IPlugin {
 
     if (target instanceof HTMLSelectElement && target.classList.contains('time-plugin-custom-input')) {
       const r = /(\w+)\[(\w+)\]/;
-      const [, name, format] = target.name.match(r);
+      const [, name, format] = target.name.match(r) as [string, keyof ITimeSlots, string];
       const value = Number(target.value);
       let date = new DateTime();
 
@@ -269,7 +275,7 @@ export class TimePlugin extends BasePlugin implements IPlugin {
       if (!(element instanceof HTMLElement)) return;
 
       if (this.picker.isApplyButton(element)) {
-        Object.keys(this.timePicked).forEach(x => {
+        (Object.keys(this.timePicked) as (keyof ITimeSlots)[]).forEach(x => {
           if (this.timePrePicked[x] instanceof Date) {
             this.timePicked[x] = this.timePrePicked[x].clone();
           }
@@ -471,7 +477,7 @@ export class TimePlugin extends BasePlugin implements IPlugin {
    * @param name 
    * @returns HTMLElement
    */
-  private getCustomInput(name: string): HTMLElement {
+  private getCustomInput(name: keyof ITimeSlots): HTMLElement {
     const block = document.createElement('div');
     block.className = 'time-plugin-custom-block';
 

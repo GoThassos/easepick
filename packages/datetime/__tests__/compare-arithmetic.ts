@@ -176,6 +176,11 @@ describe('diff', () => {
     expect(dt(2019, 11, 1).diff(dt(2019, 11, 30), 'months')).toBe(0);
   });
 
+  test('months across years', () => {
+    expect(dt(2019, 1, 1).diff(dt(2018, 12, 31), 'months')).toBe(1);
+    expect(dt(2018, 12, 31).diff(dt(2020, 2, 1), 'months')).toBe(-14);
+  });
+
   test('an unknown unit counts days', () => {
     expect(dt(2019, 11, 23).diff(dt(2019, 11, 20), 'week')).toBe(3);
   });
@@ -228,6 +233,16 @@ describe('getWeek', () => {
     // 1 Jan 2021 (Friday) belongs to the last week of 2020.
     [[2021, 1, 1], 1, 53],
     [[2021, 1, 4], 1, 1],
+    // 30 Dec 2019 to 5 Jan 2020 is week 1 of 2020 (2019 has 52 ISO weeks).
+    [[2019, 12, 29], 1, 52],
+    [[2019, 12, 30], 1, 1],
+    [[2020, 1, 2], 1, 1],
+    [[2024, 12, 30], 1, 1],
+    // 2020 has 53 ISO weeks.
+    [[2020, 12, 31], 1, 53],
+    // Sunday first: 29 Dec 2019 – 4 Jan 2020 holds 4 days of 2020.
+    [[2019, 12, 29], 0, 1],
+    [[2019, 12, 28], 0, 52],
     // A week in summer time (DST) is still counted as a whole week.
     [[2018, 6, 4], 1, 23],
     // Sunday as the first day of the week.

@@ -56,8 +56,13 @@ export class DateTime extends Date {
         if (dateRegex.test(date)) {
           const d = dateRegex.exec(date);
 
-          const year = Number(d[datePattern.year]);
+          let year = Number(d[datePattern.year]);
           let month = null;
+
+          // Two-digit years (YY): 00–68 are 20xx, 69–99 are 19xx (as in moment).
+          if (datePattern.year && d[datePattern.year].length === 2) {
+            year += year < 69 ? 2000 : 1900;
+          }
 
           if (datePattern.month) {
             month = Number(d[datePattern.month]) - 1;
@@ -78,12 +83,13 @@ export class DateTime extends Date {
           const s = Number(d[datePattern.second]);
           const seconds = !Number.isNaN(s) ? s : 0;
 
+          // 12 AM is midnight, 12 PM is noon; `a` accepts am/pm too.
           const ampm = d[datePattern.ampm];
-          if (ampm && ampm === 'PM') {
-            hours += 12;
+          if (ampm) {
+            hours %= 12;
 
-            if (hours === 24) {
-              hours = 0;
+            if (ampm.toUpperCase() === 'PM') {
+              hours += 12;
             }
           }
 
@@ -230,15 +236,20 @@ export class DateTime extends Date {
    * @returns Number
    */
   public getWeek(firstDay: number): number {
-    const target = new Date(this.midnight_ts(this));
-    const dayNr = (this.getDay() + (7 - firstDay)) % 7;
-    target.setDate(target.getDate() - dayNr);
-    const startWeekday = target.getTime();
-    target.setMonth(0, 1);
-    if (target.getDay() !== firstDay) {
-      target.setMonth(0, 1 + ((4 - target.getDay()) + 7) % 7);
-    }
-    return 1 + Math.ceil((startWeekday - target.getTime()) / 604800000);
+    const startOfWeek = (date: Date) => new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate() - ((date.getDay() + 7 - firstDay) % 7),
+    );
+
+    // A week belongs to the year holding most of it (its 4th day), and week 1
+    // is the one holding 4 January: ISO 8601 when the week starts on Monday.
+    const weekStart = startOfWeek(this);
+    const year = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 3).getFullYear();
+    const firstWeekStart = startOfWeek(new Date(year, 0, 4));
+
+    // Round: a week across a DST change is not exactly 7 × 24 h.
+    return 1 + Math.round((weekStart.getTime() - firstWeekStart.getTime()) / 604800000);
   }
 
   /**
@@ -496,7 +507,7 @@ export class DateTime extends Date {
       case 'month':
       case 'months':
         // eslint-disable-next-line no-case-declarations
-        let months = (date.getFullYear() - this.getFullYear()) * 12;
+        let months = (this.getFullYear() - date.getFullYear()) * 12;
         months -= date.getMonth();
         months += this.getMonth();
         return months;

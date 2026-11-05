@@ -61,6 +61,30 @@ describe('parsing', () => {
     expect(parts(new DateTime('2019-11-23 3:30 AM', 'YYYY-MM-DD h:mm A'))).toEqual([2019, 11, 23, 3, 30, 0]);
   });
 
+  test('12 AM is midnight and 12 PM is noon', () => {
+    expect(new DateTime('2019-11-23 12:00 AM', 'YYYY-MM-DD hh:mm A').getHours()).toBe(0);
+    expect(new DateTime('2019-11-23 12:30 PM', 'YYYY-MM-DD hh:mm A').getHours()).toBe(12);
+  });
+
+  test('lowercase am/pm', () => {
+    expect(new DateTime('2019-11-23 03:00 pm', 'YYYY-MM-DD hh:mm a').getHours()).toBe(15);
+    expect(new DateTime('2019-11-23 12:00 am', 'YYYY-MM-DD hh:mm a').getHours()).toBe(0);
+  });
+
+  test('formatting with h:mm A parses back to the same time', () => {
+    for (const hours of [0, 1, 11, 12, 13, 23]) {
+      const d = new DateTime(new Date(2019, 10, 23, hours, 5));
+      expect(new DateTime(d.format('YYYY-MM-DD h:mm A'), 'YYYY-MM-DD h:mm A').getHours()).toBe(hours);
+    }
+  });
+
+  test('two-digit years: 00–68 are 20xx, 69–99 are 19xx', () => {
+    expect(new DateTime('23/11/19', 'DD/MM/YY').getFullYear()).toBe(2019);
+    expect(new DateTime('01/01/68', 'DD/MM/YY').getFullYear()).toBe(2068);
+    expect(new DateTime('01/01/69', 'DD/MM/YY').getFullYear()).toBe(1969);
+    expect(new DateTime('01/01/2019', 'DD/MM/YYYY').getFullYear()).toBe(2019);
+  });
+
   test('numeric timestamps (10+ digits), as number or string', () => {
     const ts = new Date(2019, 10, 23, 10, 20).getTime();
 

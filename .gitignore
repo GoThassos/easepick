@@ -4,4 +4,4 @@ node_modules/
 dist/
 .rollup.cache/
 coverage/
-docs/.vitepress/cache/
+**/.vitepress/cache/

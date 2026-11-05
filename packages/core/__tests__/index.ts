@@ -210,6 +210,69 @@ test('plugins', () => {
   expect(picker.ui.container.querySelector('.range-plugin-tooltip') instanceof HTMLElement).toBe(true);
 });
 
+// easepick/easepick#213 and #231. jsdom has no layout, so the boxes are
+// mocked. The wrapper is a 0×0 span right after the input; the viewport is
+// jsdom's 1024×768 unless overridden.
+describe('position', () => {
+  const box = (left: number, top: number, width: number, height: number) =>
+    ({ left, top, width, height, right: left + width, bottom: top + height, x: left, y: top }) as DOMRect;
+
+  const position = (input: DOMRect, width = 300, height = 350) => {
+    const element = document.createElement('input');
+    document.body.append(element);
+
+    const picker = new easepick.create({ element });
+    element.getBoundingClientRect = () => input;
+    picker.ui.wrapper.getBoundingClientRect = () => box(input.right, input.top, 0, 0);
+    picker.ui.container.getBoundingClientRect = () => box(0, 0, width, height);
+    picker.show();
+
+    // Back to viewport coordinates, for readability.
+    return {
+      left: parseFloat(picker.ui.container.style.left) + input.right,
+      top: parseFloat(picker.ui.container.style.top) + input.top,
+    };
+  };
+
+  const withViewportWidth = (width: number, fn: () => void) => {
+    const original = window.innerWidth;
+    Object.defineProperty(window, 'innerWidth', { value: width, configurable: true });
+    try {
+      fn();
+    } finally {
+      Object.defineProperty(window, 'innerWidth', { value: original, configurable: true });
+    }
+  };
+
+  test('below the input, left-aligned', () => {
+    expect(position(box(100, 100, 200, 30))).toEqual({ left: 100, top: 130 });
+  });
+
+  test('above the input when there is no room below', () => {
+    expect(position(box(100, 600, 200, 30))).toEqual({ left: 100, top: 250 });
+  });
+
+  test('stays below when there is no room above either', () => {
+    expect(position(box(100, 300, 200, 30), 300, 500)).toEqual({ left: 100, top: 330 });
+  });
+
+  test('right-aligned when there is no room on the right', () => {
+    expect(position(box(900, 100, 100, 30))).toEqual({ left: 700, top: 130 });
+  });
+
+  test('kept inside a narrow viewport', () => {
+    withViewportWidth(320, () => {
+      expect(position(box(150, 100, 100, 30))).toEqual({ left: 20, top: 130 });
+    });
+  });
+
+  test('pinned to the left edge when wider than the viewport', () => {
+    withViewportWidth(320, () => {
+      expect(position(box(150, 100, 100, 30), 400)).toEqual({ left: 0, top: 130 });
+    });
+  });
+});
+
 // easepick/easepick#191 and #194: with `autoApply: false`, a repicked range
 // waiting for the Apply button must survive the mouse leaving and re-entering.
 describe('RangePlugin repick without autoApply', () => {

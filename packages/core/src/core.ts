@@ -530,24 +530,33 @@ export class Core {
     const container = this.ui.container.getBoundingClientRect();
     this.ui.container.classList.remove('calc');
 
-    let top = rect.bottom - wrapper.bottom;
-    let left = rect.left - wrapper.left;
+    // Viewport coordinates: below the element, aligned to its left edge.
+    let top = rect.bottom;
+    let left = rect.left;
 
     if (typeof window !== 'undefined') {
-      if (window.innerHeight < top + container.height
-        && top - container.height >= 0) {
-        top = rect.top - wrapper.top - container.height;
+      const { innerWidth, innerHeight } = window;
+
+      // No room below but room above: open above the element.
+      if (top + container.height > innerHeight
+        && rect.top - container.height >= 0) {
+        top = rect.top - container.height;
       }
 
-      if (window.innerWidth < left + container.width
+      // No room on the right: align to the element's right edge if that fits.
+      if (left + container.width > innerWidth
         && rect.right - container.width >= 0) {
-        left = rect.right - wrapper.right - container.width;
+        left = rect.right - container.width;
       }
+
+      // Otherwise (narrow screens) keep the picker inside the viewport.
+      left = Math.max(0, Math.min(left, innerWidth - container.width));
     }
 
+    // The container is absolutely positioned inside the wrapper.
     return {
-      left,
-      top,
+      left: left - wrapper.left,
+      top: top - wrapper.top,
     };
   }
 }

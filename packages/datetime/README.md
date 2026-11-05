@@ -52,9 +52,9 @@ _Tokens are case-sensitive._
 
 | | Token | Output
 | --- | :---: | ---
-| Day of Month | D |	1 2 … 30 31
+| Day of Month | D | 1 2 … 30 31
 | | DD | 01 02 … 30 31
-| Month |	M |	1 2 … 11 12
+| Month | M | 1 2 … 11 12
 | | MM | 01 02 … 11 12
 | | MMM | Jan Feb … Nov Dec
 | | MMMM | January February … November December

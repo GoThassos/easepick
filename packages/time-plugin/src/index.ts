@@ -11,6 +11,10 @@ interface ITimeSlots {
 }
 
 export class TimePlugin extends BasePlugin implements IPlugin {
+  // Attach after the other plugins (RangePlugin replaces getStartDate and
+  // getEndDate too), so the time-aware overrides are not replaced.
+  public priority = -1;
+
   public options: ITimeConfig = {
     native: false,
     seconds: false,
@@ -187,6 +191,7 @@ export class TimePlugin extends BasePlugin implements IPlugin {
       if (this.picker.options.autoApply) {
         this.timePicked[name] = date;
         this.picker.updateValues();
+        this.triggerSelect();
       } else {
         this.timePrePicked[name] = date;
         this.updateApplyButton();
@@ -251,9 +256,31 @@ export class TimePlugin extends BasePlugin implements IPlugin {
       if (this.picker.options.autoApply) {
         this.timePicked[name] = date;
         this.picker.updateValues();
+        this.triggerSelect();
       } else {
         this.timePrePicked[name] = date;
         this.updateApplyButton();
+      }
+    }
+  }
+
+  /**
+   * With `autoApply`, a time change is applied at once: emit `select` like a
+   * date pick does, when there is a date to apply it to.
+   */
+  private triggerSelect() {
+    if (this.rangePlugin) {
+      const start = this.picker.getStartDate();
+      const end = this.picker.getEndDate();
+
+      if (start instanceof Date || end instanceof Date) {
+        this.picker.trigger('select', { start, end });
+      }
+    } else {
+      const date = this.picker.getDate();
+
+      if (date instanceof Date) {
+        this.picker.trigger('select', { date });
       }
     }
   }

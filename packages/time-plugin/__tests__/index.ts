@@ -503,3 +503,66 @@ test('detaching removes the time UI and methods', () => {
   expect(picker.setEndTime).toBeUndefined();
   expect(picker.ui.container.classList.contains('time-plugin')).toBe(false);
 });
+
+// From YuaFox/easepick2 (issue #10, PR #11 and the time-plugin fix branch).
+describe('with autoApply: select event and plugin order', () => {
+  const onSelect = (picker: easepick.Core) => {
+    const listener = jest.fn();
+    picker.on('select', listener);
+    return listener;
+  };
+
+  test('a time change fires select with the date and its new time', () => {
+    const picker = create({}, { date: '2019-11-23 10:00' });
+    const listener = onSelect(picker);
+
+    choose(picker, 'input[HH]', '15');
+
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(fmt(listener.mock.calls[0][0].detail.date)).toBe('2019-11-23 15:00');
+  });
+
+  test('the native input fires select too', () => {
+    const picker = create({ native: true }, { date: '2019-11-23 10:00' });
+    const listener = onSelect(picker);
+
+    typeTime(picker, 'input', '16:30');
+
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(fmt(listener.mock.calls[0][0].detail.date)).toBe('2019-11-23 16:30');
+  });
+
+  test('no select while there is no date to apply the time to', () => {
+    const picker = create();
+    const listener = onSelect(picker);
+
+    choose(picker, 'input[HH]', '15');
+
+    expect(listener).not.toHaveBeenCalled();
+  });
+
+  test('range: a time change fires select with start and end', () => {
+    const picker = createRange({}, {}, { element: input('2019-11-05 10:00 - 2019-11-12 18:30') });
+    const listener = onSelect(picker);
+
+    choose(picker, 'start[HH]', '9');
+
+    expect(listener).toHaveBeenCalledTimes(1);
+    const { start, end } = listener.mock.calls[0][0].detail;
+    expect([fmt(start), fmt(end)]).toEqual(['2019-11-05 09:00', '2019-11-12 18:30']);
+  });
+
+  test.each([
+    ['RangePlugin first', [RangePlugin, TimePlugin]],
+    ['TimePlugin first', [TimePlugin, RangePlugin]],
+  ])('picked times reach the range dates and input (%s)', (_, plugins) => {
+    const element = input('2019-11-05 10:00 - 2019-11-12 18:30');
+    const picker = create({}, { element, plugins });
+
+    choose(picker, 'start[HH]', '15');
+    choose(picker, 'end[HH]', '20');
+
+    expect([fmt(picker.getStartDate()), fmt(picker.getEndDate())]).toEqual(['2019-11-05 15:00', '2019-11-12 20:30']);
+    expect(element.value).toBe('2019-11-05 15:00 - 2019-11-12 20:30');
+  });
+});

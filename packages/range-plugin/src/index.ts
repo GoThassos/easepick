@@ -535,7 +535,9 @@ export class RangePlugin extends BasePlugin implements IPlugin {
       const start = this.getStartDate();
       const end = this.getEndDate();
 
-      if (start && end) {
+      // Keep a completed selection that is waiting for the Apply button
+      // (autoApply: false); only drop a lone repick anchor.
+      if (start && end && this.picker.datePicked.length < 2) {
         this.picker.datePicked.length = 0;
 
         this.picker.renderAll();
@@ -681,7 +683,9 @@ export class RangePlugin extends BasePlugin implements IPlugin {
    * Handle `repick` option
    */
   private initializeRepick() {
-    if (!this.options.repick) return;
+    // Don't overwrite a completed selection waiting for the Apply button
+    // (autoApply: false); `hide()` clears it before the next repick.
+    if (!this.options.repick || this.picker.datePicked.length > 1) return;
 
     const start = this.getStartDate();
     const end = this.getEndDate();

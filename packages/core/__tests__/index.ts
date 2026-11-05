@@ -210,6 +210,54 @@ test('plugins', () => {
   expect(picker.ui.container.querySelector('.range-plugin-tooltip') instanceof HTMLElement).toBe(true);
 });
 
+// easepick/easepick#191 and #194: with `autoApply: false`, a repicked range
+// waiting for the Apply button must survive the mouse leaving and re-entering.
+describe('RangePlugin repick without autoApply', () => {
+  const repick = (from: 'start' | 'end', day: number) => {
+    const start = document.createElement('input');
+    const end = document.createElement('input');
+    document.body.append(start, end);
+
+    // Passed as a variable, like the AmpPlugin test above.
+    const options = {
+      element: start,
+      autoApply: false,
+      plugins: [RangePlugin],
+      RangePlugin: {
+        elementEnd: end,
+        repick: true,
+        startDate: '2019-11-10',
+        endDate: '2019-11-20',
+      },
+    };
+    const picker = new easepick.create(options);
+    const { container } = picker.ui;
+    const time = String(new Date(2019, 10, day).getTime());
+
+    picker.show({ target: from === 'start' ? start : end });
+    container.querySelector<HTMLElement>(`.day[data-time="${time}"]`)
+      .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    container.dispatchEvent(new MouseEvent('mouseleave'));
+    container.dispatchEvent(new MouseEvent('mouseenter'));
+    container.querySelector<HTMLElement>('.apply-button')
+      .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+    return [start.value, end.value];
+  };
+
+  test('repicking the start keeps the end', () => {
+    expect(repick('start', 5)).toEqual(['2019-11-05', '2019-11-20']);
+  });
+
+  test('repicking the end keeps the start', () => {
+    expect(repick('end', 25)).toEqual(['2019-11-10', '2019-11-25']);
+  });
+
+  test('repicking the end before the start swaps them', () => {
+    expect(repick('end', 5)).toEqual(['2019-11-05', '2019-11-10']);
+  });
+});
+
 test('documentClick default', () => {
   let picker = new easepick.create({
     element: document.getElementById('datepicker'),

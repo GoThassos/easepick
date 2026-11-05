@@ -29,14 +29,14 @@ Main package of easepick.
 | inline | boolean | false | Show calendar inline.
 | scrollToDate | boolean | true | Scroll to the selected date on open.
 | header | boolean <br/> string <br/> HTMLElement | false | Add header to calendar.
-| locale| object | { <br/>nextMonth: '<svg width="11" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M2.748 16L0 13.333 5.333 8 0 2.667 2.748 0l7.919 8z" fill-rule="nonzero"/></svg>', <br/> previousMonth: '<svg width="11" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M7.919 0l2.748 2.667L5.333 8l5.334 5.333L7.919 16 0 8z" fill-rule="nonzero"/></svg>', <br/> cancel: 'Cancel', <br/>apply: 'Apply'<br/>} | Icon and text for buttons.
+| locale | object | { <br/>nextMonth: '<svg width="11" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M2.748 16L0 13.333 5.333 8 0 2.667 2.748 0l7.919 8z" fill-rule="nonzero"/></svg>', <br/> previousMonth: '<svg width="11" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M7.919 0l2.748 2.667L5.333 8l5.334 5.333L7.919 16 0 8z" fill-rule="nonzero"/></svg>', <br/> cancel: 'Cancel', <br/>apply: 'Apply'<br/>} | Icon and text for buttons.
 | documentClick | boolean <br/> function | function | Hide picker on click outside picker element.
 | setup | function | null |
 | plugins | array | [] | List of plugins.
 
 ## Methods
 
-| Name  | Description
+| Name | Description
 | --- | ---
 | version | return version of picker.
 | isShown() | Determine if the picker is visible or not.
@@ -52,8 +52,8 @@ Main package of easepick.
 | renderAll() | Redraw the calendar layout.
 | destroy() | Destroy the picker.
 
+### Example
 
-#### Example
 ```js
 const picker = new easepick.create({
   element: document.getElementById('datepicker'),
@@ -69,7 +69,7 @@ picker.setDate('2022-01-01');
 
 Events based on [CustomEvent()](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent).
 
-| Name  | Description
+| Name | Description
 | --- | ---
 | render |
 | view |
@@ -78,7 +78,8 @@ Events based on [CustomEvent()](https://developer.mozilla.org/en-US/docs/Web/API
 
 It is also allowed to use default events such as `click`, `keydown`, etc.
 
-#### Example
+### Example
+
 ```js
 const picker = new easepick.create({
   element: document.getElementById('datepicker'),
@@ -98,8 +99,7 @@ const picker = new easepick.create({
 
 `PluginManager` allows you to manage plugins of created picker.
 
-
-#### Methods
+### Methods
 
 | Name | Description
 | --- | ---
@@ -108,7 +108,7 @@ const picker = new easepick.create({
 | [removeInstance(pluginName)](#pluginManager-removeInstance) | Removes the plugin from the picker.Returns a boolean result.
 | [reloadInstance(pluginName)](#pluginManager-reloadInstance) | Removes the plugin from the picker and adds it again. Returns an instance of the added plugin.
 
-#### Example
+### Example
 
 ```js
 // example use bundle version

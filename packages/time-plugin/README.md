@@ -6,11 +6,9 @@
 
 Adds time picker.
 
-
 ## Documentation
 
 [https://github.com/GoThassos/easepick/tree/master/packages/time-plugin](https://github.com/GoThassos/easepick/tree/master/packages/time-plugin)
-
 
 ## Options
 
@@ -22,10 +20,9 @@ Adds time picker.
 | stepSeconds | number | 5 | Step for seconds.
 | format12 | boolean | false | Display 12H time.
 
-
 ## Methods
 
-| Name  | Description
+| Name | Description
 | --- | ---
 | setTime(value) | Set a time for single date picker.
 | setStartTime(value) | Set start time of date range.

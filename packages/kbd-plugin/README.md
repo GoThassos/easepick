@@ -10,7 +10,6 @@ Adds keyboard navigation.
 
 [https://github.com/GoThassos/easepick/tree/master/packages/kbd-plugin](https://github.com/GoThassos/easepick/tree/master/packages/kbd-plugin)
 
-
 ## Options
 
 | Name | Type | Default | Description

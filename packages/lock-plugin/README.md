@@ -6,11 +6,9 @@
 
 Adds the ability to disable days for selection.
 
-
 ## Documentation
 
 [https://github.com/GoThassos/easepick/tree/master/packages/lock-plugin](https://github.com/GoThassos/easepick/tree/master/packages/lock-plugin)
-
 
 ## Options
 

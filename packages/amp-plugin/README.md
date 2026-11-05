@@ -10,8 +10,7 @@ Adds extra options.
 
 [https://github.com/GoThassos/easepick/tree/master/packages/amp-plugin](https://github.com/GoThassos/easepick/tree/master/packages/amp-plugin)
 
-
-## Options:
+## Options
 
 | Name | Type | Default | Description
 | --- | :---: | :---: | ---

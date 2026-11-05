@@ -6,11 +6,9 @@
 
 DateTime library for `easepick`.
 
-
 ## Documentation
 
 [https://github.com/GoThassos/easepick/tree/master/packages/datetime](https://github.com/GoThassos/easepick/tree/master/packages/datetime)
-
 
 ## DateTime() constructor
 
@@ -24,7 +22,6 @@ Using: `new DateTime(date, format, lang)`
 | lang | string | 'en-US' | Affects month names (`MMM`, `MMMM` tokens).
 
 You can omit all arguments and call `new DateTime()`. This will create a DateTime object represents the current date.
-
 
 ## Methods
 
@@ -44,7 +41,6 @@ You can omit all arguments and call `new DateTime()`. This will create a DateTim
 | subtract | (duration, unit) | Mutates the original DateTime by subtracting unit. `unit` are `day`, `month`.
 | diff | (date, unit) | Returns diff between two DateTime. `unit` are `day`, `month`.
 | format | (format, lang) | Format output. See [tokens format](#tokens-format) for `format` argument. `lang` affects month names (`MMM`, `MMMM` tokens).
-
 
 ## Tokens format
 

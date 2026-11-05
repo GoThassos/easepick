@@ -6,11 +6,9 @@
 
 Adds predefined ranges.
 
-
 ## Documentation
 
 [https://github.com/GoThassos/easepick/tree/master/packages/preset-plugin](https://github.com/GoThassos/easepick/tree/master/packages/preset-plugin)
-
 
 ## Options
 

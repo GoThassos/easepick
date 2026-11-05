@@ -12,7 +12,7 @@ export class PackageManager {
       'npm install @gothassos/easepick-bundle',
     ],
     cdn: [
-      'https://cdn.jsdelivr.net/npm/@gothassos/easepick-bundle@__VERSION__/dist/index.umd.min.js',
+      'https://cdn.jsdelivr.net/npm/@gothassos/easepick-bundle@__VERSION__/dist/index.umd.js',
     ],
   }
 
@@ -124,7 +124,7 @@ export class PackageManager {
   <head>
     <meta charset="utf-8">
     <title>easepick ${version} | configurator ${CONFIGURATOR_VERSION}</title>
-    <script src="https://cdn.jsdelivr.net/npm/@gothassos/easepick-bundle@${version}/dist/index.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@gothassos/easepick-bundle@${version}/dist/index.umd.js"></script>
   </head>
   <body>
     ${inputs}

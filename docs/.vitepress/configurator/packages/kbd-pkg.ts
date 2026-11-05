@@ -12,10 +12,10 @@ export class KbdPkg extends BasePkg implements IPackage {
       'npm install @gothassos/easepick-kbd-plugin',
     ],
     cdn: [
-      'https://cdn.jsdelivr.net/npm/@gothassos/easepick-datetime@__VERSION__/dist/index.umd.min.js',
-      'https://cdn.jsdelivr.net/npm/@gothassos/easepick-core@__VERSION__/dist/index.umd.min.js',
-      'https://cdn.jsdelivr.net/npm/@gothassos/easepick-base-plugin@__VERSION__/dist/index.umd.min.js',
-      'https://cdn.jsdelivr.net/npm/@gothassos/easepick-kbd-plugin@__VERSION__/dist/index.umd.min.js',
+      'https://cdn.jsdelivr.net/npm/@gothassos/easepick-datetime@__VERSION__/dist/index.umd.js',
+      'https://cdn.jsdelivr.net/npm/@gothassos/easepick-core@__VERSION__/dist/index.umd.js',
+      'https://cdn.jsdelivr.net/npm/@gothassos/easepick-base-plugin@__VERSION__/dist/index.umd.js',
+      'https://cdn.jsdelivr.net/npm/@gothassos/easepick-kbd-plugin@__VERSION__/dist/index.umd.js',
     ],
   }
 

@@ -11,8 +11,8 @@ export class CorePkg extends BasePkg implements IPackage {
       'npm install @gothassos/easepick-core',
     ],
     cdn: [
-      'https://cdn.jsdelivr.net/npm/@gothassos/easepick-datetime@__VERSION__/dist/index.umd.min.js',
-      'https://cdn.jsdelivr.net/npm/@gothassos/easepick-core@__VERSION__/dist/index.umd.min.js',
+      'https://cdn.jsdelivr.net/npm/@gothassos/easepick-datetime@__VERSION__/dist/index.umd.js',
+      'https://cdn.jsdelivr.net/npm/@gothassos/easepick-core@__VERSION__/dist/index.umd.js',
     ],
   }
 

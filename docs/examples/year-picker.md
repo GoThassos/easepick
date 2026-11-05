@@ -14,7 +14,7 @@ With `viewMode: 'year'` the picker shows a decade of years (with the years just 
   <head>
     <meta charset="utf-8">
     <title>easepick</title>
-    <script src="https://cdn.jsdelivr.net/npm/@gothassos/easepick-bundle@[version.number]/dist/index.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@gothassos/easepick-bundle@[version.number]/dist/index.umd.js"></script>
   </head>
   <body>
     <input id="datepicker"/>

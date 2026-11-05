@@ -53,7 +53,7 @@ Update the stylesheet URLs passed to the `css` option the same way, including an
 <script src="https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.1/dist/index.umd.min.js"></script>
 
 <!-- After -->
-<script src="https://cdn.jsdelivr.net/npm/@gothassos/easepick-bundle@[version.number]/dist/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@gothassos/easepick-bundle@[version.number]/dist/index.umd.js"></script>
 ```
 
 The UMD builds still define `window.easepick`, so your page scripts don't change.

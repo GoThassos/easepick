@@ -24,6 +24,13 @@ const stripStyleImportsFromDeclarations = () => ({
   },
 });
 
+// Each package's `license` (SPDX id) for its build banner: most are MIT, but
+// some ported plugins keep the original author's GPL.
+const licenseName = (spdx) => ({
+  'MIT': 'MIT License',
+  'GPL-2.0-or-later': 'GNU General Public License, version 2 or later',
+})[spdx] || `${spdx} license`;
+
 const output = (name) => {
   const pkg = require(path.join(__dirname, `packages/${name}/package.json`));
 
@@ -41,7 +48,7 @@ const output = (name) => {
 * https://github.com/GoThassos/easepick
 * Copyright (c) 2026 Rinat Garifyanov
 *
-* Licensed under the MIT License.
+* Licensed under the ${licenseName(pkg.license)}.
 */`,
       globals(id) {
         if (/^@gothassos\//.test(id)) {

@@ -79,7 +79,33 @@ export default class Calendar {
     const calendars = document.createElement('div');
     calendars.className = `calendars grid-${this.picker.options.grid}`;
 
-    for (let i = 0; i < this.picker.options.calendars; i++) {
+    const { viewMode } = this.picker.options;
+
+    if (viewMode === 'month' || viewMode === 'year') {
+      // A single calendar: the months of a year, or the years of a decade.
+      const calendar = document.createElement('div');
+      calendar.className = 'calendar';
+      calendars.appendChild(calendar);
+
+      const calendarHeader = this.getCalendarHeaderView(date.clone());
+      calendar.appendChild(calendarHeader);
+      this.picker.trigger('view', { date: date.clone(), view: 'CalendarHeader', index: 0, target: calendarHeader });
+
+      const grid = viewMode === 'month'
+        ? this.getCalendarMonthsView(date.clone())
+        : this.getCalendarYearsView(date.clone());
+      calendar.appendChild(grid);
+      this.picker.trigger('view', {
+        date: date.clone(),
+        view: viewMode === 'month' ? 'CalendarMonths' : 'CalendarYears',
+        index: 0,
+        target: grid,
+      });
+
+      this.picker.trigger('view', { date: date.clone(), view: 'CalendarItem', index: 0, target: calendar });
+    }
+
+    for (let i = 0; viewMode !== 'month' && viewMode !== 'year' && i < this.picker.options.calendars; i++) {
       const month = document.createElement('div');
       month.className = 'calendar';
       calendars.appendChild(month);
@@ -201,11 +227,22 @@ export default class Calendar {
 
     const monthName = document.createElement('div');
     monthName.className = 'month-name';
-    // Keep the `<span>month</span> year` structure: AmpPlugin replaces
-    // childNodes[0] (month) and childNodes[1] (year) with dropdowns.
-    const month = document.createElement('span');
-    month.textContent = this.getMonthTitle(date, this.picker.options.lang);
-    monthName.append(month, ` ${date.format('YYYY')}`);
+    const title = document.createElement('span');
+
+    if (this.picker.options.viewMode === 'month') {
+      title.textContent = date.format('YYYY');
+      monthName.append(title);
+    } else if (this.picker.options.viewMode === 'year') {
+      const decade = this.getDecadeStart(date);
+      title.textContent = `${decade} – ${decade + 9}`;
+      monthName.append(title);
+    } else {
+      // Keep the `<span>month</span> year` structure: AmpPlugin replaces
+      // childNodes[0] (month) and childNodes[1] (year) with dropdowns.
+      title.textContent = this.getMonthTitle(date, this.picker.options.lang);
+      monthName.append(title, ` ${date.format('YYYY')}`);
+    }
+
     element.appendChild(monthName);
 
     const prevMonth = document.createElement('button');
@@ -347,6 +384,103 @@ export default class Calendar {
     this.picker.trigger('view', { date, view: 'CalendarDay', target: element });
 
     return element;
+  }
+
+  /**
+   * Function for `CalendarMonths` view (viewMode: 'month'):
+   * the 12 months of the year, in a 4×3 grid.
+   *
+   * @param date
+   * @returns HTMLElement
+   */
+  public getCalendarMonthsView(date: DateTime): HTMLElement {
+    const element = document.createElement('div');
+    element.className = 'months-grid';
+
+    for (let m = 0; m < 12; m++) {
+      const month = new DateTime(new Date(date.getFullYear(), m, 1));
+      const view = this.getCalendarPeriodView(
+        month,
+        'month',
+        month.toLocaleString(this.picker.options.lang, { month: 'short' }),
+        `${this.getMonthTitle(month, this.picker.options.lang)} ${month.format('YYYY')}`,
+      );
+
+      element.appendChild(view);
+      this.picker.trigger('view', { date: month, view: 'CalendarMonth', target: view });
+    }
+
+    return element;
+  }
+
+  /**
+   * Function for `CalendarYears` view (viewMode: 'year'):
+   * the decade, with the years just before and after it, in a 4×3 grid.
+   *
+   * @param date
+   * @returns HTMLElement
+   */
+  public getCalendarYearsView(date: DateTime): HTMLElement {
+    const element = document.createElement('div');
+    element.className = 'years-grid';
+    const decade = this.getDecadeStart(date);
+
+    for (let y = decade - 1; y <= decade + 10; y++) {
+      const year = new DateTime(new Date(y, 0, 1));
+      const view = this.getCalendarPeriodView(year, 'year', String(y), String(y));
+
+      if (y < decade || y > decade + 9) {
+        view.classList.add('outside');
+      }
+
+      element.appendChild(view);
+      this.picker.trigger('view', { date: year, view: 'CalendarYear', target: view });
+    }
+
+    return element;
+  }
+
+  /**
+   * A month or year cell, marked `today` and `selected` like a day.
+   *
+   * @param date first day of the period
+   * @param unit
+   * @param text
+   * @param title
+   * @returns HTMLElement
+   */
+  private getCalendarPeriodView(date: DateTime, unit: 'month' | 'year', text: string, title: string): HTMLElement {
+    const isSame = (a: Date, b: Date) => a.getFullYear() === b.getFullYear()
+      && (unit === 'year' || a.getMonth() === b.getMonth());
+    const selected = this.picker.datePicked.length
+      ? this.picker.datePicked[0]
+      : (this.picker.options.date ? new DateTime(this.picker.options.date) : null);
+
+    const element = document.createElement('div');
+    element.className = `${unit} unit`;
+    element.textContent = text;
+    element.title = title;
+    element.dataset.time = String(date.getTime());
+
+    if (isSame(date, new Date())) {
+      element.classList.add('today');
+    }
+
+    if (selected && isSame(date, selected)) {
+      element.classList.add('selected');
+    }
+
+    return element;
+  }
+
+  /**
+   * First year of the decade holding the date (2026 → 2020).
+   *
+   * @param date
+   * @returns number
+   */
+  public getDecadeStart(date: Date): number {
+    return Math.floor(date.getFullYear() / 10) * 10;
   }
 
   /**

@@ -53,6 +53,7 @@ export interface IPickerConfig {
   zIndex?: number;
   inline?: boolean;
   scrollToDate?: boolean;
+  viewMode?: 'day' | 'month' | 'year';
   showOffsetDays?: boolean;
   setup?(picker: Core): void;
 }

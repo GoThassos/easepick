@@ -156,3 +156,20 @@
     }
   }
 }
+
+// viewMode: 'month' | 'year'
+.container.range-plugin .calendar {
+  > .months-grid > .month,
+  > .years-grid > .year {
+    &.in-range {
+      border-radius: 0;
+      background-color: var(--color-bg-inrange);
+    }
+
+    &.start,
+    &.end {
+      background-color: var(--color-fg-primary);
+      color: var(--color-fg-selected);
+    }
+  }
+}

@@ -34,6 +34,7 @@ export class Core {
     header: false,
     inline: false,
     scrollToDate: true,
+    viewMode: 'day',
     locale: {
       nextMonth: '<svg width="11" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M2.748 16L0 13.333 5.333 8 0 2.667 2.748 0l7.919 8z" fill-rule="nonzero"/></svg>',
       previousMonth: '<svg width="11" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M7.919 0l2.748 2.667L5.333 8l5.334 5.333L7.919 16 0 8z" fill-rule="nonzero"/></svg>',
@@ -181,7 +182,14 @@ export class Core {
    */
   public onClickHeaderButton(element: HTMLElement) {
     if (this.isCalendarHeaderButton(element)) {
-      if (element.classList.contains('next-button')) {
+      const step = element.classList.contains('next-button') ? 1 : -1;
+
+      if (this.options.viewMode === 'month' || this.options.viewMode === 'year') {
+        // A year at a time, or a decade at a time.
+        const years = this.options.viewMode === 'month' ? step : step * 10;
+        this.calendars[0].setDate(1);
+        this.calendars[0].setFullYear(this.calendars[0].getFullYear() + years);
+      } else if (step > 0) {
         this.calendars[0].add(1, 'month');
       } else {
         this.calendars[0].subtract(1, 'month');
@@ -196,7 +204,8 @@ export class Core {
    * @param element
    */
   public onClickCalendarDay(element: HTMLElement) {
-    if (this.isCalendarDay(element)) {
+    // Months and years (viewMode: 'month' | 'year') select their first day.
+    if (this.isCalendarDay(element) || this.isCalendarPeriod(element)) {
       const date = new DateTime(element.dataset.time);
 
       if (this.options.autoApply) {
@@ -414,6 +423,18 @@ export class Core {
    */
   public isCalendarDay(element: HTMLElement): boolean {
     return element.classList.contains('day');
+  }
+
+  /**
+   * Determines if the element is a month or year element
+   * (viewMode: 'month' | 'year')
+   *
+   * @param element
+   * @returns Boolean
+   */
+  public isCalendarPeriod(element: HTMLElement): boolean {
+    return (element.classList.contains('month') || element.classList.contains('year'))
+      && !element.classList.contains('locked');
   }
 
   /**

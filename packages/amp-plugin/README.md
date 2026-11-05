@@ -14,7 +14,7 @@ Adds extra options.
 
 | Name | Type | Default | Description
 | --- | :---: | :---: | ---
-| dropdown | object | { minYear: 1950, maxYear: null, months: false, years: false } | Enable dropdowns for months, years. If `maxYear` is `null` then `maxYear` will be equal to `(new Date()).getFullYear()`. <br/> `years` can be equal to `asc` string to change the sort direction.
+| dropdown | object | { minYear: 1950, maxYear: null, months: false, years: false } | Enable dropdowns for months, years. If `maxYear` is `null` then `maxYear` will be equal to `(new Date()).getFullYear()`. <br/> `years` can be equal to `asc` string to change the sort direction. <br/> Dropdowns are shown in the core's day view only (`viewMode: 'day'`).
 | resetButton | boolean <br/> function | false | Adds a reset button to clear the current selection. It is allowed to pass a custom function that must return `true` to clear the selection.
 | darkMode | boolean | true | Allows dark mode to be used if the user's system settings are set to dark mode.
 | weekNumbers | boolean | false | Show week numbers.

@@ -59,6 +59,20 @@
     }
   }
 
+  // viewMode: 'month' | 'year'
+  .calendar {
+    > .months-grid > .month,
+    > .years-grid > .year {
+      &.locked {
+        color: var(--color-fg-locked);
+        background-color: transparent;
+        border: 1px solid var(--color-border-locked);
+        font-style: italic;
+        pointer-events: none;
+      }
+    }
+  }
+
   .preset-plugin-container {
     > button {
       &:disabled {

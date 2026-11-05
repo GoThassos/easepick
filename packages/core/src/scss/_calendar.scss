@@ -119,6 +119,44 @@
     font-size: 12px;
   }
 
+  // viewMode: 'month' | 'year'. Four columns as wide as the day view.
+  > .months-grid,
+  > .years-grid {
+    display: grid;
+    grid-template-columns: repeat(4, calc(var(--day-width) * 7 / 4));
+    row-gap: 2px;
+
+    > .month,
+    > .year {
+      cursor: default;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 0;
+      border: 1px solid transparent;
+      border-radius: 2px;
+      font-size: 13px;
+
+      &:hover {
+        border: 1px solid var(--color-fg-primary);
+        color: var(--color-fg-primary);
+      }
+
+      &.outside {
+        color: var(--color-fg-offset);
+      }
+
+      &.today {
+        color: var(--color-fg-accent);
+      }
+
+      &.selected {
+        background-color: var(--color-fg-primary);
+        color: var(--color-fg-selected);
+      }
+    }
+  }
+
   > .days-grid > .offset {
     display: flex;
     align-items: center;

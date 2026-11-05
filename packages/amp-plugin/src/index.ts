@@ -106,8 +106,11 @@ export class AmpPlugin extends BasePlugin implements IPlugin {
    */
   public handleDropdown(evt) {
     const { view, target, date, index }: IEventDetail = evt.detail;
+    const viewMode = this.picker.options.viewMode;
 
-    if (view === 'CalendarHeader') {
+    // Month/year dropdowns belong to the day view; the month and year views
+    // (viewMode: 'month' | 'year') already are month and year pickers.
+    if (view === 'CalendarHeader' && (!viewMode || viewMode === 'day')) {
       const monthNameWrapper = target.querySelector('.month-name');
 
       if (this.options.dropdown.months) {

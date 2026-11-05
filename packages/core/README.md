@@ -28,6 +28,7 @@ Main package of easepick.
 | zIndex | number | null | zIndex of picker.
 | inline | boolean | false | Show calendar inline.
 | scrollToDate | boolean | true | Scroll to the selected date on open.
+| viewMode | string | day | What the picker shows: `day` (a month of days), `month` (the 12 months of a year, a month picker) or `year` (a decade of years, a year picker). <br/> Picking a month or year selects its first day; set `format` to match (e.g. `MM/YYYY`, `YYYY`). The arrows move a year (`month`) or a decade (`year`), and `calendars`/`grid` only apply to `day`.
 | showOffsetDays | boolean | false | Show the days of the previous and next month in the empty cells around the current month. They are not selectable.
 | header | boolean <br/> string <br/> HTMLElement | false | Add header to calendar.
 | locale | object | { <br/>nextMonth: `'<svg width="11" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M2.748 16L0 13.333 5.333 8 0 2.667 2.748 0l7.919 8z" fill-rule="nonzero"/></svg>'`, <br/> previousMonth: `'<svg width="11" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M7.919 0l2.748 2.667L5.333 8l5.334 5.333L7.919 16 0 8z" fill-rule="nonzero"/></svg>'`, <br/> cancel: 'Cancel', <br/>apply: 'Apply'<br/>} | Icon and text for buttons.

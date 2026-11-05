@@ -104,7 +104,7 @@ export class KbdPlugin extends BasePlugin implements IPlugin {
       if (view === 'CalendarDay' && !['locked', 'not-available'].some(x => target.classList.contains(x))) {
         target.tabIndex = this.options.dayIndex;
       } else {
-        const elems = target.querySelectorAll('.unit:not(.day)');
+        const elems = target.querySelectorAll('.unit:not(.day):not(.locked)');
         [...elems].forEach((el: HTMLElement) => el.tabIndex = this.options.unitIndex);
       }
     }
@@ -248,6 +248,13 @@ export class KbdPlugin extends BasePlugin implements IPlugin {
    */
   private handleEnter(evt) {
     const target = evt.target;
+
+    // Months and years (viewMode: 'month' | 'year') are picked like days.
+    if (target.classList.contains('month') || target.classList.contains('year')) {
+      evt.preventDefault();
+      target.dispatchEvent(new Event('click', { bubbles: true }));
+      return;
+    }
 
     if (target.classList.contains('day')) {
       evt.preventDefault();

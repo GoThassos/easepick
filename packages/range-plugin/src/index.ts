@@ -369,6 +369,14 @@ export class RangePlugin extends BasePlugin implements IPlugin {
       }
     }
 
+    if (view === 'CalendarMonth' || view === 'CalendarYear') {
+      const datePicked = this.picker.datePicked;
+      const start = datePicked.length ? datePicked[0] : this.getStartDate();
+      const end = datePicked.length ? datePicked[1] : this.getEndDate();
+
+      this.markPeriod(target, start, end);
+    }
+
     if (view === 'Footer') {
       const allowApplyBtn = (this.picker.datePicked.length === 1 && !this.options.strict)
         || this.picker.datePicked.length === 2;
@@ -406,7 +414,7 @@ export class RangePlugin extends BasePlugin implements IPlugin {
    * @param date
    */
   private setStartDate(date: Date | string | number) {
-    const d = new DateTime(date, this.picker.options.format, this.picker.options.lang);
+    const d = this.toPeriodStart(new DateTime(date, this.picker.options.format, this.picker.options.lang));
     this.options.startDate = d ? d.clone() : null;
 
     this.updateValues();
@@ -420,7 +428,7 @@ export class RangePlugin extends BasePlugin implements IPlugin {
    * @param date
    */
   private setEndDate(date: Date | string | number) {
-    const d = new DateTime(date, this.picker.options.format, this.picker.options.lang);
+    const d = this.toPeriodEnd(new DateTime(date, this.picker.options.format, this.picker.options.lang));
     this.options.endDate = d ? d.clone() : null;
 
     this.updateValues();
@@ -435,8 +443,8 @@ export class RangePlugin extends BasePlugin implements IPlugin {
    * @param end
    */
   private setDateRange(start: Date | string | number, end: Date | string | number) {
-    const startDate = new DateTime(start, this.picker.options.format, this.picker.options.lang);
-    const endDate = new DateTime(end, this.picker.options.format, this.picker.options.lang);
+    const startDate = this.toPeriodStart(new DateTime(start, this.picker.options.format, this.picker.options.lang));
+    const endDate = this.toPeriodEnd(new DateTime(end, this.picker.options.format, this.picker.options.lang));
 
     this.options.startDate = startDate ? startDate.clone() : null;
     this.options.endDate = endDate ? endDate.clone() : null;
@@ -444,6 +452,59 @@ export class RangePlugin extends BasePlugin implements IPlugin {
     this.updateValues();
 
     this.picker.renderAll();
+  }
+
+  /**
+   * The period a month or year cell stands for (viewMode: 'month' | 'year'),
+   * or null in the day view.
+   */
+  private periodUnit(): 'month' | 'year' | null {
+    const { viewMode } = this.picker.options;
+    return viewMode === 'month' || viewMode === 'year' ? viewMode : null;
+  }
+
+  /**
+   * First day of the date's month or year in the month/year views.
+   *
+   * @param date
+   */
+  private toPeriodStart(date: DateTime): DateTime {
+    const unit = this.periodUnit();
+    if (!unit || !(date instanceof Date)) return date;
+
+    return new DateTime(new Date(date.getFullYear(), unit === 'month' ? date.getMonth() : 0, 1));
+  }
+
+  /**
+   * Last day of the date's month or year in the month/year views, so a
+   * range covers its whole last period.
+   *
+   * @param date
+   */
+  private toPeriodEnd(date: DateTime): DateTime {
+    const unit = this.periodUnit();
+    if (!unit || !(date instanceof Date)) return date;
+
+    return unit === 'month'
+      ? new DateTime(new Date(date.getFullYear(), date.getMonth() + 1, 0))
+      : new DateTime(new Date(date.getFullYear(), 11, 31));
+  }
+
+  /**
+   * Mark a month or year cell as start, end or in range.
+   *
+   * @param cell
+   * @param start
+   * @param end
+   */
+  private markPeriod(cell: HTMLElement, start: DateTime | null, end: DateTime | null) {
+    const time = Number(cell.dataset.time);
+    const startTime = start ? this.toPeriodStart(start).getTime() : null;
+    const endTime = end ? this.toPeriodStart(end).getTime() : null;
+
+    cell.classList.toggle('start', time === startTime);
+    cell.classList.toggle('end', endTime !== null && time === endTime);
+    cell.classList.toggle('in-range', startTime !== null && endTime !== null && time > startTime && time < endTime);
   }
 
   /**
@@ -478,6 +539,19 @@ export class RangePlugin extends BasePlugin implements IPlugin {
       const element = target.closest('.unit');
 
       if (!(element instanceof HTMLElement)) return;
+
+      if (this.picker.isCalendarPeriod(element)) {
+        if (this.picker.datePicked.length !== 1) return;
+
+        const picked = this.picker.datePicked[0];
+        const hovered = new DateTime(element.dataset.time);
+        const [start, end] = picked.isAfter(hovered) ? [hovered, picked] : [picked, hovered];
+
+        this.picker.ui.container.querySelectorAll<HTMLElement>('.month, .year')
+          .forEach(cell => this.markPeriod(cell, start, end));
+
+        return;
+      }
 
       if (this.picker.isCalendarDay(element)) {
         if (this.picker.datePicked.length !== 1) return;
@@ -554,7 +628,8 @@ export class RangePlugin extends BasePlugin implements IPlugin {
   }
 
   private onClickCalendarDay(element: HTMLElement) {
-    if (this.picker.isCalendarDay(element)) {
+    // Months and years (viewMode: 'month' | 'year') pick whole periods.
+    if (this.picker.isCalendarDay(element) || this.picker.isCalendarPeriod(element)) {
 
       if (this.picker.datePicked.length === 2) {
         this.picker.datePicked.length = 0;
@@ -567,6 +642,10 @@ export class RangePlugin extends BasePlugin implements IPlugin {
         const tempDate = this.picker.datePicked[1].clone();
         this.picker.datePicked[1] = this.picker.datePicked[0].clone();
         this.picker.datePicked[0] = tempDate.clone();
+      }
+
+      if (this.picker.datePicked.length === 2) {
+        this.picker.datePicked[1] = this.toPeriodEnd(this.picker.datePicked[1]);
       }
 
       if (this.picker.datePicked.length === 1 || !this.picker.options.autoApply) {

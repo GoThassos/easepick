@@ -14,5 +14,5 @@ Adds keyboard navigation.
 
 | Name | Type | Default | Description
 | --- | :---: | :---: | ---
-| unitIndex | number | 1 | `tabIndex` for elements except days elements.
+| unitIndex | number | 1 | `tabIndex` for elements except days elements (including months and years with the core's `viewMode`, which Enter and Space pick).
 | dayIndex | number | 2 | `tabIndex` for days elements.

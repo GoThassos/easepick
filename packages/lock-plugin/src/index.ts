@@ -91,16 +91,44 @@ export class LockPlugin extends BasePlugin implements IPlugin {
     const { view, target, date }: IEventDetail = event.detail;
 
     if (view === 'CalendarHeader') {
+      const { viewMode } = this.picker.options;
+      // The header arrows move by a month, a year (viewMode: 'month') or a
+      // decade (viewMode: 'year'): hide one when everything past it is locked.
+      const first = viewMode === 'year'
+        ? this.picker.Calendar.getDecadeStart(date)
+        : date.getFullYear();
+      const last = viewMode === 'year' ? first + 9 : first;
+
       if (this.options.minDate instanceof DateTime) {
-        if (date.isSameOrBefore(this.options.minDate, 'month')) {
+        const noPrevious = viewMode === 'month' || viewMode === 'year'
+          ? first <= this.options.minDate.getFullYear()
+          : date.isSameOrBefore(this.options.minDate, 'month');
+
+        if (noPrevious) {
           target.classList.add('no-previous-month');
         }
       }
 
       if (this.options.maxDate instanceof DateTime) {
-        if (date.isSameOrAfter(this.options.maxDate, 'month')) {
+        const noNext = viewMode === 'month' || viewMode === 'year'
+          ? last >= this.options.maxDate.getFullYear()
+          : date.isSameOrAfter(this.options.maxDate, 'month');
+
+        if (noNext) {
           target.classList.add('no-next-month');
         }
+      }
+    }
+
+    if (view === 'CalendarMonth' || view === 'CalendarYear') {
+      // A month or year is locked when it lies entirely outside minDate/maxDate.
+      const unit = view === 'CalendarMonth' ? 'month' : 'year';
+      const periodEnd = unit === 'month'
+        ? new DateTime(new Date(date.getFullYear(), date.getMonth() + 1, 0))
+        : new DateTime(new Date(date.getFullYear(), 11, 31));
+
+      if (this.lockMinDate(periodEnd) || this.lockMaxDate(date)) {
+        target.classList.add('locked');
       }
     }
 

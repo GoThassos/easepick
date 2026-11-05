@@ -24,6 +24,8 @@ Adds the ability to select a range of dates.
 | tooltipNumber | function | | Handling the tooltip number.
 | locale | object | { one: 'day', other: 'days' } | Text for the tooltip. <br/> Keys depend on option lang (see [Intl.PluralRules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/PluralRules)). A missing form falls back to `other`, with a console warning.
 
+With the core's `viewMode: 'month'` or `'year'`, the range covers whole periods: it starts on the first day of the first month (year) and ends on the last day of the last one, e.g. picking March and June 2026 gives 2026-03-01 – 2026-06-30. Dates passed to the methods below are widened the same way. The tooltip is shown in the day view only.
+
 ## Methods
 
 | Name | Description

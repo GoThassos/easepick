@@ -1,6 +1,12 @@
 {
   "name": "@gothassos/easepick-base-plugin",
   "description": "Base plugin for easepick.",
+  "keywords": [
+    "easepick",
+    "easepick plugin",
+    "datepicker",
+    "plugin"
+  ],
   "version": "1.2.9",
   "main": "dist/index.umd.js",
   "module": "dist/index.esm.js",

@@ -1,6 +1,15 @@
 {
   "name": "@gothassos/easepick-amp-plugin",
   "description": "Plugin for easepick.",
+  "keywords": [
+    "easepick",
+    "easepick plugin",
+    "datepicker",
+    "month dropdown",
+    "year dropdown",
+    "week numbers",
+    "dark mode"
+  ],
   "version": "1.2.9",
   "main": "dist/index.umd.js",
   "module": "dist/index.esm.js",

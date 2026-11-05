@@ -1,14 +1,14 @@
-# @easepick/amp-plugin
+# @gothassos/easepick-amp-plugin
 
-[![npm version](https://badge.fury.io/js/@easepick%2Famp-plugin.svg)](https://www.npmjs.com/package/@easepick/amp-plugin)
+[![npm version](https://badge.fury.io/js/@gothassos%2Feasepick-amp-plugin.svg)](https://www.npmjs.com/package/@gothassos/easepick-amp-plugin)
 
-> This package does not need to be installed if you are using [@easepick/bundle](https://easepick.com/packages/bundle).
+> This package does not need to be installed if you are using [@gothassos/easepick-bundle](https://github.com/GoThassos/easepick/tree/master/packages/bundle).
 
 Adds extra options.
 
 ## Documentation
 
-[https://easepick.com/packages/amp-plugin](https://easepick.com/packages/amp-plugin)
+[https://github.com/GoThassos/easepick/tree/master/packages/amp-plugin](https://github.com/GoThassos/easepick/tree/master/packages/amp-plugin)
 
 
 ## Options:

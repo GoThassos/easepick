@@ -1,15 +1,15 @@
-# @easepick/datetime
+# @gothassos/easepick-datetime
 
-[![npm version](https://badge.fury.io/js/@easepick%2Fdatetime.svg)](https://www.npmjs.com/package/@easepick/datetime)
+[![npm version](https://badge.fury.io/js/@gothassos%2Feasepick-datetime.svg)](https://www.npmjs.com/package/@gothassos/easepick-datetime)
 
-> This package does not need to be installed if you are using [@easepick/bundle](https://easepick.com/packages/bundle).
+> This package does not need to be installed if you are using [@gothassos/easepick-bundle](https://github.com/GoThassos/easepick/tree/master/packages/bundle).
 
 DateTime library for `easepick`.
 
 
 ## Documentation
 
-[https://easepick.com/packages/datetime](https://easepick.com/packages/datetime)
+[https://github.com/GoThassos/easepick/tree/master/packages/datetime](https://github.com/GoThassos/easepick/tree/master/packages/datetime)
 
 
 ## DateTime() constructor

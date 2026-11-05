@@ -1,7 +1,7 @@
 {
   "name": "@gothassos/easepick-bundle",
   "description": "easepick bundle.",
-  "version": "1.2.8",
+  "version": "1.2.9",
   "main": "dist/index.umd.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
@@ -20,15 +20,15 @@
     "name": "Rinat G.",
     "email": "easepick@jsx4.com"
   },
-  "license": "GPL-2.0-or-later",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/easepick/easepick.git",
+    "url": "https://github.com/GoThassos/easepick.git",
     "directory": "packages/bundle"
   },
-  "homepage": "https://easepick.com",
+  "homepage": "https://github.com/GoThassos/easepick/tree/master/packages/bundle#readme",
   "bugs": {
-    "url": "https://github.com/easepick/easepick/issues"
+    "url": "https://github.com/GoThassos/easepick/issues"
   },
   "files": [
     "dist"

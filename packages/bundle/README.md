@@ -1,15 +1,15 @@
-# @easepick/bundle
+# @gothassos/easepick-bundle
 
-[![npm version](https://badge.fury.io/js/@easepick%2Fbundle.svg)](https://www.npmjs.com/package/@easepick/bundle).
+[![npm version](https://badge.fury.io/js/@gothassos%2Feasepick-bundle.svg)](https://www.npmjs.com/package/@gothassos/easepick-bundle).
 
 Bundle of easepick.
 Includes all packages.
 
 ## Documentation
 
-[https://easepick.com/packages/bundle](https://easepick.com/packages/bundle)
+[https://github.com/GoThassos/easepick/tree/master/packages/bundle](https://github.com/GoThassos/easepick/tree/master/packages/bundle)
 
 
 ## Options
 
-See options in [@easepick/core](https://easepick.com/packages/core) and other [packages](https://easepick.com/packages).
+See options in [@gothassos/easepick-core](https://github.com/GoThassos/easepick/tree/master/packages/core) and other [packages](https://github.com/GoThassos/easepick/tree/master/packages).

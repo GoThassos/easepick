@@ -1,7 +1,7 @@
 easepick
 ===
 
-[![npm version](https://badge.fury.io/js/@easepick%2Fbundle.svg)](https://www.npmjs.com/package/@easepick/bundle) ![workflow](https://github.com/easepick/easepick/actions/workflows/node.js.yml/badge.svg)
+[![npm version](https://badge.fury.io/js/@gothassos%2Feasepick-bundle.svg)](https://www.npmjs.com/package/@gothassos/easepick-bundle) ![workflow](https://github.com/GoThassos/easepick/actions/workflows/node.js.yml/badge.svg)
 
 ![easepick screenshot](https://dev.jsx4.com/easepick/screenshot.png)
 
@@ -14,8 +14,16 @@ easepick
 
 ## Documentation
 
-- [Overview](https://easepick.com/)
-- [Configurator](https://easepick.com/configurator)
-- [Packages](https://easepick.com/packages)
-- [Examples](https://easepick.com/examples)
+Each package documents its options and methods in its own README:
+
+- [@gothassos/easepick-bundle](packages/bundle#readme) (all packages in one)
+- [@gothassos/easepick-core](packages/core#readme)
+- [@gothassos/easepick-datetime](packages/datetime#readme)
+- [@gothassos/easepick-base-plugin](packages/base-plugin#readme)
+- [@gothassos/easepick-range-plugin](packages/range-plugin#readme)
+- [@gothassos/easepick-preset-plugin](packages/preset-plugin#readme)
+- [@gothassos/easepick-time-plugin](packages/time-plugin#readme)
+- [@gothassos/easepick-lock-plugin](packages/lock-plugin#readme)
+- [@gothassos/easepick-kbd-plugin](packages/kbd-plugin#readme)
+- [@gothassos/easepick-amp-plugin](packages/amp-plugin#readme)
 

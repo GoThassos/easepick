@@ -1,10 +1,10 @@
-# @easepick/base-plugin
+# @gothassos/easepick-base-plugin
 
-[![npm version](https://badge.fury.io/js/@easepick%2Fbase-plugin.svg)](https://www.npmjs.com/package/@easepick/base-plugin)
+[![npm version](https://badge.fury.io/js/@gothassos%2Feasepick-base-plugin.svg)](https://www.npmjs.com/package/@gothassos/easepick-base-plugin)
 
-> This package does not need to be installed if you are using [@easepick/bundle](https://easepick.com/packages/bundle).
+> This package does not need to be installed if you are using [@gothassos/easepick-bundle](https://github.com/GoThassos/easepick/tree/master/packages/bundle).
 
 
 ## Documentation
 
-[https://easepick.com/packages/base-plugin](https://easepick.com/packages/base-plugin)
+[https://github.com/GoThassos/easepick/tree/master/packages/base-plugin](https://github.com/GoThassos/easepick/tree/master/packages/base-plugin)

@@ -666,7 +666,7 @@ export class TimePlugin extends BasePlugin implements IPlugin {
           if (this.rangePlugin.options.elementEnd instanceof HTMLInputElement
             && this.rangePlugin.options.elementEnd.value.length) {
             const d = new DateTime(this.rangePlugin.options.elementEnd.value, this.picker.options.format);
-            this.timePicked.start = d.clone();
+            this.timePicked.end = d.clone();
           }
         }
       } else if (this.picker.options.element instanceof HTMLInputElement && this.picker.options.element.value.length) {
@@ -687,7 +687,7 @@ export class TimePlugin extends BasePlugin implements IPlugin {
           }
           if (_end) {
             const d = new DateTime(_end, this.picker.options.format);
-            this.timePicked.start = d.clone();
+            this.timePicked.end = d.clone();
           }
         }
       }

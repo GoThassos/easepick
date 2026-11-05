@@ -394,6 +394,26 @@ describe('range', () => {
       expect([select(picker, 'start[HH]').value, select(picker, 'end[HH]').value]).toEqual(['10', '18']);
     });
 
+    test('non-strict: element and elementEnd times go to the start and the end', () => {
+      const picker = createRange(
+        { strict: false, elementEnd: input('2019-11-12 18:30') },
+        {},
+        { element: input('2019-11-05 10:00') },
+      );
+
+      expect(fmt(picker.getStartDate())).toBe('2019-11-05 10:00');
+      expect(fmt(picker.getEndDate())).toBe('2019-11-12 18:30');
+      expect([select(picker, 'start[HH]').value, select(picker, 'end[HH]').value]).toEqual(['10', '18']);
+    });
+
+    test('non-strict: start and end times in the single input', () => {
+      const picker = createRange({ strict: false }, {}, { element: input('2019-11-05 10:00 - 2019-11-12 18:30') });
+
+      expect(fmt(picker.getStartDate())).toBe('2019-11-05 10:00');
+      expect(fmt(picker.getEndDate())).toBe('2019-11-12 18:30');
+      expect([select(picker, 'start[HH]').value, select(picker, 'end[HH]').value]).toEqual(['10', '18']);
+    });
+
     test('strict: a half-filled pair of inputs gives no time', () => {
       const picker = createRange({ elementEnd: input() }, {}, { element: input('2019-11-05 10:00') });
 

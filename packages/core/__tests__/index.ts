@@ -79,6 +79,33 @@ test('lang', () => {
   expect(picker.ui.container.querySelector('.dayname').textContent === 'пн').toBe(true);
 });
 
+describe('lang and translate attributes', () => {
+  const container = (options = {}) => new easepick.create({
+    element: document.getElementById('datepicker'),
+    ...options,
+  }).ui.container;
+
+  test('the container is marked with lang', () => {
+    expect(container().lang).toBe('en-US');
+    expect(container({ lang: 'el-GR' }).lang).toBe('el-GR');
+  });
+
+  test('translatable by default', () => {
+    const el = container();
+
+    expect(el.hasAttribute('translate')).toBe(false);
+    expect(el.classList.contains('notranslate')).toBe(false);
+  });
+
+  test('translate: false blocks page translators', () => {
+    const el = container({ translate: false });
+
+    expect(el.getAttribute('translate')).toBe('no');
+    expect(el.classList.contains('notranslate')).toBe(true);
+    expect(el.classList.contains('container')).toBe(true);
+  });
+});
+
 describe('showOffsetDays', () => {
   // Nov 2019 starts on a Friday and has 30 days: with Monday first, there are
   // 4 leading cells (28–31 Oct) and 1 trailing cell (1 Dec).

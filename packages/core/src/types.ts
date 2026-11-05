@@ -62,5 +62,8 @@ export interface IPickerConfig {
   scrollToDate?: boolean;
   viewMode?: 'day' | 'month' | 'year';
   showOffsetDays?: boolean;
+  // false stops page translators (e.g. Google Translate) from translating the
+  // picker, which is already written in `lang`.
+  translate?: boolean;
   setup?(picker: Core): void;
 }

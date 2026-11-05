@@ -166,6 +166,13 @@ export class CorePkg extends BasePkg implements IPackage {
             },
           },
           {
+            name: 'translate',
+            info: 'Allow page translators to translate the picker',
+            default: true,
+            type: 'boolean',
+            configurable: true,
+          },
+          {
             name: 'header',
             info: 'Add header to calendar',
             default: null,

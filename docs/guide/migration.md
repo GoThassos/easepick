@@ -104,6 +104,7 @@ None of these are on by default.
 
 - `viewMode: 'month' | 'year'`: pick a month or a year. See the [month picker](/examples/month-picker) and [year picker](/examples/year-picker) examples.
 - `showOffsetDays`: show the previous and next months' days in the empty cells of the grid. See [core](/packages/core).
+- `translate: false`: stop page translators such as Google Translate from translating the picker. See [using another language](/examples/language#page-translators).
 - CSS variables for the picker shadows: `--box-shadow` and `--box-shadow-inline`. See [core styling](/packages/core#styling).
 - AmpPlugin `locale.week`: the label of the week-number column. See [amp-plugin](/packages/amp-plugin).
 

@@ -50,6 +50,7 @@ export class Core {
     documentClick: this.binds.hidePicker,
     plugins: [],
     showOffsetDays: false,
+    translate: true,
   };
 
   public ui: IPickerElements = {
@@ -78,6 +79,16 @@ export class Core {
 
     this.ui.container = document.createElement('div');
     this.ui.container.className = 'container';
+    // The picker writes its own texts in `lang`. Saying so stops screen
+    // readers and page translators from taking them for the page's language.
+    // `lang`/`translate` are inherited from the parent element, and a shadow
+    // root's top element has none, so they go here, not on the wrapper.
+    this.ui.container.lang = this.options.lang;
+
+    if (!this.options.translate) {
+      this.ui.container.setAttribute('translate', 'no');
+      this.ui.container.classList.add('notranslate');
+    }
 
     if (this.options.zIndex) {
       this.ui.container.style.zIndex = String(this.options.zIndex);

@@ -2,6 +2,16 @@
 
 All `@gothassos/easepick-*` packages share one version number. Versions follow [Semantic Versioning](https://semver.org/).
 
+## 1.4.0 - 2026-11-05
+
+### New features
+
+- **`translate` option**: set `translate: false` to stop page translators such as Google Translate from translating the picker. The picker already writes month and day names in `lang`, so machine translation can only make them worse (for example, Greek month names read as English, or short weekday names turned into nonsense). Your own texts, like `locale` and preset labels, are not translated either. The option is on by default, so a site that leaves `lang` at `en-US` and relies on page translation keeps working as before.
+
+### Changes
+
+- **The picker's markup now carries `lang`**: the container inside the shadow root gets `lang` set to the `lang` option. Translators and screen readers now know which language the picker is in, instead of assuming the page's language. Browsers may also pick fonts for that language, which mainly matters for Chinese, Japanese and Korean.
+
 ## 1.3.0 - 2026-11-05
 
 This release adds month and year pickers, better accessibility, a `navigate` event and offset days. It also brings a long list of bug fixes, many of them from open pull requests on the original easepick.

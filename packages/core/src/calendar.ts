@@ -260,13 +260,15 @@ export default class Calendar {
   public getCalendarDaysView(date: DateTime): HTMLElement {
     const element = document.createElement('div');
     element.className = 'days-grid';
-    const offsetDays = this.calcOffsetDays(date, this.picker.options.firstDay);
-    const totalDays = 32 - new Date(date.getFullYear(), date.getMonth(), 32).getDate();
+    const { firstDay, showOffsetDays } = this.picker.options;
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const offsetDays = this.calcOffsetDays(date, firstDay);
+    const totalDays = 32 - new Date(year, month, 32).getDate();
 
+    // Leading cells: the end of the previous month (day 0 is its last day).
     for (let idx = 0; idx < offsetDays; idx++) {
-      const offsetDay = document.createElement('div');
-      offsetDay.className = 'offset';
-      element.appendChild(offsetDay);
+      element.appendChild(this.getCalendarOffsetDayView(new Date(year, month, idx - offsetDays + 1)));
     }
 
     for (let idx = 1; idx <= totalDays; idx++) {
@@ -277,6 +279,33 @@ export default class Calendar {
       element.appendChild(calendarDay);
 
       this.picker.trigger('view', { date, view: 'CalendarDay', target: calendarDay });
+    }
+
+    // Trailing cells: the start of the next month, to complete the last week.
+    if (showOffsetDays) {
+      const trailingDays = (7 - ((offsetDays + totalDays) % 7)) % 7;
+
+      for (let idx = 1; idx <= trailingDays; idx++) {
+        element.appendChild(this.getCalendarOffsetDayView(new Date(year, month, totalDays + idx)));
+      }
+    }
+
+    return element;
+  }
+
+  /**
+   * Function for an offset cell (a day outside the displayed month).
+   * Not a `.day`: it is not selectable and carries no `data-time`.
+   *
+   * @param date
+   * @returns HTMLElement
+   */
+  public getCalendarOffsetDayView(date: Date): HTMLElement {
+    const element = document.createElement('div');
+    element.className = 'offset';
+
+    if (this.picker.options.showOffsetDays) {
+      element.textContent = String(date.getDate());
     }
 
     return element;

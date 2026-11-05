@@ -38,5 +38,6 @@ export interface IPickerConfig {
   zIndex?: number;
   inline?: boolean;
   scrollToDate?: boolean;
+  showOffsetDays?: boolean;
   setup?(picker: Core): void;
 }

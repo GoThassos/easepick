@@ -78,6 +78,41 @@ test('lang', () => {
   expect(picker.ui.container.querySelector('.dayname').textContent === 'пн').toBe(true);
 });
 
+describe('showOffsetDays', () => {
+  // Nov 2019 starts on a Friday and has 30 days: with Monday first, there are
+  // 4 leading cells (28–31 Oct) and 1 trailing cell (1 Dec).
+  const offsetCells = (showOffsetDays: boolean) => {
+    const picker = new easepick.create({
+      element: document.getElementById('datepicker'),
+      date: date.clone(),
+      firstDay: 1,
+      showOffsetDays,
+    });
+
+    return [...picker.ui.container.querySelectorAll('.days-grid > .offset')] as HTMLElement[];
+  };
+
+  test('disabled: only empty leading cells', () => {
+    const cells = offsetCells(false);
+
+    expect(cells.map(x => x.textContent)).toEqual(['', '', '', '']);
+  });
+
+  test('enabled: numbered leading and trailing cells', () => {
+    const cells = offsetCells(true);
+
+    expect(cells.map(x => x.textContent)).toEqual(['28', '29', '30', '31', '1']);
+  });
+
+  test('offset cells are never days', () => {
+    for (const cell of offsetCells(true)) {
+      expect(cell.classList.contains('day')).toBe(false);
+      expect(cell.classList.contains('unit')).toBe(false);
+      expect(cell.dataset.time).toBeUndefined();
+    }
+  });
+});
+
 describe('month title', () => {
   const monthName = (lang: string) => {
     const picker = new easepick.create({

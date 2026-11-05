@@ -119,6 +119,14 @@
     font-size: 12px;
   }
 
+  > .days-grid > .offset {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-fg-offset);
+    font-size: 13px;
+  }
+
   > .days-grid > .day {
     padding: 10px 0;
     border: 1px solid transparent;

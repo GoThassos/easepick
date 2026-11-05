@@ -3,12 +3,20 @@ export class DateTime extends Date {
     date: unknown,
     format = 'YYYY-MM-DD',
     lang = 'en-US'): Date {
-    if (!date) return new Date(new Date().setHours(0, 0, 0, 0));
+    // 0 is a real timestamp (1970-01-01), not "no date".
+    if (!date && date !== 0) return new Date(new Date().setHours(0, 0, 0, 0));
 
     if (date instanceof DateTime) return date.toJSDate();
     if (date instanceof Date) return date;
 
-    if (/^-?\d{10,}$/.test(String(date))) {
+    if (typeof date === 'number') return new Date(date);
+
+    // Digit-only strings are timestamps (`data-time` passes them as strings,
+    // and near 1970 they have fewer than 10 digits), unless `format` is
+    // digit-only too and of the same length, e.g. "20240115" as YYYYMMDD.
+    // Delimiters in a format match anything, so it can't decide this alone.
+    if (typeof date === 'string' && /^-?\d+$/.test(date)
+      && !(/^[YMDHhms]+$/.test(format) && date.length === format.length)) {
       return new Date(Number(date));
     }
 

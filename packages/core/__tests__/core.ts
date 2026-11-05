@@ -359,6 +359,19 @@ describe('dates', () => {
     expect(picker.getDate().format('YYYY-MM-DD')).toBe('2021-06-07');
   });
 
+  // easepick/easepick#96
+  test('dates in early January 1970', () => {
+    const picker = create({ date: 0 });
+
+    expect(picker.getDate().getTime()).toBe(0);
+    expect(picker.calendars[0].getFullYear()).toBe(1970);
+
+    picker.gotoDate(new Date(1970, 0, 1));
+    click(day(picker, 1970, 1, 12));
+
+    expect(picker.getDate().format('YYYY-MM-DD')).toBe('1970-01-12');
+  });
+
   test('setDate uses the format and lang options', () => {
     const picker = create({ format: 'DD MMMM YYYY', lang: 'fr-FR' });
     picker.setDate('05 mars 2020');

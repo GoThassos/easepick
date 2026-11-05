@@ -98,6 +98,28 @@ describe('parsing', () => {
     expect(parts(new DateTime('2024', 'YYYY'))).toEqual([2024, 1, 1, 0, 0, 0]);
   });
 
+  // easepick/easepick#96
+  test('timestamps near 1970 (fewer than 10 digits)', () => {
+    expect(new DateTime(0).getTime()).toBe(0);
+
+    // Day cells pass their time as a string (`data-time`).
+    for (const d of [1, 2, 12]) {
+      const ts = new Date(1970, 0, d).getTime();
+      expect(new DateTime(String(ts)).getTime()).toBe(ts);
+    }
+
+    expect(new DateTime('950400000').getTime()).toBe(950400000);
+    expect(new DateTime('-7200000').getTime()).toBe(-7200000);
+  });
+
+  test('digit-only values of a digit-only format are dates, not timestamps', () => {
+    expect(parts(new DateTime('202401151030', 'YYYYMMDDHHmm'))).toEqual([2024, 1, 15, 10, 30, 0]);
+    expect(parts(new DateTime('19700112', 'YYYYMMDD'))).toEqual([1970, 1, 12, 0, 0, 0]);
+
+    // A different length can't be that format, so it is a timestamp.
+    expect(new DateTime('950400000', 'YYYYMMDD').getTime()).toBe(950400000);
+  });
+
   test('Date and DateTime instances keep their time', () => {
     const js = new Date(2019, 10, 23, 10, 20, 30);
     const dt = new DateTime(js);
@@ -125,7 +147,8 @@ describe('parsing', () => {
     ['a string not matching the format', 'not a date', 'YYYY-MM-DD'],
     ['a string with the wrong delimiters order', '23-11-2019', 'YYYY-MM-DD'],
     ['a format without tokens', '2019-11-23', 'xyz'],
-    ['a short number', 12345, undefined],
+    ['false', false, undefined],
+    ['NaN', Number.NaN, undefined],
     ['an object', {}, undefined],
   ])('falls back to today at midnight for %s', (_label, value, format) => {
     expect(new DateTime(value, format).getTime()).toBe(todayMidnight());

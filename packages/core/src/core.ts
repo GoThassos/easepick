@@ -344,7 +344,7 @@ export class Core {
    * Parse `date` option or value of input element
    */
   public parseValues() {
-    if (this.options.date) {
+    if (this.options.date || this.options.date === 0) {
       this.setDate(this.options.date);
     } else if (this.options.element instanceof HTMLInputElement && this.options.element.value.length) {
       this.setDate(this.options.element.value);
@@ -496,7 +496,7 @@ export class Core {
       this.options.element.readOnly = this.options.readonly;
     }
 
-    if (this.options.date) {
+    if (this.options.date || this.options.date === 0) {
       this.calendars[0] = new DateTime(this.options.date, this.options.format, this.options.lang);
     } else {
       this.calendars[0] = new DateTime();

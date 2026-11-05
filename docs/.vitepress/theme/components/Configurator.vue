@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Markup ported from the original docs' components/configurator.vue. The logic is the
-// GPL-licensed configurator in ../../configurator/, mounted here against this repo's bundle.
+// configurator in ../../configurator/, mounted here against this repo's bundle.
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { css, loadEasepick } from '../easepick';
 import '../../configurator/scss/index.scss';

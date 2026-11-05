@@ -10,4 +10,4 @@ Pick the packages and options you need, try the result in the picker above, then
   <Configurator />
 </ClientOnly>
 
-<small>The configurator is ported from [easepick/configurator](https://github.com/easepick/configurator) and is licensed under the [GNU General Public License v2.0 or later](https://github.com/GoThassos/easepick/blob/master/docs/.vitepress/configurator/LICENSE.md).</small>
+<small>The configurator is ported from [easepick/configurator](https://github.com/easepick/configurator) by [Rinat G.](https://github.com/wakirin) and is licensed under the [MIT License](https://github.com/GoThassos/easepick/blob/master/docs/.vitepress/configurator/LICENSE.md).</small>

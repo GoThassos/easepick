@@ -2,7 +2,7 @@
 
 Source of the [Configurator](https://gothassos.github.io/easepick/configurator/) page.
 
-Ported from [easepick/configurator](https://github.com/easepick/configurator) v1.0.8 by Rinat G. Unlike the rest of this repository (MIT), the files in this folder are licensed under the **GNU General Public License v2.0 or later**. See [LICENSE.md](LICENSE.md).
+Ported from [easepick/configurator](https://github.com/easepick/configurator) v1.0.8 by [Rinat G.](https://github.com/wakirin), who wrote the original and kindly agreed to relicense it from the GPL to the **MIT License**, like the rest of easepick. See [LICENSE.md](LICENSE.md).
 
 Changes from the original:
 

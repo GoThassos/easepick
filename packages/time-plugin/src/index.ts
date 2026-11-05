@@ -175,16 +175,21 @@ export class TimePlugin extends BasePlugin implements IPlugin {
     const target = event.target;
 
     if (target instanceof HTMLInputElement && target.classList.contains('time-plugin-input')) {
-      const date = this.timePicked[target.name] || new DateTime();
+      const name = target.name as keyof ITimeSlots;
+      // Clone: without autoApply, the applied time must stay intact until Apply.
+      const date = (!this.picker.options.autoApply && this.timePrePicked[name] instanceof Date)
+        ? this.timePrePicked[name].clone()
+        : this.timePicked[name] instanceof Date ? this.timePicked[name].clone() : new DateTime();
 
       const [hours, minutes] = target.value.split(':');
       date.setHours(Number(hours) || 0, Number(minutes) || 0, 0, 0);
 
       if (this.picker.options.autoApply) {
-        this.timePicked[target.name] = date;
+        this.timePicked[name] = date;
         this.picker.updateValues();
       } else {
-        this.timePrePicked[target.name] = date;
+        this.timePrePicked[name] = date;
+        this.updateApplyButton();
       }
     }
   }
@@ -248,23 +253,34 @@ export class TimePlugin extends BasePlugin implements IPlugin {
         this.picker.updateValues();
       } else {
         this.timePrePicked[name] = date;
-
-        const applyButton = this.picker.ui.container.querySelector('.apply-button') as HTMLButtonElement;
-        if (this.rangePlugin) {
-          const options = this.rangePlugin.options;
-          const datePicked = this.picker.datePicked;
-          const bool = (options.strict && datePicked.length === 2)
-            || (!options.strict && datePicked.length > 0)
-            || (!datePicked.length && options.strict && options.startDate instanceof Date && options.endDate instanceof Date)
-            || (!datePicked.length && !options.strict && (options.startDate instanceof Date || options.endDate instanceof Date));
-          applyButton.disabled = !bool;
-        } else {
-          if (this.picker.datePicked.length) {
-            applyButton.disabled = false;
-          }
-        }
+        this.updateApplyButton();
       }
     }
+  }
+
+  /**
+   * Without `autoApply`, enable the Apply button after a time change when
+   * there is a date to apply it to: one picked in the calendar, or one
+   * already selected.
+   */
+  private updateApplyButton() {
+    const applyButton = this.picker.ui.container.querySelector('.apply-button') as HTMLButtonElement;
+    if (!applyButton) return;
+
+    const datePicked = this.picker.datePicked;
+    let enabled: boolean;
+
+    if (this.rangePlugin) {
+      const options = this.rangePlugin.options;
+      enabled = (options.strict && datePicked.length === 2)
+        || (!options.strict && datePicked.length > 0)
+        || (!datePicked.length && options.strict && options.startDate instanceof Date && options.endDate instanceof Date)
+        || (!datePicked.length && !options.strict && (options.startDate instanceof Date || options.endDate instanceof Date));
+    } else {
+      enabled = datePicked.length > 0 || this.picker.options.date instanceof Date;
+    }
+
+    applyButton.disabled = !enabled;
   }
 
   private onClick(event) {

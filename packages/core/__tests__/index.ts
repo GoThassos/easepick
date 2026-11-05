@@ -1,6 +1,7 @@
 import { DateTime } from '@gothassos/easepick-datetime';
 import { RangePlugin } from '@gothassos/easepick-range-plugin';
 import { AmpPlugin } from '@gothassos/easepick-amp-plugin';
+import { TimePlugin } from '@gothassos/easepick-time-plugin';
 import * as easepick from '../src/index';
 const pkg = require('../package.json');
 
@@ -208,6 +209,69 @@ test('plugins', () => {
   });
 
   expect(picker.ui.container.querySelector('.range-plugin-tooltip') instanceof HTMLElement).toBe(true);
+});
+
+// easepick/easepick#81: without autoApply, changing only the time of an
+// already selected date must enable Apply, and Cancel must discard it.
+describe('TimePlugin without autoApply', () => {
+  const open = (native: boolean) => {
+    const element = document.createElement('input');
+    document.body.append(element);
+
+    // Passed as a variable, like the AmpPlugin test above.
+    const options = {
+      element,
+      date: '2019-11-23',
+      autoApply: false,
+      plugins: [TimePlugin],
+      TimePlugin: { native },
+    };
+    const picker = new easepick.create(options);
+    picker.show();
+
+    const { container } = picker.ui;
+    const applyButton = () => container.querySelector<HTMLButtonElement>('.apply-button');
+    const setHours = (hours: string) => {
+      if (native) {
+        const input = container.querySelector<HTMLInputElement>('input.time-plugin-input');
+        input.value = `${hours}:00`;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      } else {
+        const select = container.querySelector<HTMLSelectElement>('select[name="input[HH]"]');
+        select.value = hours;
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    };
+    const click = (button: HTMLElement) => button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+    return { picker, applyButton, setHours, click, container };
+  };
+
+  for (const native of [false, true]) {
+    describe(native ? 'native input' : 'select inputs', () => {
+      test('a time change enables Apply and is applied', () => {
+        const { picker, applyButton, setHours, click } = open(native);
+
+        expect(applyButton().disabled).toBe(true);
+        setHours('15');
+        expect(applyButton().disabled).toBe(false);
+
+        click(applyButton());
+        expect(picker.getDate().format('YYYY-MM-DD HH:mm')).toBe('2019-11-23 15:00');
+      });
+
+      test('Cancel discards the time change', () => {
+        const { picker, applyButton, setHours, click, container } = open(native);
+
+        setHours('15');
+        click(container.querySelector<HTMLElement>('.cancel-button'));
+        picker.show();
+        click(applyButton());
+
+        expect(picker.getDate().format('YYYY-MM-DD HH:mm')).toBe('2019-11-23 00:00');
+      });
+    });
+  }
 });
 
 // easepick/easepick#213 and #231. jsdom has no layout, so the boxes are

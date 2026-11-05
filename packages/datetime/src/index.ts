@@ -29,9 +29,11 @@ export class DateTime extends Date {
           shortMonth: null,
           longMonth: null,
           day: null,
-          hour: 0,
-          minute: 0,
-          second: 0,
+          // Capture-group indexes; null when the format has no such token
+          // (0 would read the whole match: "20240115" as 20240115 hours).
+          hour: null,
+          minute: null,
+          second: null,
           ampm: null,
           value: '',
         };
@@ -74,14 +76,9 @@ export class DateTime extends Date {
 
           const day = Number(d[datePattern.day]) || 1;
 
-          const h = Number(d[datePattern.hour]);
-          let hours = !Number.isNaN(h) ? h : 0;
-
-          const m = Number(d[datePattern.minute]);
-          const minutes = !Number.isNaN(m) ? m : 0;
-
-          const s = Number(d[datePattern.second]);
-          const seconds = !Number.isNaN(s) ? s : 0;
+          let hours = datePattern.hour ? Number(d[datePattern.hour]) : 0;
+          const minutes = datePattern.minute ? Number(d[datePattern.minute]) : 0;
+          const seconds = datePattern.second ? Number(d[datePattern.second]) : 0;
 
           // 12 AM is midnight, 12 PM is noon; `a` accepts am/pm too.
           const ampm = d[datePattern.ampm];

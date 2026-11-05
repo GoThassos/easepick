@@ -93,6 +93,11 @@ describe('parsing', () => {
     expect(new DateTime(-ts).getTime()).toBe(-ts);
   });
 
+  test('formats without delimiters (YYYYMMDD, YYYY)', () => {
+    expect(parts(new DateTime('20240115', 'YYYYMMDD'))).toEqual([2024, 1, 15, 0, 0, 0]);
+    expect(parts(new DateTime('2024', 'YYYY'))).toEqual([2024, 1, 1, 0, 0, 0]);
+  });
+
   test('Date and DateTime instances keep their time', () => {
     const js = new Date(2019, 10, 23, 10, 20, 30);
     const dt = new DateTime(js);

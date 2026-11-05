@@ -6,7 +6,7 @@
 
 **Coming from `@easepick/*`?** This fork is compatible with `@easepick/*` 1.2.1: change the package names and your existing config keeps working. See [Migrating from easepick](https://gothassos.github.io/easepick/guide/migration) for the few behaviour changes.
 
-![easepick screenshot](https://dev.jsx4.com/easepick/screenshot.png)
+![easepick screenshot](docs/public/images/og_image.png)
 
 ## Features
 

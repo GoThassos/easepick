@@ -235,14 +235,21 @@ export class RangePlugin extends BasePlugin implements IPlugin {
           this.setDateRange(this.picker.options.element.value, this.options.elementEnd.value);
         }
       } else {
-        if (this.picker.options.element instanceof HTMLInputElement
-          && this.picker.options.element.value.length) {
-          this.setStartDate(this.picker.options.element.value);
+        // Read both values first: setStartDate() rewrites both inputs, which
+        // would empty the end input before it is read.
+        const startValue = this.picker.options.element instanceof HTMLInputElement
+          ? this.picker.options.element.value
+          : '';
+        const endValue = this.options.elementEnd instanceof HTMLInputElement
+          ? this.options.elementEnd.value
+          : '';
+
+        if (startValue.length) {
+          this.setStartDate(startValue);
         }
 
-        if (this.options.elementEnd instanceof HTMLInputElement
-          && this.options.elementEnd.value.length) {
-          this.setEndDate(this.options.elementEnd.value);
+        if (endValue.length) {
+          this.setEndDate(endValue);
         }
       }
     } else if (this.picker.options.element instanceof HTMLInputElement && this.picker.options.element.value.length) {

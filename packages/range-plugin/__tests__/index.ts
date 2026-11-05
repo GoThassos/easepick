@@ -586,6 +586,14 @@ describe('parsing initial values', () => {
       .toEqual([null, '2019-11-12']);
   });
 
+  test('non-strict: both element and elementEnd filled keep both dates', () => {
+    const element = input('2019-11-05');
+    const elementEnd = input('2019-11-12');
+
+    expect(range(create({ strict: false, elementEnd }, { element }))).toEqual(['2019-11-05', '2019-11-12']);
+    expect(elementEnd.value).toBe('2019-11-12');
+  });
+
   test('options take precedence over the input values', () => {
     const element = input('2019-10-01 - 2019-10-02');
     const picker = create({ startDate: new DateTime('2019-11-05'), endDate: new DateTime('2019-11-12') }, { element });

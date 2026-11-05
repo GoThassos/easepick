@@ -521,7 +521,8 @@ export class RangePlugin extends BasePlugin implements IPlugin {
 
           if (diff > 0) {
             const pluralKey = new Intl.PluralRules(this.picker.options.lang).select(diff);
-            const text = `${diff} ${this.options.locale[pluralKey]}`;
+            // A form left empty (the defaults only fill one/other) falls back to `other`.
+            const text = `${diff} ${this.options.locale[pluralKey] || this.options.locale.other}`;
 
             this.showTooltip(element, text);
           } else {
@@ -679,9 +680,8 @@ export class RangePlugin extends BasePlugin implements IPlugin {
       new Intl.PluralRules(this.picker.options.lang).select(18),
     ])];
 
-    const locales = Object.keys(this.options.locale);
-
-    if (!rules.every(x => locales.includes(x))) {
+    // The default locale has every key, some empty: check for a value.
+    if (!rules.every(x => this.options.locale[x])) {
       console.warn(`${this.getName()}: provide locales (${rules.join(', ')}) for correct tooltip text.`);
     }
   }

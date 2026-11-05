@@ -249,6 +249,26 @@ describe('tooltip', () => {
     hover(day(picker, 21));
     expect(tooltip(picker).textContent).toBe('21 день');
   });
+
+  test('warns when the locale misses plural forms of the language, and falls back to other', () => {
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const picker = create({}, { lang: 'ru-RU' });
+
+    expect(warn).toHaveBeenCalledWith('RangePlugin: provide locales (many, one, few) for correct tooltip text.');
+
+    picker.show();
+    click(day(picker, 1));
+    hover(day(picker, 5));
+    expect(tooltip(picker).textContent).toBe('5 days');
+  });
+
+  test('does not warn when the locale has the forms of the language', () => {
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+    create();
+    create({ locale: { one: 'день', few: 'дня', many: 'дней', other: 'дня' } }, { lang: 'ru-RU' });
+
+    expect(warn).not.toHaveBeenCalled();
+  });
 });
 
 describe('programmatic API', () => {

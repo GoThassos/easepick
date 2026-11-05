@@ -22,7 +22,7 @@ Adds the ability to select a range of dates.
 | delimiter | string | ' - ' | Delimiter between dates.
 | tooltip | boolean | true | Showing tooltip with how much days will be selected.
 | tooltipNumber | function | | Handling the tooltip number.
-| locale | object | { one: 'day', other: 'days' } | Text for the tooltip. <br/> Keys depends on option lang (see [Intl.PluralRules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/PluralRules)).
+| locale | object | { one: 'day', other: 'days' } | Text for the tooltip. <br/> Keys depend on option lang (see [Intl.PluralRules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/PluralRules)). A missing form falls back to `other`, with a console warning.
 
 ## Methods
 

@@ -16,7 +16,9 @@ export interface IPluginInstance {
   priority: number;
   dependencies: string[];
   getName(): string;
-  attach(picker: Core): void;
+  // `unknown`, not `Core`: a plugin is typed against the Core it was built
+  // with (e.g. core's dist/ types), which TypeScript treats as another type.
+  attach(picker: unknown): void;
 }
 
 export type PluginConstructor = new () => IPluginInstance;

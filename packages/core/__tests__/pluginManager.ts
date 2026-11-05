@@ -61,7 +61,7 @@ class MissingDepPlugin extends LoggingPlugin {
   getName() { return 'MissingDepPlugin'; }
 }
 
-const createPicker = (plugins: unknown[] = []) => {
+const createPicker = (plugins: Core['options']['plugins'] = []) => {
   const element = document.createElement('input');
   document.body.append(element);
 
@@ -118,7 +118,8 @@ describe('initialize', () => {
   });
 
   test('warns about values that are neither constructors nor names', () => {
-    const picker = createPicker([42]);
+    // Deliberately invalid: not allowed by the `plugins` type.
+    const picker = createPicker([42] as unknown as Core['options']['plugins']);
 
     expect(warn).toHaveBeenCalledWith('easepick: 42 not found.');
     expect(picker.PluginManager.instances).toEqual({});

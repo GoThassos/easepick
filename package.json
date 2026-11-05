@@ -39,7 +39,7 @@
     "email": "easepick@jsx4.com"
   },
   "license": "MIT",
-  "dependencies": {
-    "moment": "^2.29.4"
+  "overrides": {
+    "@types/node": "~20.14.0"
   }
 }

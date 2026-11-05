@@ -1,5 +1,3 @@
-import moment from 'moment';
-import 'moment/min/locales';
 import { Core } from './core';
 import { DateTime } from '@gothassos/easepick-datetime';
 
@@ -166,8 +164,34 @@ export default class Calendar {
   }
 
   /**
+   * Month name as used in a "month year" title.
+   *
+   * `toLocaleString(lang, { month: 'long' })` returns the genitive form in
+   * some languages (Greek: "Νοεμβρίου" instead of "Νοέμβριος"), so the name
+   * is taken from a month + year format, which uses the form the language
+   * puts in front of a year. Languages that write the month as a number
+   * there (ja, zh, ko: "11") fall back to the month on its own ("11月").
+   *
+   * @param date
+   * @param lang
+   * @returns string
+   */
+  public getMonthTitle(date: DateTime, lang: string): string {
+    const options: Intl.DateTimeFormatOptions = { calendar: 'gregory', month: 'long' };
+    const month = new Intl.DateTimeFormat(lang, { ...options, year: 'numeric' })
+      .formatToParts(date)
+      .find(part => part.type === 'month');
+
+    if (month && !/^\d+$/.test(month.value)) {
+      return month.value;
+    }
+
+    return new Intl.DateTimeFormat(lang, options).format(date);
+  }
+
+  /**
    * Function for `CalendarHeader` view
-   * 
+   *
    * @param date 
    * @returns HTMLElement
    */
@@ -177,9 +201,11 @@ export default class Calendar {
 
     const monthName = document.createElement('div');
     monthName.className = 'month-name';
-    // monthName.innerHTML = `<span>${date.toLocaleString(this.picker.options.lang, { month: 'long' })}</span> ${date.format('YYYY')}`;
-    moment.locale(this.picker.options.lang);
-    monthName.innerHTML = `<span>${moment(date).format('MMMM')}</span> ${date.format('YYYY')}`;
+    // Keep the `<span>month</span> year` structure: AmpPlugin replaces
+    // childNodes[0] (month) and childNodes[1] (year) with dropdowns.
+    const month = document.createElement('span');
+    month.textContent = this.getMonthTitle(date, this.picker.options.lang);
+    monthName.append(month, ` ${date.format('YYYY')}`);
     element.appendChild(monthName);
 
     const prevMonth = document.createElement('button');

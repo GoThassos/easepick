@@ -77,6 +77,42 @@ test('lang', () => {
   expect(picker.ui.container.querySelector('.dayname').textContent === 'пн').toBe(true);
 });
 
+describe('month title', () => {
+  const monthName = (lang: string) => {
+    const picker = new easepick.create({
+      element: document.getElementById('datepicker'),
+      date: date.clone(),
+      lang,
+    });
+
+    return picker.ui.container.querySelector('.month-name');
+  };
+
+  test('uses the nominative form, not the genitive (Greek)', () => {
+    expect(monthName('el-GR').querySelector('span').textContent).toBe('Νοέμβριος');
+  });
+
+  test('Russian', () => {
+    expect(monthName('ru-RU').querySelector('span').textContent.toLowerCase()).toBe('ноябрь');
+  });
+
+  test('English', () => {
+    expect(monthName('en-US').textContent).toBe('November 2019');
+  });
+
+  test('numeric-month languages keep the month suffix (Japanese)', () => {
+    expect(monthName('ja-JP').querySelector('span').textContent).toBe('11月');
+  });
+
+  test('keeps the [span, year] structure AmpPlugin relies on', () => {
+    const nodes = monthName('el-GR').childNodes;
+
+    expect(nodes.length).toBe(2);
+    expect(nodes[0].nodeName).toBe('SPAN');
+    expect(nodes[1].textContent).toBe(' 2019');
+  });
+});
+
 test('readonly', () => {
   let picker = new easepick.create({
     element: document.getElementById('datepicker'),

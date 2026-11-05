@@ -187,6 +187,14 @@ describe('addInstance', () => {
     expect(picker.PluginManager.getInstance('BetaPlugin')).toBe(second);
   });
 
+  test('warns and returns null for an unknown plugin', () => {
+    const picker = createPicker([AlphaPlugin]);
+
+    expect(picker.PluginManager.addInstance('GhostPlugin')).toBeNull();
+    expect(warn).toHaveBeenCalledWith('easepick: GhostPlugin not found.');
+    expect(picker.PluginManager.getInstance('GhostPlugin')).toBeUndefined();
+  });
+
   test('warns and returns null when the plugin is already added', () => {
     const picker = createPicker([AlphaPlugin]);
     const existing = picker.PluginManager.getInstance('AlphaPlugin');

@@ -65,7 +65,7 @@ export default class PluginManager {
         this.instances[plugin.getName()] = plugin;
 
         return plugin;
-      } else if (this.getPluginFn(name) !== 'undefined') {
+      } else if (typeof this.getPluginFn(name) === 'function') {
         const plugin = new (this.getPluginFn(name));
         plugin.attach(this.picker);
         this.instances[plugin.getName()] = plugin;

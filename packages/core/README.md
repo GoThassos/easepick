@@ -29,9 +29,9 @@ Main package of easepick.
 | inline | boolean | false | Show calendar inline.
 | scrollToDate | boolean | true | Scroll to the selected date on open.
 | header | boolean <br/> string <br/> HTMLElement | false | Add header to calendar.
-| locale | object | { <br/>nextMonth: '<svg width="11" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M2.748 16L0 13.333 5.333 8 0 2.667 2.748 0l7.919 8z" fill-rule="nonzero"/></svg>', <br/> previousMonth: '<svg width="11" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M7.919 0l2.748 2.667L5.333 8l5.334 5.333L7.919 16 0 8z" fill-rule="nonzero"/></svg>', <br/> cancel: 'Cancel', <br/>apply: 'Apply'<br/>} | Icon and text for buttons.
+| locale | object | { <br/>nextMonth: `'<svg width="11" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M2.748 16L0 13.333 5.333 8 0 2.667 2.748 0l7.919 8z" fill-rule="nonzero"/></svg>'`, <br/> previousMonth: `'<svg width="11" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M7.919 0l2.748 2.667L5.333 8l5.334 5.333L7.919 16 0 8z" fill-rule="nonzero"/></svg>'`, <br/> cancel: 'Cancel', <br/>apply: 'Apply'<br/>} | Icon and text for buttons.
 | documentClick | boolean <br/> function | function | Hide picker on click outside picker element.
-| setup | function | null |
+| setup | function | null | Called with the picker instance once it is created, before the first render. Use it to add event listeners (see [Events](#events)).
 | plugins | array | [] | List of plugins.
 
 ## Methods
@@ -71,8 +71,8 @@ Events based on [CustomEvent()](https://developer.mozilla.org/en-US/docs/Web/API
 
 | Name | Description
 | --- | ---
-| render |
-| view |
+| render | Event is called before a part of the layout is rendered (`Container`, `Header`, `Main`, `Footer`). `detail` contains `view` and `date`.
+| view | Event is called after a layout element is created (for example `Header`, `Main`, `CalendarDay`). `detail` contains `view`, `date` and `target` (the element).
 | preselect | Event is called on select days (before submit selection). When `autoApply` option is `false`.
 | select | Event is called when selection is submitted.
 
@@ -103,10 +103,10 @@ const picker = new easepick.create({
 
 | Name | Description
 | --- | ---
-| [getInstance(pluginName)](#pluginManager-getInstance) | Returns the plugin instance. `pluginName` is a string (eg.: `RangePlugin`).
-| [addInstance(pluginName)](#pluginManager-addInstance) | Adds a plugin to the picker. Returns an instance of the added plugin.
-| [removeInstance(pluginName)](#pluginManager-removeInstance) | Removes the plugin from the picker.Returns a boolean result.
-| [reloadInstance(pluginName)](#pluginManager-reloadInstance) | Removes the plugin from the picker and adds it again. Returns an instance of the added plugin.
+| getInstance(pluginName) | Returns the plugin instance. `pluginName` is a string (eg.: `RangePlugin`).
+| addInstance(pluginName) | Adds a plugin to the picker. Returns an instance of the added plugin.
+| removeInstance(pluginName) | Removes the plugin from the picker. Returns a boolean result.
+| reloadInstance(pluginName) | Removes the plugin from the picker and adds it again. Returns an instance of the added plugin.
 
 ### Example
 

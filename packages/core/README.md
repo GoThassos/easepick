@@ -96,6 +96,36 @@ const picker = new easepick.create({
 });
 ```
 
+## Styling
+
+The picker is rendered in a shadow DOM, so page styles don't reach it, but CSS variables do. Set them on the `.easepick-wrapper` element (the shadow host, inserted right after `element`) to override the defaults:
+
+```css
+.easepick-wrapper {
+  --color-fg-primary: #c2185b;
+  --box-shadow: none;
+}
+```
+
+| Variable | Default | Description
+| --- | :---: | ---
+| --color-bg-default | #fff | Background.
+| --color-bg-secondary | #f9f9f9 | Header and footer background, month arrows on hover.
+| --color-fg-default | #333 | Text.
+| --color-fg-primary | #6b82ff | Selected day background, day border on hover, month arrows on hover.
+| --color-fg-selected | #fff | Text of the selected day.
+| --color-fg-muted | #9e9e9e | Day names.
+| --color-fg-accent | #e63757 | Today.
+| --color-fg-offset | #cecece | Days of the previous and next month (see `showOffsetDays`).
+| --color-border-default | #ddd | Separator in the time plugin.
+| `--color-btn-primary-*` <br/> `--color-btn-secondary-*` | | Apply and cancel buttons (secondary also colors the month arrows): `-bg`, `-fg`, `-border`, each also with `-hover-` and `-disabled-` variants (for example `--color-btn-primary-hover-bg`).
+| --day-width <br/> --day-height | 42px <br/> 37px | Size of a day cell.
+| --border-radius | 2px | Radius of the apply and cancel buttons.
+| --box-shadow | `0 0 25px rgba(0, 0, 0, 0.3)` | Shadow of the picker.
+| --box-shadow-inline | `0 7px 14px 0 rgba(65, 69, 88, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.07)` | Shadow of the picker with `inline: true`.
+
+Plugins add their own variables (for example `--color-bg-inrange` in the range plugin, `--color-bg-locked` in the lock plugin). With the amp plugin's `darkMode`, the dark theme sets the colors on the picker itself, so overrides on `.easepick-wrapper` don't apply while it is active.
+
 ## PluginManager
 
 `PluginManager` allows you to manage plugins of created picker.

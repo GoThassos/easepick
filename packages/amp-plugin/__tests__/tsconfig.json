@@ -1,0 +1,16 @@
+{
+  // Editor-only project for the tests (Jest runs them through ts-jest).
+  // Without it VS Code falls back to defaults, and TypeScript 6 loads no
+  // @types by default, so `test`, `expect` and `require` are unknown.
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "../../..",
+    "noEmit": true,
+    "composite": false,
+    "emitDeclarationOnly": false,
+    "types": ["jest", "node"]
+  },
+  "include": ["./**/*"],
+  "exclude": [],
+  "references": []
+}

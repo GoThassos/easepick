@@ -566,3 +566,38 @@ describe('with autoApply: select event and plugin order', () => {
     expect(element.value).toBe('2019-11-05 15:00 - 2019-11-12 20:30');
   });
 });
+
+describe('accessibility', () => {
+  test('select inputs are named, grouped by time slot', () => {
+    const picker = create({ seconds: true, format12: true });
+    const block = picker.ui.container.querySelector('.time-plugin-custom-block');
+
+    expect(block.getAttribute('role')).toBe('group');
+    expect(block.getAttribute('aria-label')).toBe('Time');
+    expect(['HH', 'mm', 'ss', 'period'].map(x => select(picker, `input[${x}]`).getAttribute('aria-label')))
+      .toEqual(['Hour', 'Minute', 'Second', 'AM/PM']);
+  });
+
+  test('range slots are named start and end time', () => {
+    const picker = createRange();
+    const labels = [...picker.ui.container.querySelectorAll('.time-plugin-custom-block')]
+      .map(b => b.getAttribute('aria-label'));
+
+    expect(labels).toEqual(['Start time', 'End time']);
+  });
+
+  test('native inputs are named by their slot', () => {
+    const picker = createRange({}, { native: true });
+
+    expect(nativeInput(picker, 'start').getAttribute('aria-label')).toBe('Start time');
+    expect(nativeInput(picker, 'end').getAttribute('aria-label')).toBe('End time');
+  });
+
+  test('names come from locale', () => {
+    const picker = create({ locale: { time: 'Heure', hour: 'Heures' } });
+
+    expect(picker.ui.container.querySelector('.time-plugin-custom-block').getAttribute('aria-label')).toBe('Heure');
+    expect(select(picker, 'input[HH]').getAttribute('aria-label')).toBe('Heures');
+    expect(select(picker, 'input[mm]').getAttribute('aria-label')).toBe('Minute');
+  });
+});

@@ -48,6 +48,19 @@
 .calendar {
   padding: 10px;
 
+  // Days, months and years are <button>s: drop the browser's button look.
+  // First in the block, so the rules below (and plugins) still win.
+  > .days-grid > .day,
+  > .months-grid > .month,
+  > .years-grid > .year {
+    margin: 0;
+    background-color: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: center;
+    appearance: none;
+  }
+
   > .header {
     display: flex;
     align-items: center;

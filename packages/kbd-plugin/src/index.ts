@@ -15,6 +15,9 @@ export class KbdPlugin extends BasePlugin implements IPlugin {
   public options: IKbdPlugin = {
     unitIndex: 1,
     dayIndex: 2,
+    locale: {
+      openButton: 'Open calendar',
+    },
   };
 
   /**
@@ -53,13 +56,18 @@ export class KbdPlugin extends BasePlugin implements IPlugin {
       }
       </style>
 
-      <button>&#128197;</button>
+      <button type="button">&#128197;</button>
       `;
       this.docElement.shadowRoot.innerHTML = html;
     }
 
     const button = this.docElement.shadowRoot.querySelector('button');
     if (button) {
+      // Keep the name a custom `html` gives its button.
+      if (!button.hasAttribute('aria-label')) {
+        button.setAttribute('aria-label', this.options.locale.openButton);
+      }
+
       button.addEventListener('click', (evt) => {
         evt.preventDefault();
 

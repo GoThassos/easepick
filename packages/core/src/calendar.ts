@@ -245,14 +245,23 @@ export default class Calendar {
 
     element.appendChild(monthName);
 
+    // The buttons step a month, a year (viewMode: 'month') or a decade
+    // (viewMode: 'year'); their icons need a text alternative.
+    const { locale, viewMode } = this.picker.options;
+    const step = viewMode === 'month' ? 'Year' : (viewMode === 'year' ? 'Decade' : 'Month');
+
     const prevMonth = document.createElement('button');
+    prevMonth.type = 'button';
     prevMonth.className = 'previous-button unit';
-    prevMonth.innerHTML = this.picker.options.locale.previousMonth;
+    prevMonth.innerHTML = locale.previousMonth;
+    prevMonth.setAttribute('aria-label', locale[`previous${step}Label`]);
     element.appendChild(prevMonth);
 
     const nextMonth = document.createElement('button');
+    nextMonth.type = 'button';
     nextMonth.className = 'next-button unit';
-    nextMonth.innerHTML = this.picker.options.locale.nextMonth;
+    nextMonth.innerHTML = locale.nextMonth;
+    nextMonth.setAttribute('aria-label', locale[`next${step}Label`]);
     element.appendChild(nextMonth);
 
     return element;
@@ -358,13 +367,16 @@ export default class Calendar {
     const optionsDate = this.picker.options.date ? new DateTime(this.picker.options.date) : null;
     const today = new DateTime();
 
-    const element = document.createElement('div');
+    const element = document.createElement('button');
+    element.type = 'button';
     element.className = 'day unit';
     element.innerHTML = date.format('D');
     element.dataset.time = String(date.getTime());
+    element.setAttribute('aria-label', date.toLocaleString(this.picker.options.lang, { dateStyle: 'full' }));
 
     if (date.isSame(today, 'day')) {
       element.classList.add('today');
+      element.setAttribute('aria-current', 'date');
     }
 
     if ([0, 6].includes(date.getDay())) {
@@ -382,6 +394,7 @@ export default class Calendar {
     }
 
     this.picker.trigger('view', { date, view: 'CalendarDay', target: element });
+    this.markUnavailable(element);
 
     return element;
   }
@@ -408,6 +421,7 @@ export default class Calendar {
 
       element.appendChild(view);
       this.picker.trigger('view', { date: month, view: 'CalendarMonth', target: view });
+      this.markUnavailable(view);
     }
 
     return element;
@@ -435,9 +449,23 @@ export default class Calendar {
 
       element.appendChild(view);
       this.picker.trigger('view', { date: year, view: 'CalendarYear', target: view });
+      this.markUnavailable(view);
     }
 
     return element;
+  }
+
+  /**
+   * Takes cells a plugin made unselectable (LockPlugin) out of the tab
+   * order, and tells assistive technology they can't be picked.
+   *
+   * @param element
+   */
+  private markUnavailable(element: HTMLElement): void {
+    if (['locked', 'not-available'].some(x => element.classList.contains(x))) {
+      element.tabIndex = -1;
+      element.setAttribute('aria-disabled', 'true');
+    }
   }
 
   /**
@@ -456,14 +484,17 @@ export default class Calendar {
       ? this.picker.datePicked[0]
       : (this.picker.options.date ? new DateTime(this.picker.options.date) : null);
 
-    const element = document.createElement('div');
+    const element = document.createElement('button');
+    element.type = 'button';
     element.className = `${unit} unit`;
     element.textContent = text;
     element.title = title;
     element.dataset.time = String(date.getTime());
+    element.setAttribute('aria-label', title);
 
     if (isSame(date, new Date())) {
       element.classList.add('today');
+      element.setAttribute('aria-current', 'date');
     }
 
     if (selected && isSame(date, selected)) {

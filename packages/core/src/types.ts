@@ -47,6 +47,13 @@ export interface IPickerConfig {
     nextMonth?: string;
     cancel?: string;
     apply?: string;
+    // Accessible names of the previous/next buttons, by viewMode.
+    previousMonthLabel?: string;
+    nextMonthLabel?: string;
+    previousYearLabel?: string;
+    nextYearLabel?: string;
+    previousDecadeLabel?: string;
+    nextDecadeLabel?: string;
   }
   plugins?: (PluginConstructor | string)[];
   documentClick?: boolean | (() => void);

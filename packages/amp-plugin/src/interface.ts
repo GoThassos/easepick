@@ -13,6 +13,10 @@ export interface IAmpPlugin extends IBaseConfig {
   locale?: {
     resetButton?: string;
     week?: string;
+    // Accessible names of the dropdowns and the (icon-only) reset button.
+    month?: string;
+    year?: string;
+    resetButtonLabel?: string;
   }
 }
 

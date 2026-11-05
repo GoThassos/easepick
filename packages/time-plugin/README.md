@@ -21,6 +21,7 @@ Adds time picker.
 | stepMinutes | number | 5 | Step for minutes.
 | stepSeconds | number | 5 | Step for seconds.
 | format12 | boolean | false | Display 12H time.
+| locale | object | { time: `'Time'`, startTime: `'Start time'`, endTime: `'End time'`, hour: `'Hour'`, minute: `'Minute'`, second: `'Second'`, period: `'AM/PM'` } | Names of the time controls for screen readers. Each time is a group named `time` (or `startTime` / `endTime` with RangePlugin), holding selects named `hour`, `minute`, `second` and `period`.
 
 ## Methods
 

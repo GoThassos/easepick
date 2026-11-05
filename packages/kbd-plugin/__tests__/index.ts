@@ -124,6 +124,20 @@ describe('calendar icon', () => {
     expect(picker.isShown()).toBe(true);
   });
 
+  test('the icon button is named, from locale', () => {
+    const button = (picker: easepick.Core) => iconHost(picker).shadowRoot.querySelector('button');
+
+    expect(button(create()).getAttribute('aria-label')).toBe('Open calendar');
+    expect(button(create()).type).toBe('button');
+    expect(button(create({ KbdPlugin: { locale: { openButton: 'Ouvrir' } } })).getAttribute('aria-label')).toBe('Ouvrir');
+
+    // A custom button keeps its own name, or gets the default one.
+    expect(button(create({ KbdPlugin: { html: '<button aria-label="Pick">x</button>' } })).getAttribute('aria-label'))
+      .toBe('Pick');
+    expect(button(create({ KbdPlugin: { html: '<button>x</button>' } })).getAttribute('aria-label'))
+      .toBe('Open calendar');
+  });
+
   test('html without a button is rendered as is', () => {
     const picker = create({ KbdPlugin: { html: '<i>icon</i>' } });
 
@@ -159,7 +173,8 @@ describe('tab indexes', () => {
       LockPlugin: { minDate: '2019-11-10' },
     });
 
-    expect(day(picker, 2019, 10, 9).hasAttribute('tabindex')).toBe(false);
+    expect(day(picker, 2019, 10, 9).tabIndex).toBe(-1);
+    expect(day(picker, 2019, 10, 9).getAttribute('aria-disabled')).toBe('true');
     expect(day(picker, 2019, 10, 10).tabIndex).toBe(2);
   });
 });

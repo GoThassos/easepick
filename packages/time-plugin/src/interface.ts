@@ -8,6 +8,16 @@ export interface ITimeConfig extends IBaseConfig {
   stepMinutes?: number;
   stepSeconds?: number;
   format12?: boolean;
+  // Accessible names of the time controls.
+  locale?: {
+    time?: string;
+    startTime?: string;
+    endTime?: string;
+    hour?: string;
+    minute?: string;
+    second?: string;
+    period?: string;
+  };
 }
 
 declare module '@gothassos/easepick-core' {

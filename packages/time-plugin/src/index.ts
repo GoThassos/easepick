@@ -22,6 +22,15 @@ export class TimePlugin extends BasePlugin implements IPlugin {
     stepMinutes: 5,
     stepSeconds: 5,
     format12: false,
+    locale: {
+      time: 'Time',
+      startTime: 'Start time',
+      endTime: 'End time',
+      hour: 'Hour',
+      minute: 'Minute',
+      second: 'Second',
+      period: 'AM/PM',
+    },
   };
 
   public rangePlugin: RangePlugin;
@@ -493,6 +502,18 @@ export class TimePlugin extends BasePlugin implements IPlugin {
   }
 
   /**
+   * Accessible name of a time slot's controls
+   *
+   * @param name
+   * @returns String
+   */
+  private getSlotLabel(name: string): string {
+    const { locale } = this.options;
+
+    return { start: locale.startTime, end: locale.endTime }[name] || locale.time;
+  }
+
+  /**
    * Returns `input[type="time"]` element
    *
    * @param name
@@ -503,6 +524,7 @@ export class TimePlugin extends BasePlugin implements IPlugin {
     element.type = 'time';
     element.name = name;
     element.className = 'time-plugin-input unit';
+    element.setAttribute('aria-label', this.getSlotLabel(name));
 
     const t = this.timePicked[name];
     if (t) {
@@ -521,12 +543,16 @@ export class TimePlugin extends BasePlugin implements IPlugin {
    * @returns HTMLElement
    */
   private getCustomInput(name: keyof ITimeSlots): HTMLElement {
+    const { locale } = this.options;
     const block = document.createElement('div');
     block.className = 'time-plugin-custom-block';
+    block.setAttribute('role', 'group');
+    block.setAttribute('aria-label', this.getSlotLabel(name));
 
     const hSelect = document.createElement('select');
     hSelect.className = 'time-plugin-custom-input unit';
     hSelect.name = `${name}[HH]`;
+    hSelect.setAttribute('aria-label', locale.hour);
     const hStart = this.options.format12 ? 1 : 0;
     const hLimit = this.options.format12 ? 13 : 24;
     let date = null;
@@ -560,6 +586,7 @@ export class TimePlugin extends BasePlugin implements IPlugin {
     const mSelect = document.createElement('select');
     mSelect.className = 'time-plugin-custom-input unit';
     mSelect.name = `${name}[mm]`;
+    mSelect.setAttribute('aria-label', locale.minute);
     const mLimit = 60;
 
     for (let i = 0; i < mLimit; i += this.options.stepMinutes) {
@@ -579,6 +606,7 @@ export class TimePlugin extends BasePlugin implements IPlugin {
       const sSelect = document.createElement('select');
       sSelect.className = 'time-plugin-custom-input unit';
       sSelect.name = `${name}[ss]`;
+      sSelect.setAttribute('aria-label', locale.second);
       const sLimit = 60;
 
       for (let i = 0; i < sLimit; i += this.options.stepSeconds) {
@@ -599,6 +627,7 @@ export class TimePlugin extends BasePlugin implements IPlugin {
       const pSelect = document.createElement('select');
       pSelect.className = 'time-plugin-custom-input unit';
       pSelect.name = `${name}[period]`;
+      pSelect.setAttribute('aria-label', locale.period);
 
       ['AM', 'PM'].forEach(x => {
         const pOption = document.createElement('option');

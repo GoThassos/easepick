@@ -569,3 +569,79 @@ describe('destroy', () => {
     expect(picker.ui.wrapper.isConnected).toBe(false);
   });
 });
+
+describe('accessibility', () => {
+  test('days, months and years are buttons that do not submit forms', () => {
+    const picker = create({ date: '2019-11-23' });
+    const units = [...picker.ui.container.querySelectorAll<HTMLButtonElement>('.day, .previous-button, .next-button')];
+
+    expect(units.every(u => u.tagName === 'BUTTON' && u.type === 'button')).toBe(true);
+
+    for (const viewMode of ['month', 'year'] as const) {
+      const cells = [...create({ date: '2019-11-23', viewMode }).ui.container.querySelectorAll<HTMLButtonElement>(`.${viewMode}`)];
+      expect(cells.length).toBe(12);
+      expect(cells.every(u => u.tagName === 'BUTTON' && u.type === 'button')).toBe(true);
+    }
+  });
+
+  test('days are named by their full date; today is the current date', () => {
+    jest.useFakeTimers({ now: new Date(2019, 10, 20, 12, 0, 0) });
+    const picker = create({ date: '2019-11-23', lang: 'fr-FR' });
+
+    expect(day(picker, 2019, 11, 23).getAttribute('aria-label')).toBe('samedi 23 novembre 2019');
+    expect(day(picker, 2019, 11, 20).getAttribute('aria-current')).toBe('date');
+    expect(day(picker, 2019, 11, 23).hasAttribute('aria-current')).toBe(false);
+    jest.useRealTimers();
+  });
+
+  test('months and years are named by their title', () => {
+    const months = create({ date: '2019-11-23', viewMode: 'month' });
+    const years = create({ date: '2019-11-23', viewMode: 'year' });
+
+    expect(months.ui.container.querySelector('.month').getAttribute('aria-label')).toBe('January 2019');
+    expect(years.ui.container.querySelector('.year').getAttribute('aria-label')).toBe('2009');
+  });
+
+  test.each([
+    [undefined, 'Previous month', 'Next month'],
+    ['month', 'Previous year', 'Next year'],
+    ['year', 'Previous decade', 'Next decade'],
+  ] as const)('previous/next buttons are named by their step (viewMode: %s)', (viewMode, previous, next) => {
+    const picker = create({ date: '2019-11-23', viewMode });
+
+    expect(picker.ui.container.querySelector('.previous-button').getAttribute('aria-label')).toBe(previous);
+    expect(picker.ui.container.querySelector('.next-button').getAttribute('aria-label')).toBe(next);
+  });
+
+  test('button names come from locale', () => {
+    const picker = create({
+      date: '2019-11-23',
+      locale: { previousMonthLabel: 'Mois précédent', nextMonthLabel: 'Mois suivant' },
+    });
+
+    expect(picker.ui.container.querySelector('.previous-button').getAttribute('aria-label')).toBe('Mois précédent');
+    expect(picker.ui.container.querySelector('.next-button').getAttribute('aria-label')).toBe('Mois suivant');
+    // The other locale texts keep their defaults.
+    expect(picker.options.locale.apply).toBe('Apply');
+  });
+
+  test('cells marked locked or not-available leave the tab order', () => {
+    const picker = create({
+      date: '2019-11-23',
+      setup(p) {
+        p.on('view', (e: CustomEvent) => {
+          const { view, date, target } = e.detail;
+          if (view === 'CalendarDay' && date.getDate() === 10) target.classList.add('locked');
+          if (view === 'CalendarDay' && date.getDate() === 11) target.classList.add('not-available');
+        });
+      },
+    });
+
+    for (const d of [10, 11]) {
+      expect(day(picker, 2019, 11, d).tabIndex).toBe(-1);
+      expect(day(picker, 2019, 11, d).getAttribute('aria-disabled')).toBe('true');
+    }
+
+    expect(day(picker, 2019, 11, 12).hasAttribute('aria-disabled')).toBe(false);
+  });
+});

@@ -442,3 +442,25 @@ test('detaching removes week numbers, dropdowns and the reset button', () => {
   expect(container.querySelector('.wnum-header, .wnum-item, select, .reset-button')).toBeNull();
   expect(container.querySelector('.month-name').textContent).toBe('November 2019');
 });
+
+describe('accessibility', () => {
+  test('dropdowns and the reset button are named', () => {
+    const picker = create({ AmpPlugin: { dropdown: { months: true, years: true }, resetButton: true } });
+
+    expect(monthSelects(picker)[0].getAttribute('aria-label')).toBe('Month');
+    expect(yearSelects(picker)[0].getAttribute('aria-label')).toBe('Year');
+
+    const reset = picker.ui.container.querySelector<HTMLButtonElement>('.reset-button');
+    expect(reset.getAttribute('aria-label')).toBe('Clear selection');
+    expect(reset.type).toBe('button');
+  });
+
+  test('names come from locale', () => {
+    const picker = create({
+      AmpPlugin: { dropdown: { months: true }, resetButton: true, locale: { month: 'Mois', resetButtonLabel: 'Effacer' } },
+    });
+
+    expect(monthSelects(picker)[0].getAttribute('aria-label')).toBe('Mois');
+    expect(picker.ui.container.querySelector('.reset-button').getAttribute('aria-label')).toBe('Effacer');
+  });
+});

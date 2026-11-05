@@ -18,5 +18,6 @@ Adds keyboard navigation.
 | --- | :---: | :---: | ---
 | unitIndex | number | 1 | `tabIndex` for elements except days elements (including months and years with the core's `viewMode`, which Enter and Space pick).
 | dayIndex | number | 2 | `tabIndex` for days elements.
+| locale | object | { openButton: `'Open calendar'` } | Name of the icon button that opens the picker, for screen readers (kept if a custom `html` button has its own `aria-label`).
 
 <!-- #endregion reference -->

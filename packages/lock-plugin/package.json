@@ -26,7 +26,7 @@
     "url": "https://github.com/GoThassos/easepick.git",
     "directory": "packages/lock-plugin"
   },
-  "homepage": "https://github.com/GoThassos/easepick/tree/master/packages/lock-plugin#readme",
+  "homepage": "https://gothassos.github.io/easepick/packages/lock-plugin",
   "bugs": {
     "url": "https://github.com/GoThassos/easepick/issues"
   },

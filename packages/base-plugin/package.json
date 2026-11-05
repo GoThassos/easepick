@@ -24,7 +24,7 @@
     "url": "https://github.com/GoThassos/easepick.git",
     "directory": "packages/base-plugin"
   },
-  "homepage": "https://github.com/GoThassos/easepick/tree/master/packages/base-plugin#readme",
+  "homepage": "https://gothassos.github.io/easepick/packages/base-plugin",
   "bugs": {
     "url": "https://github.com/GoThassos/easepick/issues"
   },

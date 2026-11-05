@@ -79,6 +79,7 @@ Events based on [CustomEvent()](https://developer.mozilla.org/en-US/docs/Web/API
 | view | Event is called after a layout element is created (for example `Header`, `Main`, `CalendarDay`). `detail` contains `view`, `date` and `target` (the element).
 | preselect | Event is called on select days (before submit selection). When `autoApply` option is `false`.
 | select | Event is called when selection is submitted.
+| navigate | Event is called after the previous/next button moved the calendar. `detail` contains `date` (the first day of the month now shown, or of the year and decade with `viewMode` `month` and `year`), `direction` (`next` or `previous`) and `viewMode`.
 
 It is also allowed to use default events such as `click`, `keydown`, etc.
 

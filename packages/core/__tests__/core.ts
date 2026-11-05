@@ -443,6 +443,31 @@ describe('month navigation', () => {
     expect(picker.getDate().format('YYYY-MM-DD')).toBe('2019-12-23');
   });
 
+  test.each([
+    [undefined, 'day', ['2020-01-01', '2019-11-01']],
+    ['month', 'month', ['2020-01-01', '2018-01-01']],
+    ['year', 'year', ['2020-01-01', '2000-01-01']],
+  ] as const)('navigate event (viewMode: %s)', (viewMode, detailViewMode, dates) => {
+    const picker = create({ date: '2019-12-23', viewMode });
+    const details = [];
+    const titles: string[] = [];
+    picker.on('navigate', (e: CustomEvent) => {
+      details.push(e.detail);
+      titles.push(monthName(picker));
+    });
+
+    click(picker.ui.container.querySelector('.next-button'));
+    click(picker.ui.container.querySelector('.previous-button'));
+    click(picker.ui.container.querySelector('.previous-button'));
+
+    expect(details.map(d => d.direction)).toEqual(['next', 'previous', 'previous']);
+    expect(details.every(d => d.viewMode === detailViewMode && d.date instanceof DateTime)).toBe(true);
+    expect([details[0], details[2]].map(d => d.date.format('YYYY-MM-DD'))).toEqual(dates);
+
+    // Fired after rendering: the header already shows the new period.
+    expect(titles[0]).toContain('2020');
+  });
+
   test('clicks outside units are ignored', () => {
     const picker = create({ date: '2019-11-23' });
     const onSelect = jest.fn();

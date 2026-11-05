@@ -202,6 +202,15 @@ export class Core {
       }
 
       this.renderAll(this.calendars[0]);
+
+      // `date` is the first day of the month, year or decade now shown.
+      const viewMode = this.options.viewMode || 'day';
+      const shown = this.calendars[0];
+      const date = viewMode === 'year'
+        ? new DateTime(new Date(this.Calendar.getDecadeStart(shown), 0, 1))
+        : new DateTime(new Date(shown.getFullYear(), viewMode === 'month' ? 0 : shown.getMonth(), 1));
+
+      this.trigger('navigate', { date, direction: step > 0 ? 'next' : 'previous', viewMode });
     }
   }
 

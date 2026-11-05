@@ -7,7 +7,7 @@ export interface IKbdPlugin extends IBaseConfig {
 }
 
 declare module '@gothassos/easepick-core/dist/types' {
-  interface IKbdPlugin {
+  interface IPickerConfig {
     KbdPlugin?: IKbdPlugin;
   }
 }

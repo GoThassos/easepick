@@ -106,7 +106,8 @@ describe('month title', () => {
   });
 
   test('AmpPlugin month dropdown uses the nominative form (Greek)', () => {
-    // Passed as a variable: IPickerConfig does not declare plugin option keys.
+    // Passed as a variable: plugins add their options to the built
+    // core types (dist/types), and this file tests core from src.
     const options = {
       element: document.getElementById('datepicker'),
       date: date.clone(),

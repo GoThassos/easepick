@@ -1,10 +1,10 @@
 
 import typescript from '@rollup/plugin-typescript';
-import define from 'rollup-plugin-define';
+import replace from '@rollup/plugin-replace';
 import resolve from '@rollup/plugin-node-resolve';
 import postcss from 'rollup-plugin-postcss';
 import autoprefixer from 'autoprefixer';
-import { terser } from 'rollup-plugin-terser';
+import terser from '@rollup/plugin-terser';
 
 const path = require('path');
 const pkg = require('./package.json');
@@ -55,16 +55,19 @@ const getPackageConfig = (name) => {
     input: input(name),
     output: output(name),
     plugins: [
-      define({
-        replacements: {
+      replace({
+        preventAssignment: true,
+        values: {
           __VERSION__: JSON.stringify(pkg.version),
-        }
+        },
       }),
       resolve({
         resolveOnly: [/^@gothassos\/.*$/]
       }),
       typescript({
         tsconfig: `packages/${name}/tsconfig.json`,
+        declaration: true,
+        declarationDir: path.join(__dirname, `packages/${name}/dist`),
         outputToFilesystem: false,
       }),
       postcss({
@@ -97,17 +100,20 @@ export default [
     input: 'packages/bundle/src/index.ts',
     output: output('bundle'),
     plugins: [
-      define({
-        replacements: {
+      replace({
+        preventAssignment: true,
+        values: {
           __VERSION__: JSON.stringify(pkg.version),
-        }
+        },
       }),
       resolve({
-        dedupe: ['@gothassos/base-plugin'],
+        dedupe: ['@gothassos/easepick-base-plugin'],
         resolveOnly: [/^@gothassos\/.*$/]
       }),
       typescript({
         tsconfig: 'packages/bundle/tsconfig.json',
+        declaration: true,
+        declarationDir: path.join(__dirname, 'packages/bundle/dist'),
         outputToFilesystem: false,
       }),
       postcss({

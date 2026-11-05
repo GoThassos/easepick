@@ -27,6 +27,7 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run lint
-    - run: npm run typecheck
     - run: npm run prod
-    - run: npm test
+    # Type checking resolves the packages through their built dist/*.d.ts, so it has to run after the build.
+    - run: npm run typecheck
+    - run: npm run test:coverage

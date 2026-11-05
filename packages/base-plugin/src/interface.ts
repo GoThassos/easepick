@@ -1,6 +1,6 @@
 import { DateTime } from '@gothassos/easepick-datetime';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface IBaseConfig {}
 
 export interface IPlugin {

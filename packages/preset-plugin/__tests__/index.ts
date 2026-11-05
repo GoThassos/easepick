@@ -281,18 +281,34 @@ describe('with LockPlugin', () => {
     return buttons(picker).filter(b => b.disabled).map(b => b.textContent);
   };
 
-  beforeEach(() => {
-    // LockPlugin warns about RangePlugin when range options are used with
-    // the RangePlugin class (it only looks for the string 'RangePlugin').
-    jest.spyOn(console, 'warn').mockImplementation(() => undefined);
-  });
-
   test('nothing is disabled without limits', () => {
     expect(disabled({ LockPlugin: {} })).toEqual([]);
   });
 
   test('minDays disables the shorter presets', () => {
     expect(disabled({ LockPlugin: { minDays: 2 } })).toEqual(['Today', 'Yesterday']);
+  });
+
+  test('minDays counts days like the calendar does (Last 7 Days is 7 days)', () => {
+    expect(disabled({ LockPlugin: { minDays: 7 } })).toEqual(['Today', 'Yesterday']);
+    expect(disabled({ LockPlugin: { minDays: 8 } })).toEqual(['Today', 'Yesterday', 'Last 7 Days']);
+  });
+
+  test('maxDays counts days like the calendar does (an 8-day preset is over maxDays 7)', () => {
+    today(2019, 10, 23);
+    const { picker } = open({
+      plugins: [RangePlugin, PresetPlugin, LockPlugin],
+      LockPlugin: { maxDays: 7 },
+      PresetPlugin: {
+        customPreset: {
+          Seven: [new Date(2019, 10, 17), new Date(2019, 10, 23)],
+          Eight: [new Date(2019, 10, 16), new Date(2019, 10, 23)],
+        },
+      },
+    });
+
+    expect(button(picker, 'Seven').disabled).toBe(false);
+    expect(button(picker, 'Eight').disabled).toBe(true);
   });
 
   test('maxDays disables the longer presets', () => {

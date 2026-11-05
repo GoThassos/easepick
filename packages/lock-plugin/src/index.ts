@@ -64,7 +64,7 @@ export class LockPlugin extends BasePlugin implements IPlugin {
       || this.options.maxDays
       || this.options.selectForward
       || this.options.selectBackward) {
-      if (!this.picker.options.plugins.includes('RangePlugin')) {
+      if (!this.pluginsAsStringArray().includes('RangePlugin')) {
         const list = ['minDays', 'maxDays', 'selectForward', 'selectBackward'];
         console.warn(`${this.getName()}: options ${list.join(', ')} required RangePlugin.`);
       }
@@ -155,10 +155,11 @@ export class LockPlugin extends BasePlugin implements IPlugin {
     if (this.options.presets && view === 'PresetPluginButton') {
       const startDate = new DateTime(Number(target.dataset.start));
       const endDate = new DateTime(Number(target.dataset.end));
-      const diff = endDate.diff(startDate, 'day');
+      // Count days inclusively, like the calendar's minDays/maxDays locks.
+      const days = endDate.diff(startDate, 'day') + 1;
 
-      const lessMinDays = this.options.minDays && diff < this.options.minDays;
-      const moreMaxDays = this.options.maxDays && diff > this.options.maxDays;
+      const lessMinDays = this.options.minDays && days < this.options.minDays;
+      const moreMaxDays = this.options.maxDays && days > this.options.maxDays;
 
       if (lessMinDays || moreMaxDays
         || this.lockMinDate(startDate)

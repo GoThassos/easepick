@@ -82,7 +82,7 @@ export class BasePlugin {
    *
    * @returns []
    */
-  private pluginsAsStringArray(): string[] {
+  protected pluginsAsStringArray(): string[] {
     return this.picker.options.plugins
       .map(x => typeof x === 'function' ? (new x).getName() : x);
   }

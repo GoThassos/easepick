@@ -62,9 +62,7 @@ const ALL = range(1, 30);
 let warn: jest.SpyInstance;
 
 beforeEach(() => {
-  // LockPlugin's "required RangePlugin" check only looks for the string
-  // 'RangePlugin', so it also warns when the class is passed; keep the
-  // output readable.
+  // Silenced; tests that care assert on it.
   warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
 });
 
@@ -202,6 +200,21 @@ describe('minDays / maxDays', () => {
     expect(warn).toHaveBeenCalledWith(
       'LockPlugin: options minDays, maxDays, selectForward, selectBackward required RangePlugin.',
     );
+  });
+
+  test('does not warn when RangePlugin is passed as a class or a name', () => {
+    for (const rangePlugin of [RangePlugin, 'RangePlugin']) {
+      window['easepick'] = { RangePlugin };
+      const options = {
+        element: newInput(),
+        plugins: [rangePlugin, LockPlugin],
+        LockPlugin: { minDays: 2 },
+      };
+      new create(options);
+      delete window['easepick'];
+    }
+
+    expect(warn).not.toHaveBeenCalled();
   });
 
   test('does not warn without range options', () => {

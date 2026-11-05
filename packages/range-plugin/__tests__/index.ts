@@ -182,6 +182,32 @@ describe('hovering days', () => {
 
     expect(daysWith(picker, 'in-range')).toEqual([]);
   });
+
+  test('ignores units that are not days, and non-HTML targets', () => {
+    const picker = create();
+    picker.show();
+    click(day(picker, 5));
+
+    // A header button is a unit, but not a day; its icon is an SVG element.
+    hover(picker.ui.container.querySelector('.next-button'));
+    hover(picker.ui.container.querySelector('.next-button svg'));
+
+    expect(daysWith(picker, 'in-range')).toEqual([]);
+    expect(daysWith(picker, 'end')).toEqual([]);
+    expect(tooltip(picker).style.visibility).toBe('');
+  });
+
+  test('leaving the calendar without repick keeps the pending start', () => {
+    const picker = create();
+    picker.show();
+    click(day(picker, 5));
+
+    picker.ui.container.dispatchEvent(new MouseEvent('mouseleave'));
+    hover(day(picker, 8));
+
+    expect(daysWith(picker, 'start')).toEqual([5]);
+    expect(daysWith(picker, 'in-range')).toEqual([6, 7]);
+  });
 });
 
 describe('tooltip', () => {
@@ -393,6 +419,41 @@ describe('non-input elements', () => {
 
     expect([element.innerText, elementEnd.innerText]).toEqual(['2019-11-05', '2019-11-12']);
   });
+
+  // A selector can match an element that is not an HTMLElement, like an <svg>.
+  const svg = (id: string) => {
+    const element = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    element.id = id;
+    document.body.append(element);
+    return element;
+  };
+
+  test('a non-HTML element is left untouched', () => {
+    const element = svg('start');
+    const picker = create({}, { element: '#start' });
+
+    picker.setDateRange('2019-11-05', '2019-11-12');
+
+    expect(range(picker)).toEqual(['2019-11-05', '2019-11-12']);
+    expect(element.textContent).toBe('');
+  });
+
+  test('with elementEnd, only the HTML element of the two is filled', () => {
+    const startSvg = svg('start');
+    const end = input();
+    const picker1 = create({ elementEnd: end }, { element: '#start' });
+    picker1.setDateRange('2019-11-05', '2019-11-12');
+
+    expect(end.value).toBe('2019-11-12');
+    expect(startSvg.textContent).toBe('');
+
+    const endSvg = svg('end');
+    const picker2 = create({ elementEnd: '#end' });
+    picker2.setDateRange('2019-11-05', '2019-11-12');
+
+    expect((picker2.options.element as HTMLInputElement).value).toBe('2019-11-05');
+    expect(endSvg.textContent).toBe('');
+  });
 });
 
 describe('elementEnd', () => {
@@ -454,6 +515,19 @@ describe('elementEnd', () => {
     click(end);
     document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
+    expect(picker.isShown()).toBe(true);
+  });
+
+  test('a documentClick: false plugin option keeps the picker open', () => {
+    const end = input();
+    const outside = document.createElement('div');
+    document.body.append(outside);
+    const picker = create({ elementEnd: end, documentClick: false });
+
+    click(end);
+    click(outside);
+
+    // The picker's own outside-click handler was replaced, not kept.
     expect(picker.isShown()).toBe(true);
   });
 });
@@ -614,6 +688,15 @@ describe('parsing initial values', () => {
     expect(elementEnd.value).toBe('2019-11-12');
   });
 
+  test('non-strict: a non-input element or elementEnd has no value to read', () => {
+    const div = () => document.body.appendChild(document.createElement('div'));
+
+    expect(range(create({ strict: false, elementEnd: input('2019-11-12') }, { element: div() })))
+      .toEqual([null, '2019-11-12']);
+    expect(range(create({ strict: false, elementEnd: div() }, { element: input('2019-11-05') })))
+      .toEqual(['2019-11-05', null]);
+  });
+
   test('options take precedence over the input values', () => {
     const element = input('2019-10-01 - 2019-10-02');
     const picker = create({ startDate: new DateTime('2019-11-05'), endDate: new DateTime('2019-11-12') }, { element });
@@ -678,6 +761,34 @@ describe('repick', () => {
     expect(daysWith(picker, 'in-range')).toContain(22);
   });
 
+  test('leaving the calendar keeps a completed range waiting for Apply', () => {
+    const end = input();
+    const picker = create({
+      elementEnd: end,
+      repick: true,
+      startDate: new DateTime('2019-11-10'),
+      endDate: new DateTime('2019-11-20'),
+    }, { autoApply: false });
+    click(end);
+    click(day(picker, 25));
+
+    picker.ui.container.dispatchEvent(new MouseEvent('mouseleave'));
+
+    expect(applyButton(picker).disabled).toBe(false);
+    click(applyButton(picker));
+    expect(range(picker)).toEqual(['2019-11-10', '2019-11-25']);
+  });
+
+  test('leaving a day, not the calendar, keeps the repick anchor', () => {
+    const { picker, end } = repickPicker();
+    click(end);
+
+    day(picker, 23).dispatchEvent(new MouseEvent('mouseleave'));
+    hover(day(picker, 23));
+
+    expect(daysWith(picker, 'in-range')).toContain(22);
+  });
+
   test('is disabled without elementEnd', () => {
     const picker = create({
       repick: true,
@@ -691,6 +802,85 @@ describe('repick', () => {
     // A fresh range is started instead of replacing one end.
     expect(range(picker)).toEqual(['2019-11-10', '2019-11-20']);
     expect(daysWith(picker, 'start')).toEqual([25]);
+  });
+});
+
+describe('month and year views', () => {
+  const month = (picker: easepick.Core, m: number) => picker.ui.container
+    .querySelector<HTMLElement>(`.month[data-time="${new Date(2019, m - 1, 1).getTime()}"]`);
+  const cellsWith = (picker: easepick.Core, unit: 'month' | 'year', cls: string) =>
+    [...picker.ui.container.querySelectorAll<HTMLElement>(`.${unit}.${cls}`)]
+      .map(x => new Date(Number(x.dataset.time)))
+      .map(d => (unit === 'month' ? d.getMonth() + 1 : d.getFullYear()));
+
+  test('nothing is marked without a selection', () => {
+    const picker = create({}, { viewMode: 'month' });
+
+    for (const cls of ['start', 'in-range', 'end']) {
+      expect(cellsWith(picker, 'month', cls)).toEqual([]);
+    }
+  });
+
+  test('viewMode month: a range covers whole months', () => {
+    const picker = create({}, { viewMode: 'month' });
+
+    picker.setDateRange('2019-03-15', '2019-06-10');
+
+    expect(range(picker)).toEqual(['2019-03-01', '2019-06-30']);
+    expect((picker.options.element as HTMLInputElement).value).toBe('2019-03-01 - 2019-06-30');
+    expect(cellsWith(picker, 'month', 'start')).toEqual([3]);
+    expect(cellsWith(picker, 'month', 'in-range')).toEqual([4, 5]);
+    expect(cellsWith(picker, 'month', 'end')).toEqual([6]);
+  });
+
+  test('viewMode year: a range covers whole years', () => {
+    const picker = create({}, { viewMode: 'year' });
+
+    picker.setStartDate('2012-05-05');
+    picker.setEndDate('2015-02-02');
+
+    expect(range(picker)).toEqual(['2012-01-01', '2015-12-31']);
+    expect(cellsWith(picker, 'year', 'start')).toEqual([2012]);
+    expect(cellsWith(picker, 'year', 'in-range')).toEqual([2013, 2014]);
+    expect(cellsWith(picker, 'year', 'end')).toEqual([2015]);
+  });
+
+  test('clicking two months selects them in order, up to the end of the last one', () => {
+    const picker = create({}, { viewMode: 'month', autoApply: false });
+    picker.show();
+
+    click(month(picker, 8));
+    // A lone pick is marked as the start only.
+    expect(cellsWith(picker, 'month', 'start')).toEqual([8]);
+    expect(cellsWith(picker, 'month', 'end')).toEqual([]);
+
+    click(month(picker, 2));
+    expect(cellsWith(picker, 'month', 'start')).toEqual([2]);
+    expect(cellsWith(picker, 'month', 'in-range')).toEqual([3, 4, 5, 6, 7]);
+    expect(cellsWith(picker, 'month', 'end')).toEqual([8]);
+
+    click(applyButton(picker));
+    expect(range(picker)).toEqual(['2019-02-01', '2019-08-31']);
+  });
+
+  test('hovering previews the period range from the pending month', () => {
+    const picker = create({}, { viewMode: 'month' });
+    picker.show();
+
+    hover(month(picker, 9));
+    expect(cellsWith(picker, 'month', 'in-range')).toEqual([]);
+
+    click(month(picker, 5));
+
+    hover(month(picker, 8));
+    expect(cellsWith(picker, 'month', 'start')).toEqual([5]);
+    expect(cellsWith(picker, 'month', 'in-range')).toEqual([6, 7]);
+    expect(cellsWith(picker, 'month', 'end')).toEqual([8]);
+
+    hover(month(picker, 2));
+    expect(cellsWith(picker, 'month', 'start')).toEqual([2]);
+    expect(cellsWith(picker, 'month', 'in-range')).toEqual([3, 4]);
+    expect(cellsWith(picker, 'month', 'end')).toEqual([5]);
   });
 });
 

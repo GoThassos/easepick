@@ -174,6 +174,32 @@ describe('layout', () => {
     expect(views).toEqual(['PresetPluginButton:A', 'PresetPluginButton:B', 'PresetPluginContainer:AB']);
   });
 
+  test('a preset removed by a PresetPluginButton listener is not rendered', () => {
+    const element = newInput();
+    const options = {
+      element,
+      plugins: [RangePlugin, PresetPlugin],
+      setup(picker) {
+        picker.on('view', (e: CustomEvent) => {
+          if (e.detail.view === 'PresetPluginButton' && e.detail.target.textContent === 'A') {
+            delete picker.PluginManager.getInstance('PresetPlugin').options.customPreset.B;
+          }
+        });
+      },
+      PresetPlugin: {
+        customPreset: {
+          A: [new Date(2019, 0, 1), new Date(2019, 0, 2)],
+          B: [new Date(2019, 0, 3), new Date(2019, 0, 4)],
+          C: [new Date(2019, 0, 5), new Date(2019, 0, 6)],
+        },
+      },
+    };
+    const picker = new create(options);
+    picker.show();
+
+    expect(buttons(picker).map(b => b.textContent)).toEqual(['A', 'C']);
+  });
+
   test('requires RangePlugin', () => {
     const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
     const { picker } = open({ plugins: [PresetPlugin] });
@@ -237,6 +263,20 @@ describe('customPreset', () => {
     picker.on('select', select);
 
     click(picker.ui.container.querySelector('.preset-plugin-container'));
+
+    expect(element.value).toBe('');
+    expect(select).not.toHaveBeenCalled();
+    expect(picker.isShown()).toBe(true);
+  });
+
+  test('a click on a non-HTML element (an SVG icon) does nothing', () => {
+    const { picker, element } = open({ PresetPlugin: { customPreset } });
+    const select = jest.fn();
+    picker.on('select', select);
+    const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    picker.ui.container.querySelector('.preset-plugin-container').appendChild(icon);
+
+    click(icon);
 
     expect(element.value).toBe('');
     expect(select).not.toHaveBeenCalled();

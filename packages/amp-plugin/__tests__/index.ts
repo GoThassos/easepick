@@ -1,6 +1,7 @@
 import * as easepick from '@gothassos/easepick-core';
 import { AmpPlugin } from '@gothassos/easepick-amp-plugin';
 import { LockPlugin } from '@gothassos/easepick-lock-plugin';
+import { DateTime } from '@gothassos/easepick-datetime';
 const pkg = require('../../core/package.json');
 
 type Config = ConstructorParameters<typeof easepick.create>[0];
@@ -192,6 +193,27 @@ describe('month dropdown', () => {
     });
 
     expect(disabledValues(monthSelects(picker)[0])).toEqual(['0', '1']);
+  });
+
+  test('without Calendar.getMonthTitle (older core), month names come from toLocaleString', () => {
+    const picker = create();
+    const amp = picker.PluginManager.getInstance<AmpPlugin>('AmpPlugin');
+    amp.options.dropdown.months = true;
+    // Shadow the prototype method, as on a core version that predates it.
+    Object.defineProperty(picker.Calendar, 'getMonthTitle', { value: undefined });
+
+    const header = document.createElement('div');
+    header.innerHTML = '<div class="month-name"><span>November</span> 2019</div>';
+    amp.handleDropdown(new CustomEvent('view', {
+      detail: { view: 'CalendarHeader', target: header, date: new DateTime('2019-11-23'), index: 0 },
+    }));
+
+    const select = header.querySelector<HTMLSelectElement>('.month-name--dropdown');
+    expect(Array.from(select.options).map(o => o.text)).toEqual([
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December',
+    ]);
+    expect(select.value).toBe('10');
   });
 });
 

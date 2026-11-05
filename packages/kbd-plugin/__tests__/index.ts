@@ -167,6 +167,15 @@ describe('tab indexes', () => {
     expect(picker.ui.container.querySelector<HTMLElement>('.next-button').tabIndex).toBe(4);
   });
 
+  test('a view event without a target element is ignored', () => {
+    const picker = create();
+
+    // `trigger()` is public: other plugins may send views without a target.
+    expect(() => picker.trigger('view', { view: 'Custom' })).not.toThrow();
+    expect(() => picker.trigger('view', { view: 'Custom', target: {} })).not.toThrow();
+    expect(day(picker, 2019, 10, 1).tabIndex).toBe(2);
+  });
+
   test('locked days are not focusable', () => {
     const picker = create({
       plugins: [KbdPlugin, LockPlugin],
@@ -221,6 +230,19 @@ describe('arrow keys', () => {
 
     expect(day(picker, 2019, 9, 1)).not.toBeNull();
     expect(focusedDay(picker)).toBe('10-31');
+  });
+
+  test('a new month with no focusable day leaves the focus alone', () => {
+    const picker = create({
+      plugins: [KbdPlugin, LockPlugin],
+      LockPlugin: { filter: (date) => (date as Date).getMonth() === 11 },
+    });
+    press(picker, day(picker, 2019, 10, 30), 'ArrowRight');
+
+    // December is shown, but every day is locked: nothing gets the focus.
+    expect(day(picker, 2019, 11, 1).tabIndex).toBe(-1);
+    expect(day(picker, 2019, 10, 30)).toBeNull();
+    expect(focused(picker)).toBeNull();
   });
 
   test('locked days are skipped', () => {
@@ -280,6 +302,22 @@ describe('Enter and Space', () => {
     expect(picker.isShown()).toBe(false);
   });
 
+  test.each([
+    ['month', '.month', '2019-03-01'],
+    ['year', '.year:not(.outside)', '2013-01-01'],
+  ] as const)('Enter picks a %s (viewMode: %s)', (viewMode, selector, expected) => {
+    const picker = create({ viewMode });
+    const items = Array.from(picker.ui.container.querySelectorAll<HTMLElement>(selector));
+    const item = viewMode === 'month' ? items[2] : items[3];
+
+    expect(item.tabIndex).toBe(1);
+    const event = press(picker, item, 'Enter');
+
+    expect(event.defaultPrevented).toBe(true);
+    expect((picker.options.element as HTMLInputElement).value).toBe(expected);
+    expect(picker.isShown()).toBe(false);
+  });
+
   test('without autoApply the focus stays on the picked day', () => {
     const picker = create({ autoApply: false });
     press(picker, day(picker, 2019, 10, 25), 'Enter');
@@ -332,6 +370,20 @@ test('detaching removes the icon and the key handling', () => {
   expect(target.hasAttribute('tabindex')).toBe(false);
 
   const event = keydown(target, 'Escape');
+  expect(event.defaultPrevented).toBe(false);
+  expect(picker.isShown()).toBe(true);
+});
+
+test('detaching after the icon was taken out of the page still removes the key handling', () => {
+  const picker = create();
+  const host = iconHost(picker);
+  host.remove();
+
+  expect(() => picker.PluginManager.removeInstance('KbdPlugin')).not.toThrow();
+  expect(host.isConnected).toBe(false);
+
+  picker.renderAll();
+  const event = keydown(day(picker, 2019, 10, 23), 'Escape');
   expect(event.defaultPrevented).toBe(false);
   expect(picker.isShown()).toBe(true);
 });

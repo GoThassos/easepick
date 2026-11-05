@@ -415,7 +415,7 @@ export class RangePlugin extends BasePlugin implements IPlugin {
    */
   private setStartDate(date: Date | string | number) {
     const d = this.toPeriodStart(new DateTime(date, this.picker.options.format, this.picker.options.lang));
-    this.options.startDate = d ? d.clone() : null;
+    this.options.startDate = d.clone();
 
     this.updateValues();
 
@@ -429,7 +429,7 @@ export class RangePlugin extends BasePlugin implements IPlugin {
    */
   private setEndDate(date: Date | string | number) {
     const d = this.toPeriodEnd(new DateTime(date, this.picker.options.format, this.picker.options.lang));
-    this.options.endDate = d ? d.clone() : null;
+    this.options.endDate = d.clone();
 
     this.updateValues();
 
@@ -446,8 +446,8 @@ export class RangePlugin extends BasePlugin implements IPlugin {
     const startDate = this.toPeriodStart(new DateTime(start, this.picker.options.format, this.picker.options.lang));
     const endDate = this.toPeriodEnd(new DateTime(end, this.picker.options.format, this.picker.options.lang));
 
-    this.options.startDate = startDate ? startDate.clone() : null;
-    this.options.endDate = endDate ? endDate.clone() : null;
+    this.options.startDate = startDate.clone();
+    this.options.endDate = endDate.clone();
 
     this.updateValues();
 
@@ -650,7 +650,7 @@ export class RangePlugin extends BasePlugin implements IPlugin {
 
       if (this.picker.datePicked.length === 1 || !this.picker.options.autoApply) {
         this.picker.trigger('preselect', {
-          start: this.picker.datePicked[0] instanceof Date ? this.picker.datePicked[0].clone() : null,
+          start: this.picker.datePicked[0].clone(),
           end: this.picker.datePicked[1] instanceof Date ? this.picker.datePicked[1].clone() : null,
         });
       }

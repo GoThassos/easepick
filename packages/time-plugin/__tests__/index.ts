@@ -146,6 +146,27 @@ describe('single date, select inputs', () => {
   test('getDate is null without a date', () => {
     expect(create().getDate()).toBeNull();
   });
+
+  test('a day clicked without a chosen time keeps its own time (midnight)', () => {
+    const picker = create();
+    picker.show();
+
+    click(day(picker, 5));
+
+    expect(value(picker)).toBe('2019-11-05 00:00');
+    expect(fmt(picker.getDate())).toBe('2019-11-05 00:00');
+  });
+
+  test('an input event from a select is ignored (only change counts)', () => {
+    const picker = create({}, { date: '2019-11-23 14:35' });
+    const hours = select(picker, 'input[HH]');
+
+    hours.value = '9';
+    hours.dispatchEvent(new Event('input', { bubbles: true }));
+
+    expect(value(picker)).toBe('2019-11-23 14:35');
+    expect(fmt(picker.getDate())).toBe('2019-11-23 14:35');
+  });
 });
 
 describe('format12', () => {
@@ -190,6 +211,15 @@ describe('format12', () => {
     expect(value(picker)).toBe('2019-11-23 03:20');
   });
 
+  test('the period select does nothing once format12 is turned off', () => {
+    const picker = create({ format12: true }, { date: '2019-11-23 03:20' });
+    picker.PluginManager.getInstance<TimePlugin>('TimePlugin').options.format12 = false;
+
+    choose(picker, 'input[period]', 'PM');
+
+    expect(value(picker)).toBe('2019-11-23 03:20');
+  });
+
   test('12 AM is midnight, 12 PM is noon', () => {
     const picker = create({ format12: true }, { date: '2019-11-23 12:20' });
 
@@ -223,6 +253,43 @@ describe('native input', () => {
 
     typeTime(picker, 'input', '');
     expect(value(picker)).toBe('2019-11-23 00:00');
+  });
+
+  test('a time typed before the date is applied to the clicked day', () => {
+    const picker = create({ native: true });
+    picker.show();
+
+    typeTime(picker, 'input', '07:30');
+    expect(picker.getDate()).toBeNull();
+    expect(value(picker)).toBe('');
+
+    click(day(picker, 5));
+
+    expect(value(picker)).toBe('2019-11-05 07:30');
+  });
+
+  test('a change event from the native input is ignored (only input counts)', () => {
+    const picker = create({ native: true }, { date: '2019-11-23 08:05' });
+    const el = nativeInput(picker, 'input');
+
+    el.value = '17:45';
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+
+    expect(value(picker)).toBe('2019-11-23 08:05');
+  });
+
+  test('without autoApply, the last typed time is applied on Apply', () => {
+    const picker = create({ native: true }, { date: '2019-11-23 08:05', autoApply: false });
+    picker.show();
+
+    typeTime(picker, 'input', '17:45');
+    typeTime(picker, 'input', '18:10');
+    expect(value(picker)).toBe('2019-11-23 08:05');
+    expect(applyButton(picker).disabled).toBe(false);
+
+    click(applyButton(picker));
+
+    expect(value(picker)).toBe('2019-11-23 18:10');
   });
 });
 
@@ -285,6 +352,51 @@ describe('without autoApply', () => {
 
     expect(applyButton(picker).disabled).toBe(true);
   });
+
+  test('Cancel discards the pending time', () => {
+    const picker = create({}, { date: '2019-11-23 14:35', autoApply: false });
+    picker.show();
+
+    choose(picker, 'input[HH]', '9');
+    click(picker.ui.container.querySelector('.cancel-button'));
+
+    expect(select(picker, 'input[HH]').value).toBe('14');
+    expect(fmt(picker.getDate())).toBe('2019-11-23 14:35');
+
+    click(applyButton(picker));
+    expect(value(picker)).toBe('2019-11-23 14:35');
+  });
+
+  test('clicks outside the buttons keep the pending time', () => {
+    const picker = create({}, { date: '2019-11-23 14:35', autoApply: false });
+    picker.show();
+    choose(picker, 'input[HH]', '9');
+
+    // Not a `.unit`, and not an HTMLElement at all.
+    click(picker.ui.container.querySelector('.time-plugin-container'));
+    const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    picker.ui.container.appendChild(icon);
+    click(icon);
+
+    expect(value(picker)).toBe('2019-11-23 14:35');
+    click(applyButton(picker));
+    expect(value(picker)).toBe('2019-11-23 09:35');
+  });
+
+  test('a footer without an Apply button still keeps the pending time', () => {
+    const picker = create({}, { date: '2019-11-23 14:35', autoApply: false });
+    picker.on('view', (event: CustomEvent) => {
+      if (event.detail.view === 'Footer') event.detail.target.querySelector('.apply-button').remove();
+    });
+    picker.renderAll();
+
+    choose(picker, 'input[HH]', '9');
+    expect(applyButton(picker)).toBeNull();
+    expect(value(picker)).toBe('2019-11-23 14:35');
+
+    picker.renderAll();
+    expect(select(picker, 'input[HH]').value).toBe('9');
+  });
 });
 
 describe('range', () => {
@@ -311,6 +423,17 @@ describe('range', () => {
 
     expect(picker.getStartDate()).toBeNull();
     expect(picker.getEndDate()).toBeNull();
+  });
+
+  test('days picked without chosen times keep their own time (midnight)', () => {
+    const picker = createRange();
+    picker.show();
+
+    click(day(picker, 5));
+    click(day(picker, 12));
+
+    expect(value(picker)).toBe('2019-11-05 00:00 - 2019-11-12 00:00');
+    expect([fmt(picker.getStartDate()), fmt(picker.getEndDate())]).toEqual(['2019-11-05 00:00', '2019-11-12 00:00']);
   });
 
   test('setStartTime / setEndTime apply to the selected range', () => {
@@ -432,6 +555,33 @@ describe('range', () => {
       expect(select(picker, 'start[HH]').value).toBe('10');
     });
 
+    test('non-strict: only the end input filled', () => {
+      const picker = createRange(
+        { strict: false, elementEnd: input('2019-11-12 18:30') },
+        {},
+        { element: input() },
+      );
+
+      expect(picker.getStartDate()).toBeNull();
+      expect(fmt(picker.getEndDate())).toBe('2019-11-12 18:30');
+      expect([select(picker, 'start[HH]').value, select(picker, 'end[HH]').value]).toEqual(['0', '18']);
+    });
+
+    test('strict: only a start in the single input gives no time', () => {
+      const picker = createRange({}, {}, { element: input('2019-11-05 10:00 - ') });
+
+      expect(picker.getStartDate()).toBeNull();
+      expect(select(picker, 'start[HH]').value).toBe('0');
+    });
+
+    test('non-strict: only an end in the single input', () => {
+      const picker = createRange({ strict: false }, {}, { element: input(' - 2019-11-12 18:30') });
+
+      expect(select(picker, 'start[HH]').value).toBe('0');
+      expect(select(picker, 'end[HH]').value).toBe('18');
+      expect(select(picker, 'end[mm]').value).toBe('30');
+    });
+
     test('non-strict: only a start in the single input', () => {
       const picker = createRange({ strict: false }, {}, { element: input('2019-11-05 10:00 - ') });
 
@@ -550,6 +700,26 @@ describe('with autoApply: select event and plugin order', () => {
     expect(listener).toHaveBeenCalledTimes(1);
     const { start, end } = listener.mock.calls[0][0].detail;
     expect([fmt(start), fmt(end)]).toEqual(['2019-11-05 09:00', '2019-11-12 18:30']);
+  });
+
+  test('range: no select while there is no range to apply the time to', () => {
+    const picker = createRange();
+    const listener = onSelect(picker);
+
+    choose(picker, 'start[HH]', '9');
+
+    expect(listener).not.toHaveBeenCalled();
+  });
+
+  test('range, non-strict: a lone end date fires select', () => {
+    const picker = createRange({ strict: false, endDate: new DateTime('2019-11-12 18:30', FORMAT) });
+    const listener = onSelect(picker);
+
+    choose(picker, 'end[HH]', '20');
+
+    expect(listener).toHaveBeenCalledTimes(1);
+    const { start, end } = listener.mock.calls[0][0].detail;
+    expect([start, fmt(end)]).toEqual([null, '2019-11-12 20:30']);
   });
 
   test.each([

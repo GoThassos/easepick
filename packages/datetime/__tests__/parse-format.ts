@@ -21,6 +21,11 @@ describe('parsing', () => {
     expect(parts(new DateTime('2019-11-23'))).toEqual([2019, 11, 23, 0, 0, 0]);
   });
 
+  test('parseDateTime defaults to the YYYY-MM-DD format and en-US month names', () => {
+    expect(parts(DateTime.parseDateTime('2019-11-23'))).toEqual([2019, 11, 23, 0, 0, 0]);
+    expect(parts(DateTime.parseDateTime('23 Nov 2019', 'D MMM YYYY'))).toEqual([2019, 11, 23, 0, 0, 0]);
+  });
+
   test('stores the language', () => {
     const d = new DateTime('23 novembre 2019', 'D MMMM YYYY', 'fr-FR');
 

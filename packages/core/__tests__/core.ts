@@ -127,6 +127,34 @@ describe('construction', () => {
 
     expect(setup).toHaveBeenCalledWith(picker);
   });
+
+  // setup moves the view away from the date; scrollToDate decides which
+  // month the first render shows.
+  const gotoMarch = (picker: Core) => picker.gotoDate('2020-03-15');
+
+  test('scrollToDate (default): the first render shows the date', () => {
+    const picker = create({ date: '2019-11-23', setup: gotoMarch });
+
+    expect(monthName(picker)).toBe('November 2019');
+  });
+
+  test('scrollToDate false: the first render keeps the current month', () => {
+    const picker = create({ date: '2019-11-23', scrollToDate: false, setup: gotoMarch });
+
+    expect(monthName(picker)).toBe('March 2020');
+    expect(picker.getDate().format('YYYY-MM-DD')).toBe('2019-11-23');
+  });
+
+  test('an element that is not an HTMLElement (SVG) gets no text', () => {
+    document.body.innerHTML = '<svg id="svg-target"></svg>';
+    const svg = document.getElementById('svg-target');
+    const picker = new Core({ element: '#svg-target', date: '2019-11-23' });
+
+    expect(picker.options.element).toBe(svg);
+    expect(picker.getDate().format('YYYY-MM-DD')).toBe('2019-11-23');
+    expect(svg.textContent).toBe('');
+    expect('innerText' in svg).toBe(false);
+  });
 });
 
 describe('css option', () => {
@@ -168,6 +196,13 @@ describe('css option', () => {
 
   test('default (empty array): wrapper stays hidden', () => {
     const picker = create();
+
+    expect(picker.ui.shadowRoot.querySelectorAll('link, style').length).toBe(0);
+    expect(picker.ui.wrapper.style.display).toBe('none');
+  });
+
+  test('unsupported value (null): nothing injected, wrapper stays hidden', () => {
+    const picker = create({ css: null });
 
     expect(picker.ui.shadowRoot.querySelectorAll('link, style').length).toBe(0);
     expect(picker.ui.wrapper.style.display).toBe('none');
@@ -393,6 +428,32 @@ describe('dates', () => {
 
     expect(day(picker, 2019, 11, 23).classList.contains('selected')).toBe(false);
     expect(day(picker, 2019, 11, 10).classList.contains('selected')).toBe(true);
+  });
+
+  test('setDate without calendars updates the value but does not render', () => {
+    const picker = create({ date: '2019-11-23' });
+    const onRender = jest.fn();
+    picker.on('render', onRender);
+    picker.calendars.length = 0;
+    picker.setDate('2019-11-10');
+
+    expect((picker.options.element as HTMLInputElement).value).toBe('2019-11-10');
+    expect(onRender).not.toHaveBeenCalled();
+    expect(day(picker, 2019, 11, 23).classList.contains('selected')).toBe(true);
+  });
+
+  test('renderAll ignores a date that is not a DateTime', () => {
+    const picker = create({ date: '2019-11-23' });
+    const onRender = jest.fn();
+    picker.on('render', onRender);
+
+    picker.renderAll(new Date(2018, 0, 1) as unknown as DateTime);
+    expect(onRender).not.toHaveBeenCalled();
+    expect(monthName(picker)).toBe('November 2019');
+
+    picker.renderAll(new DateTime('2018-01-01'));
+    expect(onRender.mock.calls.map(([e]) => e.detail.view)).toContain('Container');
+    expect(monthName(picker)).toBe('January 2018');
   });
 
   test('clear', () => {

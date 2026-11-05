@@ -151,6 +151,26 @@ describe('without autoApply', () => {
     expect(applyButton(picker).disabled).toBe(true);
   });
 
+  test('a footer without the apply button (custom footer) still allows unpicking', () => {
+    const picker = create({}, { autoApply: false });
+    // A listener ahead of the plugin's drops the apply button.
+    picker.on('view', (event: CustomEvent) => {
+      if (event.detail.view === 'Footer') event.detail.target.querySelector('.apply-button')?.remove();
+    });
+    picker.PluginManager.reloadInstance('MSelectPlugin');
+    picker.setDates(['2019-11-03', '2019-11-07']);
+    picker.show();
+    const onPreselect = jest.fn();
+    picker.on('preselect', onPreselect);
+
+    click(day(picker, 3));
+
+    expect(applyButton(picker)).toBeNull();
+    expect(picker.ui.container.querySelector('.cancel-button')).not.toBeNull();
+    expect(selectedDays(picker)).toEqual([7]);
+    expect(onPreselect.mock.calls[0][0].detail.dates.map((d: DateTime) => d.getDate())).toEqual([7]);
+  });
+
   test('removing every date can be applied', () => {
     const picker = createPending();
 
@@ -182,6 +202,28 @@ describe('options', () => {
     expect(value(picker)).toBe('03.11.2019, 07.11.2019');
   });
 
+  test('a non-input element gets the dates as its text', () => {
+    const element = document.createElement('div');
+    document.body.append(element);
+    const picker = create({ dates: ['2019-11-03', '2019-11-07'] }, { element });
+
+    expect(element.innerText).toBe('2019-11-03;2019-11-07');
+
+    picker.addDate('2019-11-09');
+    expect(element.innerText).toBe('2019-11-03;2019-11-07;2019-11-09');
+  });
+
+  test('an element that is not an HTMLElement (SVG) is left untouched', () => {
+    document.body.innerHTML = '<svg id="icon"><circle r="4"></circle></svg>';
+    const element = document.getElementById('icon');
+    const picker = create({ dates: ['2019-11-03'] }, { element: '#icon' });
+
+    expect(picker.options.element).toBe(element);
+    expect(dates(picker)).toEqual(['2019-11-03']);
+    expect(element.innerHTML).toBe('<circle r="4"></circle>');
+    expect('innerText' in element).toBe(false);
+  });
+
   test('the calendar opens on the earliest date', () => {
     const picker = create({ dates: ['2020-03-09', '2020-02-14'] });
 
@@ -204,6 +246,20 @@ describe('options', () => {
     // Removing one frees a slot.
     click(day(picker, 3));
     expect(day(picker, 20).classList.contains('not-available')).toBe(false);
+  });
+
+  test('max: a day without the not-available mark is still refused once reached', () => {
+    const picker = create({ max: 2 });
+    // Rendered before the max is reached, so not marked unavailable.
+    const stale = day(picker, 20);
+
+    click(day(picker, 3));
+    click(day(picker, 7));
+    expect(stale.classList.contains('not-available')).toBe(false);
+
+    picker.onClickCalendarDay(stale);
+
+    expect(dates(picker)).toEqual(['2019-11-03', '2019-11-07']);
   });
 
   test('max counts pending picks, and limits dates set by the API', () => {
@@ -322,6 +378,30 @@ describe('useWrapper', () => {
     expect(onShow.mock.calls[0][0].detail.target).toBe(mselect(picker).wrapper);
   });
 
+  test('opening for the hidden input (KbdPlugin button) opens under the list', () => {
+    const picker = create({ useWrapper: true, dates: ['2019-11-03'] }, { plugins: [MSelectPlugin, KbdPlugin] });
+    const onShow = jest.fn();
+    picker.on('show', onShow);
+
+    const kbd = picker.PluginManager.getInstance('KbdPlugin') as KbdPlugin;
+    click(kbd.docElement.shadowRoot.querySelector('button'));
+
+    expect(picker.isShown()).toBe(true);
+    expect(onShow.mock.calls[0][0].detail.target).toBe(mselect(picker).wrapper);
+  });
+
+  test('opening for another element keeps that target', () => {
+    const picker = create({ useWrapper: true, dates: ['2019-11-03'] });
+    const onShow = jest.fn();
+    picker.on('show', onShow);
+    const button = document.createElement('button');
+    document.body.append(button);
+
+    picker.show({ target: button });
+
+    expect(onShow.mock.calls[0][0].detail.target).toBe(button);
+  });
+
   test('the remove button removes a date without opening the picker', () => {
     const picker = create({ useWrapper: true, dates: ['2019-11-03', '2019-11-07'] });
     const onSelect = jest.fn();
@@ -377,6 +457,35 @@ describe('detach', () => {
     click(day(picker, 20));
     expect(picker.getDate().format('YYYY-MM-DD')).toBe('2019-11-20');
     expect(value(picker)).toBe('2019-11-20');
+  });
+  test('restores the input visibility it had', () => {
+    const element = input();
+    element.style.visibility = 'collapse';
+    const picker = create({ useWrapper: true }, { element });
+
+    expect(element.style.visibility).toBe('hidden');
+
+    picker.PluginManager.removeInstance('MSelectPlugin');
+
+    expect(element.style.visibility).toBe('collapse');
+    expect(element.style.position).toBe('');
+    expect(element.dataset.easepickStoreVisibility).toBeUndefined();
+  });
+
+  test("restores another plugin's overrides of the core methods", () => {
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const picker = create({}, { plugins: [RangePlugin, MSelectPlugin] });
+    const range = picker.PluginManager.getInstance('RangePlugin') as RangePlugin;
+
+    expect(picker.clear).toBe(mselect(picker).binds.clear);
+
+    picker.PluginManager.removeInstance('MSelectPlugin');
+
+    expect(picker.clear).toBe(range.binds.clear);
+    expect(picker.parseValues).toBe(range.binds.parseValues);
+    expect(picker.onClickCalendarDay).toBe(range.binds.onClickCalendarDay);
+    expect('getDates' in picker).toBe(false);
+    warn.mockRestore();
   });
 });
 

@@ -19,13 +19,13 @@ export class PresetPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Returns plugin name
-   * 
+   *
    * @returns String
    */
   public getName(): string {
     return 'PresetPlugin';
   }
-  
+
   /**
    * - Called automatically via BasePlugin.attach() -
    * The function execute on initialize the picker
@@ -81,8 +81,8 @@ export class PresetPlugin extends BasePlugin implements IPlugin {
   /**
    * Function `view` event
    * Adds HTML layout of current plugin to the picker layout
-   * 
-   * @param event 
+   *
+   * @param event
    */
   private onView(event: CustomEvent) {
     const { view, target }: IEventDetail = event.detail;
@@ -115,8 +115,8 @@ export class PresetPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Handle click event
-   * 
-   * @param event 
+   *
+   * @param event
    */
   private onClick(event) {
     const target = event.target;
@@ -152,8 +152,8 @@ export class PresetPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Determines if HTMLElement is preset buttons
-   * 
-   * @param element 
+   *
+   * @param element
    * @returns Boolean
    */
   private isPresetButton(element: HTMLElement) {

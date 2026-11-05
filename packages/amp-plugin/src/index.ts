@@ -32,7 +32,7 @@ export class AmpPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Returns plugin name
-   * 
+   *
    * @returns String
    */
   public getName(): string {
@@ -78,8 +78,8 @@ export class AmpPlugin extends BasePlugin implements IPlugin {
   /**
    * Function `view` event
    * Adds `tabIndex` to the picker elements
-   * 
-   * @param event 
+   *
+   * @param event
    */
   private onView(event: CustomEvent) {
     this.lockPlugin = this.picker.PluginManager.getInstance('LockPlugin');
@@ -91,8 +91,8 @@ export class AmpPlugin extends BasePlugin implements IPlugin {
   }
 
   /**
-   * 
-   * @param evt 
+   *
+   * @param evt
    */
   private onColorScheme(evt) {
     const colorScheme = evt.matches ? 'dark' : 'light';
@@ -100,8 +100,8 @@ export class AmpPlugin extends BasePlugin implements IPlugin {
   }
 
   /**
-   * 
-   * @param evt 
+   *
+   * @param evt
    */
   public handleDropdown(evt) {
     const { view, target, date, index }: IEventDetail = evt.detail;
@@ -220,8 +220,8 @@ export class AmpPlugin extends BasePlugin implements IPlugin {
   }
 
   /**
-   * 
-   * @param event 
+   *
+   * @param event
    */
   private handleResetButton(event) {
     const { view, target }: IEventDetail = event.detail;
@@ -250,8 +250,8 @@ export class AmpPlugin extends BasePlugin implements IPlugin {
   }
 
   /**
-   * 
-   * @param event 
+   *
+   * @param event
    */
   private handleWeekNumbers(event) {
     if (this.options.weekNumbers) {

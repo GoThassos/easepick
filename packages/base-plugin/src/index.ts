@@ -10,8 +10,8 @@ export class BasePlugin {
   /**
    * - Called automatically via PluginManager.initialize() or PluginManager.addInstance() -
    * Add plugin to the picker
-   * 
-   * @param picker 
+   *
+   * @param picker
    */
   public attach(picker: Core): void {
     const pluginName = this['getName']();
@@ -69,7 +69,7 @@ export class BasePlugin {
 
   /**
    * Check dependencies for plugin
-   * 
+   *
    * @returns Boolean
    */
   private dependenciesNotFound(): boolean {
@@ -79,7 +79,7 @@ export class BasePlugin {
 
   /**
    * Return plugins list as string array
-   * 
+   *
    * @returns []
    */
   private pluginsAsStringArray(): string[] {
@@ -90,8 +90,8 @@ export class BasePlugin {
   /**
    * Return camelCase in kebab-case
    * Eg.: `userName` -> `user-name`
-   * 
-   * @param str 
+   *
+   * @param str
    * @returns String
    */
   private camelCaseToKebab(str) {

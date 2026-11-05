@@ -50,7 +50,7 @@ export class TimePlugin extends BasePlugin implements IPlugin {
 
   /**
    * Returns plugin name
-   * 
+   *
    * @returns String
    */
   public getName(): string {
@@ -134,8 +134,8 @@ export class TimePlugin extends BasePlugin implements IPlugin {
   /**
    * Function `view` event
    * Adds HTML layout of current plugin to the picker layout
-   * 
-   * @param event 
+   *
+   * @param event
    */
   private onView(event: CustomEvent) {
     const { view, target }: IEventDetail = event.detail;
@@ -168,8 +168,8 @@ export class TimePlugin extends BasePlugin implements IPlugin {
   }
 
   /**
-   * 
-   * @param event 
+   *
+   * @param event
    */
   private onInput(event) {
     const target = event.target;
@@ -191,8 +191,8 @@ export class TimePlugin extends BasePlugin implements IPlugin {
 
   /**
    * Handle `change` event
-   * 
-   * @param event 
+   *
+   * @param event
    */
   private onChange(event) {
     const target = event.target;
@@ -303,9 +303,9 @@ export class TimePlugin extends BasePlugin implements IPlugin {
 
   /**
    * Set time programmatically
-   * 
-   * @param value 
-   * @param keyName 
+   *
+   * @param value
+   * @param keyName
    */
   private setTime(value: string): void {
     const d = this.handleTimeString(value);
@@ -316,9 +316,9 @@ export class TimePlugin extends BasePlugin implements IPlugin {
 
   /**
    * Set start time programmatically
-   * 
-   * @param value 
-   * @param keyName 
+   *
+   * @param value
+   * @param keyName
    */
   private setStartTime(value: string): void {
     const d = this.handleTimeString(value);
@@ -329,9 +329,9 @@ export class TimePlugin extends BasePlugin implements IPlugin {
 
   /**
    * Set end time programmatically
-   * 
-   * @param value 
-   * @param keyName 
+   *
+   * @param value
+   * @param keyName
    */
   private setEndTime(value: string): void {
     const d = this.handleTimeString(value);
@@ -352,8 +352,8 @@ export class TimePlugin extends BasePlugin implements IPlugin {
   }
   /**
    * Adds time to DateTime object
-   * Replaces the original `getDate` function 
-   * 
+   * Replaces the original `getDate` function
+   *
    * @returns DateTime
    */
   private getDate(): DateTime {
@@ -373,8 +373,8 @@ export class TimePlugin extends BasePlugin implements IPlugin {
 
   /**
    * Adds time to DateTime object
-   * Replaces the original `getStartDate` function 
-   * 
+   * Replaces the original `getStartDate` function
+   *
    * @returns DateTime
    */
   private getStartDate(): DateTime {
@@ -394,8 +394,8 @@ export class TimePlugin extends BasePlugin implements IPlugin {
 
   /**
    * Adds time to DateTime object
-   * Replaces the original `getEndDate` function 
-   * 
+   * Replaces the original `getEndDate` function
+   *
    * @returns DateTime
    */
   private getEndDate(): DateTime {
@@ -414,7 +414,7 @@ export class TimePlugin extends BasePlugin implements IPlugin {
   }
 
   /**
-   * 
+   *
    * @returns HTMLElement
    */
   private getSingleInput(): HTMLElement {
@@ -426,7 +426,7 @@ export class TimePlugin extends BasePlugin implements IPlugin {
   }
 
   /**
-   * 
+   *
    * @returns HTMLElement
    */
   private getStartInput(): HTMLElement {
@@ -438,7 +438,7 @@ export class TimePlugin extends BasePlugin implements IPlugin {
   }
 
   /**
-   * 
+   *
    * @returns HTMLElement
    */
   private getEndInput(): HTMLElement {
@@ -451,8 +451,8 @@ export class TimePlugin extends BasePlugin implements IPlugin {
 
   /**
    * Returns `input[type="time"]` element
-   * 
-   * @param name 
+   *
+   * @param name
    * @returns HTMLElement
    */
   private getNativeInput(name: string): HTMLElement {
@@ -472,9 +472,9 @@ export class TimePlugin extends BasePlugin implements IPlugin {
   }
 
   /**
-   * Returns `select` element 
-   * 
-   * @param name 
+   * Returns `select` element
+   *
+   * @param name
    * @returns HTMLElement
    */
   private getCustomInput(name: keyof ITimeSlots): HTMLElement {
@@ -576,10 +576,10 @@ export class TimePlugin extends BasePlugin implements IPlugin {
 
   /**
    * Handle 12H time
-   * 
-   * @param period 
-   * @param date 
-   * @param value 
+   *
+   * @param period
+   * @param date
+   * @param value
    * @returns DateTime
    */
   private handleFormat12(period: string, date: DateTime, value: number): DateTime {

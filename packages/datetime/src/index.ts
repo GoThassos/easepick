@@ -115,9 +115,9 @@ export class DateTime extends Date {
 
   /**
    * Returns group and pattern for match function
-   * 
-   * @param token 
-   * @param lang 
+   *
+   * @param token
+   * @param lang
    * @returns { group, pattern }
    */
   private static formatPatterns(token: string, lang: string) {
@@ -225,8 +225,8 @@ export class DateTime extends Date {
 
   /**
    * Returns the week number
-   * 
-   * @param firstDay 
+   *
+   * @param firstDay
    * @returns Number
    */
   public getWeek(firstDay: number): number {
@@ -243,7 +243,7 @@ export class DateTime extends Date {
 
   /**
    * Duplicate the date
-   * 
+   *
    * @returns DateTime
    */
   public clone(): DateTime {
@@ -252,7 +252,7 @@ export class DateTime extends Date {
 
   /**
    * Convert DateTime to Date object
-   * 
+   *
    * @returns Date
    */
   public toJSDate(): Date {
@@ -261,9 +261,9 @@ export class DateTime extends Date {
 
   /**
    * Find DateTime object (this) in passed DateTime array
-   * 
-   * @param array 
-   * @param inclusivity 
+   *
+   * @param array
+   * @param inclusivity
    * @returns Boolean
    */
   public inArray(
@@ -281,10 +281,10 @@ export class DateTime extends Date {
 
   /**
    * Check if a DateTime is between two other DateTime, optionally looking at unit scale
-   * 
-   * @param date1 
-   * @param date2 
-   * @param inclusivity 
+   *
+   * @param date1
+   * @param date2
+   * @param inclusivity
    * @returns Boolean
    */
   public isBetween(date1: DateTime, date2: DateTime, inclusivity = '()'): boolean {
@@ -310,9 +310,9 @@ export class DateTime extends Date {
 
   /**
    * Check if a DateTime is before another DateTime.
-   * 
-   * @param date 
-   * @param unit 
+   *
+   * @param date
+   * @param unit
    * @returns Boolean
    */
   public isBefore(date: DateTime, unit = 'days'): boolean {
@@ -337,9 +337,9 @@ export class DateTime extends Date {
 
   /**
    * Check if a DateTime is before or the same as another DateTime.
-   * 
-   * @param date 
-   * @param unit 
+   *
+   * @param date
+   * @param unit
    * @returns Boolean
    */
   public isSameOrBefore(date: DateTime, unit = 'days'): boolean {
@@ -360,9 +360,9 @@ export class DateTime extends Date {
 
   /**
    * Check if a DateTime is after another DateTime.
-   * 
-   * @param date 
-   * @param unit 
+   *
+   * @param date
+   * @param unit
    * @returns Boolean
    */
   public isAfter(date: DateTime, unit = 'days'): boolean {
@@ -387,9 +387,9 @@ export class DateTime extends Date {
 
   /**
    * Check if a DateTime is after or the same as another DateTime.
-   * 
-   * @param date 
-   * @param unit 
+   *
+   * @param date
+   * @param unit
    * @returns Boolean
    */
   public isSameOrAfter(date: DateTime, unit = 'days'): boolean {
@@ -410,9 +410,9 @@ export class DateTime extends Date {
 
   /**
    * Check if a DateTime is the same as another DateTime.
-   * 
-   * @param date 
-   * @param unit 
+   *
+   * @param date
+   * @param unit
    * @returns Boolean
    */
   public isSame(date: DateTime, unit = 'days'): boolean {
@@ -433,9 +433,9 @@ export class DateTime extends Date {
 
   /**
    * Mutates the original DateTime by adding time.
-   * 
-   * @param duration 
-   * @param unit 
+   *
+   * @param duration
+   * @param unit
    */
   public add(duration: number, unit = 'days'): DateTime {
     switch (unit) {
@@ -456,9 +456,9 @@ export class DateTime extends Date {
 
   /**
    * Mutates the original DateTime by subtracting time.
-   * 
-   * @param duration 
-   * @param unit 
+   *
+   * @param duration
+   * @param unit
    */
   public subtract(duration: number, unit = 'days'): DateTime {
     switch (unit) {
@@ -479,9 +479,9 @@ export class DateTime extends Date {
 
   /**
    * Returns diff between two DateTime
-   * 
-   * @param date 
-   * @param unit 
+   *
+   * @param date
+   * @param unit
    * @returns Number
    */
   public diff(date: DateTime, unit = 'days'): number {
@@ -505,9 +505,9 @@ export class DateTime extends Date {
 
   /**
    * Format output
-   * 
-   * @param format 
-   * @param lang 
+   *
+   * @param format
+   * @param lang
    * @returns String
    */
   public format(format: string, lang = 'en-US'): string {
@@ -549,8 +549,8 @@ export class DateTime extends Date {
 
   /**
    * Returns the midnight timestamp of a date
-   * 
-   * @param date 
+   *
+   * @param date
    * @returns Date
    */
   private midnight_ts(date?: Date): number {
@@ -563,9 +563,9 @@ export class DateTime extends Date {
 
   /**
    * Returns the formatted string of the passed token
-   * 
-   * @param token 
-   * @param lang 
+   *
+   * @param token
+   * @param lang
    * @returns String
    */
   private formatTokens(token: string, lang: string) {

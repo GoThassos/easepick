@@ -44,8 +44,8 @@ export default class PluginManager {
 
   /**
    * Return instance of plugin
-   * 
-   * @param name 
+   *
+   * @param name
    * @returns Plugin
    */
   public getInstance<T>(name: string): T {
@@ -54,8 +54,8 @@ export default class PluginManager {
 
   /**
    * Add plugin «on the fly» to the picker
-   * 
-   * @param name 
+   *
+   * @param name
    */
   public addInstance<T>(name: string): T {
     if (!Object.prototype.hasOwnProperty.call(this.instances, name)) {
@@ -83,8 +83,8 @@ export default class PluginManager {
 
   /**
    * Remove plugin from the picker
-   * 
-   * @param name 
+   *
+   * @param name
    */
   public removeInstance(name: string): boolean {
     if (name in this.instances) {
@@ -96,8 +96,8 @@ export default class PluginManager {
 
   /**
    * Reload plugin
-   * 
-   * @param name 
+   *
+   * @param name
    */
   public reloadInstance<T>(name: string): T {
     this.removeInstance(name);
@@ -107,8 +107,8 @@ export default class PluginManager {
 
   /**
    * Find plugin function by the name
-   * 
-   * @param name 
+   *
+   * @param name
    * @returns Plugin
    */
   private getPluginFn(name: string): any {

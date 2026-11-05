@@ -19,7 +19,7 @@ export class KbdPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Returns plugin name
-   * 
+   *
    * @returns String
    */
   public getName(): string {
@@ -94,8 +94,8 @@ export class KbdPlugin extends BasePlugin implements IPlugin {
   /**
    * Function `view` event
    * Adds `tabIndex` to the picker elements
-   * 
-   * @param event 
+   *
+   * @param event
    */
   private onView(event: CustomEvent) {
     const { view, target }: IEventDetail = event.detail;
@@ -113,8 +113,8 @@ export class KbdPlugin extends BasePlugin implements IPlugin {
   /**
    * Function for `keydown` event
    * Handle keys when the picker has focus
-   * 
-   * @param event 
+   *
+   * @param event
    */
   private onKeydown(event) {
     this.onMouseEnter(event);
@@ -143,10 +143,10 @@ export class KbdPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Find closest day elements
-   * 
-   * @param layout 
-   * @param target 
-   * @param isAllow 
+   *
+   * @param layout
+   * @param target
+   * @param isAllow
    * @returns Boolean
    */
   private findAllowableDaySibling(layout, target, isAllow) {
@@ -160,8 +160,8 @@ export class KbdPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Switch month via buttons (previous month, next month)
-   * 
-   * @param evt 
+   *
+   * @param evt
    */
   private changeMonth(evt) {
     const arrows = {
@@ -197,8 +197,8 @@ export class KbdPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Handle ArrowUp and ArrowDown keys
-   * 
-   * @param evt 
+   *
+   * @param evt
    */
   private verticalMove(evt) {
     const target = evt.target;
@@ -219,8 +219,8 @@ export class KbdPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Handle ArrowLeft and ArrowRight keys
-   * 
-   * @param evt 
+   *
+   * @param evt
    */
   private horizontalMove(evt) {
     const target = evt.target;
@@ -243,8 +243,8 @@ export class KbdPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Handle Enter and Space keys
-   * 
-   * @param evt 
+   *
+   * @param evt
    */
   private handleEnter(evt) {
     const target = evt.target;
@@ -270,8 +270,8 @@ export class KbdPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Manually fire `mouseenter` event to display date range correctly
-   * 
-   * @param evt 
+   *
+   * @param evt
    */
   private onMouseEnter(evt) {
     const target = evt.target;

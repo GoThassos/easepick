@@ -24,7 +24,7 @@ export class LockPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Returns plugin name
-   * 
+   *
    * @returns String
    */
   public getName(): string {
@@ -84,8 +84,8 @@ export class LockPlugin extends BasePlugin implements IPlugin {
   /**
    * Function `view` event
    * Mark day elements as locked
-   * 
-   * @param event 
+   *
+   * @param event
    */
   private onView(event: CustomEvent) {
     const { view, target, date }: IEventDetail = event.detail;
@@ -173,9 +173,9 @@ export class LockPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Checks availability date
-   * 
-   * @param date 
-   * @param start 
+   *
+   * @param date
+   * @param start
    * @returns Boolean
    */
   private dateIsNotAvailable(date: DateTime, start: DateTime): boolean {
@@ -189,9 +189,9 @@ export class LockPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Checks the date range for availability
-   * 
-   * @param date1 
-   * @param date2 
+   *
+   * @param date1
+   * @param date2
    * @returns Boolean
    */
   private rangeIsNotAvailable(date1: DateTime, date2: DateTime): boolean {
@@ -213,8 +213,8 @@ export class LockPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Handle `minDate` option
-   * 
-   * @param date 
+   *
+   * @param date
    * @returns Boolean
    */
   private lockMinDate(date: DateTime): boolean {
@@ -226,8 +226,8 @@ export class LockPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Handle `maxDate` option
-   * 
-   * @param date 
+   *
+   * @param date
    * @returns Boolean
    */
   private lockMaxDate(date: DateTime): boolean {
@@ -238,8 +238,8 @@ export class LockPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Handle `minDays` option
-   * 
-   * @param date 
+   *
+   * @param date
    * @returns Boolean
    */
   private lockMinDays(date: DateTime, start: DateTime): boolean {
@@ -259,8 +259,8 @@ export class LockPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Handle `maxDays` option
-   * 
-   * @param date 
+   *
+   * @param date
    * @returns Boolean
    */
   private lockMaxDays(date: DateTime, start: DateTime): boolean {
@@ -280,8 +280,8 @@ export class LockPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Handle `selectForward` option
-   * 
-   * @param date 
+   *
+   * @param date
    * @returns Boolean
    */
   private lockSelectForward(date: DateTime): boolean {
@@ -296,8 +296,8 @@ export class LockPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Handle `selectBackward` option
-   * 
-   * @param date 
+   *
+   * @param date
    * @returns Boolean
    */
   private lockSelectBackward(date: DateTime): boolean {
@@ -312,8 +312,8 @@ export class LockPlugin extends BasePlugin implements IPlugin {
 
   /**
    * Handle `filter` option
-   * 
-   * @param date 
+   *
+   * @param date
    * @returns Boolean
    */
   private testFilter(date: DateTime): boolean {

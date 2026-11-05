@@ -8,6 +8,19 @@ export interface IEventDetail {
   index?: number;
 }
 
+/**
+ * Minimal shape of a plugin instance, as used by the core.
+ * (The full interface lives in base-plugin, which depends on core.)
+ */
+export interface IPluginInstance {
+  priority: number;
+  dependencies: string[];
+  getName(): string;
+  attach(picker: Core): void;
+}
+
+export type PluginConstructor = new () => IPluginInstance;
+
 export interface IPickerElements {
   container: HTMLElement;
   shadowRoot: ShadowRoot;
@@ -33,7 +46,7 @@ export interface IPickerConfig {
     cancel?: string;
     apply?: string;
   }
-  plugins?: any[];
+  plugins?: (PluginConstructor | string)[];
   documentClick?: boolean | (() => void);
   zIndex?: number;
   inline?: boolean;

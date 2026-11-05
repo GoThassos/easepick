@@ -1,4 +1,5 @@
 import { Core } from './core';
+import { IPluginInstance, PluginConstructor } from './types';
 
 export default class PluginManager {
   public picker: Core;
@@ -12,9 +13,9 @@ export default class PluginManager {
    * Initialize user-supplied plugins (if any)
    */
   public initialize(): void {
-    const list = [];
+    const list: IPluginInstance[] = [];
 
-    this.picker.options.plugins.forEach((plugin: any) => {
+    this.picker.options.plugins.forEach((plugin) => {
       if (typeof plugin === 'function') {
         list.push(new plugin);
       } else if (typeof plugin === 'string'
@@ -65,12 +66,12 @@ export default class PluginManager {
         this.instances[plugin.getName()] = plugin;
 
         return plugin;
-      } else if (typeof this.getPluginFn(name) === 'function') {
-        const plugin = new (this.getPluginFn(name));
+      } else if (this.getPluginFn(name) !== undefined) {
+        const plugin = new (this.getPluginFn(name))();
         plugin.attach(this.picker);
         this.instances[plugin.getName()] = plugin;
 
-        return plugin;
+        return plugin as unknown as T;
       } else {
         console.warn(`easepick: ${name} not found.`);
       }
@@ -111,9 +112,9 @@ export default class PluginManager {
    * @param name
    * @returns Plugin
    */
-  private getPluginFn(name: string): any {
-    return [...this.picker.options.plugins]
-      .filter(x => typeof x === 'function' && (new x).getName() === name)
+  private getPluginFn(name: string): PluginConstructor | undefined {
+    return this.picker.options.plugins
+      .filter((x): x is PluginConstructor => typeof x === 'function' && (new x).getName() === name)
       .shift();
   }
 }

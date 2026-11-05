@@ -14,7 +14,7 @@ export class DateTime extends Date {
 
     if (typeof date === 'string') {
       const matches = [];
-      let m = null;
+      let m: RegExpExecArray | null;
 
       while ((m = DateTime.regex.exec(format)) != null) {
         if (m[1] === '\\') continue; // delete when regexp lookbehind
@@ -525,7 +525,7 @@ export class DateTime extends Date {
     let response = '';
 
     const matches = [];
-    let m = null;
+    let m: RegExpExecArray | null;
 
     while ((m = DateTime.regex.exec(format)) != null) {
       if (m[1] === '\\') continue; // delete when regexp lookbehind

@@ -111,7 +111,7 @@ export default class Calendar {
         target: daysView,
       });
 
-      const calendarFooter = this.getCalendarFooterView(this.picker.options.lang, date.clone());
+      const calendarFooter = this.getCalendarFooterView();
       month.appendChild(calendarFooter);
       this.picker.trigger('view', {
         date: date.clone(),
@@ -352,11 +352,9 @@ export default class Calendar {
   /**
    * Function for `CalendarFooter` view
    *
-   * @param lang
-   * @param date
    * @returns HTMLElement
    */
-  public getCalendarFooterView(lang: string, date: DateTime): HTMLElement {
+  public getCalendarFooterView(): HTMLElement {
     const element = document.createElement('div');
     element.className = 'footer';
 

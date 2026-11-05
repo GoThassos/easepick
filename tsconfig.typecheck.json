@@ -1,0 +1,15 @@
+{
+  // Type-checks every package's sources in one program with TypeScript 7
+  // (`npm run typecheck`). The build, tests and lint still use TypeScript 6
+  // through its JS API, which TypeScript 7 does not provide yet.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "emitDeclarationOnly": false
+  },
+  "include": ["packages/*/src/**/*"],
+  // Same globals as core's declaration.d.ts; both in one program would clash.
+  "exclude": ["packages/base-plugin/src/declaration.d.ts"],
+  "references": []
+}

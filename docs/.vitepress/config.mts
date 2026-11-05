@@ -88,6 +88,7 @@ export default defineConfig({
         text: 'Introduction',
         items: [
           { text: 'Guide', link: '/guide/' },
+          { text: 'Migrating from easepick', link: '/guide/migration' },
           { text: 'Configurator', link: '/configurator/' },
         ],
       },

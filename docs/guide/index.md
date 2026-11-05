@@ -6,6 +6,10 @@ Date picker - tiny size, no dependencies
 This is the documentation for the [GoThassos fork](https://github.com/GoThassos/easepick) of easepick, published on npm as `@gothassos/easepick-*`. The original project by [Rinat G.](https://github.com/wakirin) ([easepick/easepick](https://github.com/easepick/easepick)) is archived. These pages are based on its [documentation](https://github.com/easepick/docs).
 :::
 
+::: tip Coming from `@easepick/*`?
+This fork is compatible with `@easepick/*` 1.2.1: change the package names and your existing config keeps working. See [Migrating from easepick](./migration) for the few behaviour changes.
+:::
+
 ## Features
 
 - No dependencies

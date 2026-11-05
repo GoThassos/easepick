@@ -16,7 +16,7 @@
 
 ## Documentation
 
-Full documentation with live examples and a configurator: **<https://gothassos.github.io/easepick/>** (source in [docs/](docs/)).
+Full documentation with live examples and a configurator: **<https://gothassos.github.io/easepick/>** (source in [docs/](docs/)). What changed in each version: [CHANGELOG.md](CHANGELOG.md).
 
 Each package also documents its options and methods in its own README:
 

@@ -34,5 +34,8 @@
     "yml",
     "COBOL",
     "ACUCOBOL"
-  ]
+  ],
+  "files.associations": {
+    "LICENSE": "plaintext"
+  }
 }

@@ -1,0 +1,36 @@
+{
+  "name": "@gothassos/easepick-sample-plugin",
+  "description": "Sample plugin for easepick: a starting point for writing your own.",
+  "keywords": [
+    "easepick",
+    "easepick plugin",
+    "datepicker",
+    "sample"
+  ],
+  "version": "1.2.9",
+  "private": true,
+  "main": "dist/index.umd.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@gothassos/easepick-base-plugin": "^1.1.0",
+    "@gothassos/easepick-datetime": "^1.1.0"
+  },
+  "author": {
+    "name": "Rinat G.",
+    "email": "easepick@jsx4.com"
+  },
+  "license": "GPL-2.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoThassos/easepick.git",
+    "directory": "packages/sample-plugin"
+  },
+  "homepage": "https://github.com/GoThassos/easepick/tree/master/packages/sample-plugin#readme",
+  "bugs": {
+    "url": "https://github.com/GoThassos/easepick/issues"
+  },
+  "files": [
+    "dist"
+  ]
+}

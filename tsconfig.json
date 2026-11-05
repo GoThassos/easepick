@@ -48,5 +48,8 @@
     {
       "path": "packages/amp-plugin"
     },
+    {
+      "path": "packages/sample-plugin"
+    },
   ]
 }

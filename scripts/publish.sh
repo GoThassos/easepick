@@ -106,4 +106,7 @@ git commit -m "$new_tag"
 git tag -a $new_tag -m "$new_tag"
 git push --follow-tags
 
+# Workspaces marked `"private": true` in their package.json (e.g.
+# packages/sample-plugin) are skipped by npm. Remove that flag from a package
+# to publish it.
 npm publish --workspaces --access=public

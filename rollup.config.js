@@ -117,6 +117,7 @@ export default [
   getPackageConfig('kbd-plugin'),
   getPackageConfig('amp-plugin'),
   getPackageConfig('sample-plugin'),
+  getPackageConfig('mselect-plugin'),
 
   // @gothassos/bundle
   {

@@ -14,7 +14,9 @@
 
 ## Documentation
 
-Each package documents its options and methods in its own README:
+Full documentation with live examples and a configurator: **<https://gothassos.github.io/easepick/>** (source in [docs/](docs/)).
+
+Each package also documents its options and methods in its own README:
 
 - [@gothassos/easepick-bundle](packages/bundle#readme) (all packages in one)
 - [@gothassos/easepick-core](packages/core#readme)

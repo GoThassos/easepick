@@ -1,0 +1,151 @@
+html.dark {
+  #app-configurator.spinner {
+    &:before {
+      background-color: #2d333b;
+      border-color: #444c56;
+    }
+  }
+  #app-picker,
+  #app-picker-end {
+    background-color: #22272d;
+    border-color: #444c56;
+    color: #acbac7;
+  }
+
+  .app-wrapper {
+    .packages-list .pkg-tab {
+      background-color: #2d333b;
+
+      .pkg-tab-name {
+        color: #acbac7;
+      }
+
+      .pkg-tab-info {
+        color: #768390;
+      }
+
+      &.active {
+        border-left-color: #ec775c;
+        border-top-color: #373e47;
+        border-bottom-color: #373e47;
+        box-shadow: none;
+
+        .pkg-tab-name {
+          color: var(--default-theme-color);
+        }
+      }
+    }
+
+    .package-options {
+      border-color: #373e47;
+      box-shadow: none;
+
+      .pkg-options-content {
+        background-color: #2d333b;
+
+        input,
+        select {
+          background-color: #22272d;
+          border-color: #444c56;
+          color: #acbac7;
+        }
+      }
+
+      .pkg-options {
+        fieldset {
+          border-color: #444c56;
+        }
+
+        .pkg-option {
+          &:hover {
+            .pkg-option-buttons {
+              .icon:not(.icon-warn) {
+                /*background-color: #acbac7;
+                border-radius: 3px;*/
+              }
+            }
+          }
+
+          &.unavailable {
+            &:before {
+              background-color: #000;
+            }
+          }
+
+          .pkg-option-buttons [data-title]:hover:before {
+            box-shadow: none;
+            color: #acbac7;
+          }
+
+          .pkg-option-unconfigurable {
+            background-color: #22272c;
+          }
+
+          .pkg-option-boolean {
+            input:checked {
+              background-color: #22272c;
+
+              + label {
+                background-color: #347c39;
+              }
+            }
+
+            input:not(:checked) {
+              background-color: #22272c;
+
+              + label {
+                background-color: #68717c;
+              }
+            }
+          }
+
+          .pkg-option-number {
+            background-color: #22272c;
+
+            button {
+              color: #acbac7;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .tabs-wrapper {
+    .tabs {
+      .tab {
+        background-color: #2d333b;
+
+        &.active {
+          background-color: #347c39;
+        }
+      }
+    }
+
+    &.tabs-vertical {
+      .tabs {
+        .tab {
+          background-color: #2d333b;
+          color: #acbac7;
+
+          &.active {
+            border-left-color: #ec775c;
+            border-top-color: #373e47;
+            border-bottom-color: #373e47;
+            box-shadow: none;
+            color: var(--default-theme-color);
+          }
+        }
+      }
+
+      .contents {
+        border-color: #373e47;
+        box-shadow: none;
+
+        .tab-content {
+          background-color: #2d333b;
+        }
+      }
+    }
+  }
+}

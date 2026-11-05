@@ -10,6 +10,8 @@ Adds predefined ranges.
 
 [https://github.com/GoThassos/easepick/tree/master/packages/preset-plugin](https://github.com/GoThassos/easepick/tree/master/packages/preset-plugin)
 
+<!-- #region reference -->
+
 ## Options
 
 | Name | Type | Default | Description
@@ -17,3 +19,5 @@ Adds predefined ranges.
 | customPreset | object | null | Define your own ranges.
 | customLabels | ['Today', 'Yesterday',<br/> 'Last 7 Days', 'Last 30 Days',<br/> 'This Month', 'Last Month'] | null | Define your own labels.
 | position | string | 'left' | Position of preset block.
+
+<!-- #endregion reference -->

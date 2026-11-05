@@ -10,9 +10,13 @@ Adds keyboard navigation.
 
 [https://github.com/GoThassos/easepick/tree/master/packages/kbd-plugin](https://github.com/GoThassos/easepick/tree/master/packages/kbd-plugin)
 
+<!-- #region reference -->
+
 ## Options
 
 | Name | Type | Default | Description
 | --- | :---: | :---: | ---
 | unitIndex | number | 1 | `tabIndex` for elements except days elements (including months and years with the core's `viewMode`, which Enter and Space pick).
 | dayIndex | number | 2 | `tabIndex` for days elements.
+
+<!-- #endregion reference -->

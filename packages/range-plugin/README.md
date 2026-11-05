@@ -10,6 +10,8 @@ Adds the ability to select a range of dates.
 
 [https://github.com/GoThassos/easepick/tree/master/packages/range-plugin](https://github.com/GoThassos/easepick/tree/master/packages/range-plugin)
 
+<!-- #region reference -->
+
 ## Options
 
 | Name | Type | Default | Description
@@ -35,3 +37,5 @@ With the core's `viewMode: 'month'` or `'year'`, the range covers whole periods:
 | setEndDate(date) | Set end of date range. Should be Date Object or Unix Timestamp (with milliseconds) or String (must be equal to option format).
 | getStartDate() | Return current start of date range as [DateTime](https://github.com/GoThassos/easepick/tree/master/packages/datetime) Object.
 | getEndDate() | Return current end of date range as [DateTime](https://github.com/GoThassos/easepick/tree/master/packages/datetime) Object.
+
+<!-- #endregion reference -->

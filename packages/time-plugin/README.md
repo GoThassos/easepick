@@ -10,6 +10,8 @@ Adds time picker.
 
 [https://github.com/GoThassos/easepick/tree/master/packages/time-plugin](https://github.com/GoThassos/easepick/tree/master/packages/time-plugin)
 
+<!-- #region reference -->
+
 ## Options
 
 | Name | Type | Default | Description
@@ -27,3 +29,5 @@ Adds time picker.
 | setTime(value) | Set a time for single date picker.
 | setStartTime(value) | Set start time of date range.
 | setEndTime(value) | Set end time of date range.
+
+<!-- #endregion reference -->

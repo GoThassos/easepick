@@ -10,6 +10,8 @@ Adds the ability to disable days for selection.
 
 [https://github.com/GoThassos/easepick/tree/master/packages/lock-plugin](https://github.com/GoThassos/easepick/tree/master/packages/lock-plugin)
 
+<!-- #region reference -->
+
 ## Options
 
 | Name | Type | Default | Description
@@ -25,3 +27,5 @@ Adds the ability to disable days for selection.
 | filter | function | null | Lock days by custom function.
 
 With the core's `viewMode: 'month'` or `'year'`, `minDate` and `maxDate` lock the months (years) entirely outside them and stop the header arrows there. The other options apply to the day view only.
+
+<!-- #endregion reference -->

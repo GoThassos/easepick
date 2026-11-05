@@ -10,6 +10,8 @@ Main package of easepick.
 
 [https://github.com/GoThassos/easepick/tree/master/packages/core](https://github.com/GoThassos/easepick/tree/master/packages/core)
 
+<!-- #region reference -->
+
 ## Options
 
 | Name | Type | Default | Description
@@ -156,3 +158,5 @@ const ampPlugin = picker.PluginManager.addInstance('AmpPlugin');
 // change plugin option
 ampPlugin.options.resetButton = true;
 ```
+
+<!-- #endregion reference -->

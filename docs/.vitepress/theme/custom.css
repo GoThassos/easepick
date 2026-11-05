@@ -1,0 +1,51 @@
+/* easepick green, from the original docs palette. */
+:root {
+  --vp-c-brand-1: #2e9c6a;
+  --vp-c-brand-2: #3eaf7c;
+  --vp-c-brand-3: #3eaf7c;
+  --vp-c-brand-soft: rgba(62, 175, 124, 0.14);
+}
+
+.dark {
+  --vp-c-brand-1: #4fc08d;
+  --vp-c-brand-2: #3eaf7c;
+  --vp-c-brand-3: #2e9c6a;
+}
+
+/* Inputs in demos (original docs styled every text input this way). */
+.vp-doc input[type='text'],
+.home-demo input[type='text'] {
+  box-sizing: border-box;
+  height: 2rem;
+  width: 200px;
+  color: var(--vp-c-text-1);
+  background-color: var(--vp-c-bg);
+  display: inline-block;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  line-height: 2rem;
+  padding: 0 0.5rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.vp-doc input[type='text'][hidden],
+.home-demo input[type='text'][hidden] {
+  display: none;
+}
+
+.vp-doc input[type='text']:focus {
+  border-color: var(--vp-c-brand-1);
+}
+
+.text-red {
+  color: #f44336;
+}
+
+.home-demo {
+  display: flex;
+  justify-content: center;
+  padding: 0 24px 48px;
+  overflow-x: auto;
+}

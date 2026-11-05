@@ -10,6 +10,8 @@ DateTime library for `easepick`.
 
 [https://github.com/GoThassos/easepick/tree/master/packages/datetime](https://github.com/GoThassos/easepick/tree/master/packages/datetime)
 
+<!-- #region reference -->
+
 ## DateTime() constructor
 
 Creates a JavaScript DateTime instance that represents a single moment in time.\
@@ -62,3 +64,5 @@ _Tokens are case-sensitive._
 | | mm | 01 02 … 58 59
 | Seconds | s | 1 2 … 58 59
 | | ss | 01 02 … 58 59
+
+<!-- #endregion reference -->

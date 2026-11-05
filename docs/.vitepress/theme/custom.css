@@ -49,3 +49,43 @@
   padding: 0 24px 48px;
   overflow-x: auto;
 }
+
+/* npm version badges load from badge.fury.io after the page renders; reserve their
+   box (currently 126×20 for "npm version x.y.z") so the content doesn't shift.
+   object-fit keeps a narrower or wider badge undistorted inside the reserved box.
+   The shimmering background is a loading skeleton: the badge is an opaque rounded
+   rect with the same 3px radius, so once it loads it covers the skeleton entirely. */
+.vp-doc img[src^='https://badge.fury.io/'] {
+  display: inline-block;
+  height: 20px;
+  min-width: 126px;
+  object-fit: contain;
+  object-position: left center;
+  vertical-align: middle;
+  border-radius: 3px;
+  color: transparent; /* hide the alt text some browsers paint while loading */
+  background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--vp-c-bg) 50%,
+      transparent 100%
+    )
+    0 0 / 200% 100% no-repeat,
+    var(--vp-c-default-soft);
+  animation: badge-skeleton 1.4s ease-in-out infinite;
+}
+
+@keyframes badge-skeleton {
+  from {
+    background-position: 150% 0, 0 0;
+  }
+  to {
+    background-position: -50% 0, 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vp-doc img[src^='https://badge.fury.io/'] {
+    animation: none;
+  }
+}

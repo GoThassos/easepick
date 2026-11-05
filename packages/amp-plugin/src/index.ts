@@ -122,7 +122,11 @@ export class AmpPlugin extends BasePlugin implements IPlugin {
           const optionMonth = new DateTime(new Date(date.getFullYear(), x, 1, 0, 0, 0));
 
           option.value = String(x);
-          option.text = monthName.toLocaleString(this.picker.options.lang, { month: 'long' });
+          // Calendar.getMonthTitle gives the nominative form (Greek: "Νοέμβριος",
+          // not "Νοεμβρίου"); fall back for older core versions without it.
+          option.text = typeof this.picker.Calendar.getMonthTitle === 'function'
+            ? this.picker.Calendar.getMonthTitle(monthName, this.picker.options.lang)
+            : monthName.toLocaleString(this.picker.options.lang, { month: 'long' });
 
           if (this.lockPlugin) {
             option.disabled = (this.lockPlugin.options.minDate

@@ -1,5 +1,6 @@
 import { DateTime } from '@gothassos/easepick-datetime';
 import { RangePlugin } from '@gothassos/easepick-range-plugin';
+import { AmpPlugin } from '@gothassos/easepick-amp-plugin';
 import * as easepick from '../src/index';
 const pkg = require('../package.json');
 
@@ -102,6 +103,27 @@ describe('month title', () => {
 
   test('numeric-month languages keep the month suffix (Japanese)', () => {
     expect(monthName('ja-JP').querySelector('span').textContent).toBe('11月');
+  });
+
+  test('AmpPlugin month dropdown uses the nominative form (Greek)', () => {
+    // Passed as a variable: IPickerConfig does not declare plugin option keys.
+    const options = {
+      element: document.getElementById('datepicker'),
+      date: date.clone(),
+      lang: 'el-GR',
+      plugins: [AmpPlugin],
+      AmpPlugin: {
+        dropdown: { months: true, years: true },
+      },
+    };
+    const picker = new easepick.create(options);
+    const select = picker.ui.container.querySelector('.month-name--dropdown') as HTMLSelectElement;
+    const months = Array.from(select.options).map(o => o.text);
+
+    expect(months.length).toBe(12);
+    expect(months[10]).toBe('Νοέμβριος');
+    expect(months[0]).toBe('Ιανουάριος');
+    expect(select.value).toBe('10');
   });
 
   test('keeps the [span, year] structure AmpPlugin relies on', () => {

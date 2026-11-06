@@ -2,6 +2,12 @@
 
 All `@gothassos/easepick-*` packages share one version number. Versions follow [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+### Changes
+
+- **Sample plugin and MSelectPlugin are now MIT-licensed**: [Rinat G.](https://github.com/wakirin), the author of the original code, agreed to relicense them from GPL-2.0-or-later. Every package in this repository is now MIT.
+
 ## 1.4.0 - 2026-11-05
 
 ### New features

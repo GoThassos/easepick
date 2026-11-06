@@ -20,7 +20,7 @@
     "name": "Rinat G.",
     "email": "easepick@jsx4.com"
   },
-  "license": "GPL-2.0-or-later",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/GoThassos/easepick.git",

@@ -24,11 +24,9 @@ const stripStyleImportsFromDeclarations = () => ({
   },
 });
 
-// Each package's `license` (SPDX id) for its build banner: most are MIT, but
-// some ported plugins keep the original author's GPL.
+// Each package's `license` (SPDX id) for its build banner.
 const licenseName = (spdx) => ({
   'MIT': 'MIT License',
-  'GPL-2.0-or-later': 'GNU General Public License, version 2 or later',
 })[spdx] || `${spdx} license`;
 
 const output = (name) => {

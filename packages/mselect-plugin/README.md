@@ -10,7 +10,7 @@ Ported from the unfinished `mselect-plugin` branch of [easepick/easepick](https:
 - Duplicate dates are ignored.
 
 > [!NOTE]
-> This package is GPL-licensed (see [License](#license)), so it is not part of [@gothassos/easepick-bundle](../bundle#readme), which is MIT. It is not published to npm yet: remove `"private": true` from its `package.json` to publish it with the other packages.
+> This package is not part of [@gothassos/easepick-bundle](../bundle#readme), and it is not published to npm yet: remove `"private": true` from its `package.json` to publish it with the other packages.
 
 ## Usage
 
@@ -75,4 +75,4 @@ It can't be combined with RangePlugin (a warning is logged) or TimePlugin.
 
 ## License
 
-[GNU General Public License Version 2 or later](LICENSE.md), as the original plugin.
+[MIT License](LICENSE.md). The original branch was GPL-licensed; [Rinat G.](https://github.com/wakirin), its author, kindly agreed to relicense it under MIT.

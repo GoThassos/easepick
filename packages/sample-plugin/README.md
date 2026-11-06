@@ -39,4 +39,4 @@ const picker = new easepick.create({
 
 ## License
 
-[GNU General Public License Version 2 or later](LICENSE.md), as the original sample plugin.
+[MIT License](LICENSE.md). The original sample plugin was GPL-licensed; [Rinat G.](https://github.com/wakirin), its author, kindly agreed to relicense it under MIT.

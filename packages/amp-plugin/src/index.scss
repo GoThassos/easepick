@@ -100,10 +100,10 @@
   }
 
   &.week-numbers {
-    // Skip past the 30px week-number column so the title still lines up
-    // with the first day name.
+    // Line the title up with the "Wk" header instead: it sits centered in
+    // the narrower 30px week-number column, ~3px further left than "Mon".
     .calendars.grid-1 .calendar > .header .month-name > select:first-child {
-      margin-left: 21px;
+      margin-left: -12px;
     }
 
     .calendar {

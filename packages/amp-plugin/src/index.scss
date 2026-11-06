@@ -9,18 +9,73 @@
           column-gap: 5px;
 
           select {
+            // Drop the native control chrome so desktop and mobile browsers
+            // render the same thing, then rebuild it from the theme variables.
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            margin: 0;
+            padding: 4px 20px 4px 7px;
+            font-family: inherit;
             font-size: 14px;
-            padding: 3px;
-            border: none;
+            font-weight: inherit;
+            line-height: 1.3;
+            color: var(--color-fg-default);
+            background-color: transparent;
+            // Chevron drawn with gradients so it follows the theme colors
+            // (an SVG data URI can't read CSS variables).
+            background-image:
+              linear-gradient(45deg, transparent 50%, var(--color-btn-secondary-fg) 50%),
+              linear-gradient(135deg, var(--color-btn-secondary-fg) 50%, transparent 50%);
+            background-position:
+              calc(100% - 12px) 50%,
+              calc(100% - 8px) 50%;
+            background-size: 4px 4px;
+            background-repeat: no-repeat;
+            border: 1px solid transparent;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+
+            &:hover {
+              background-color: var(--color-bg-secondary);
+            }
+
+            &:focus {
+              outline: none;
+            }
+
+            &:focus-visible {
+              border-color: var(--color-fg-primary);
+            }
 
             &.month-name--dropdown {
               font-weight: bold;
+            }
+
+            option {
+              font-weight: normal;
+              color: var(--color-fg-default);
+              background-color: var(--color-bg-default);
             }
           }
         }
 
         .reset-button {
           order: 4;
+        }
+      }
+    }
+
+    // Single calendar: left-align the title so the month text lines up with
+    // the first day name below it. The -9px cancels the select's 8px
+    // padding + border and the ~1px the centered day name sits further in.
+    &.grid-1 {
+      .calendar > .header .month-name {
+        justify-content: flex-start;
+
+        > select:first-child {
+          margin-left: -9px;
         }
       }
     }
@@ -45,6 +100,12 @@
   }
 
   &.week-numbers {
+    // Skip past the 30px week-number column so the title still lines up
+    // with the first day name.
+    .calendars.grid-1 .calendar > .header .month-name > select:first-child {
+      margin-left: 21px;
+    }
+
     .calendar {
       > .daynames-row,
       > .days-grid {

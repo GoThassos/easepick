@@ -26,4 +26,9 @@
   --color-btn-secondary-hover-border: #adbac7;
   --color-border-default: #373e47;
   --color-border-locked: #2d333b;
+
+  // Native option popups (desktop menus, iOS/Android pickers) follow this.
+  .calendar > .header .month-name select {
+    color-scheme: dark;
+  }
 }

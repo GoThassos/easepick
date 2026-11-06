@@ -2,7 +2,7 @@
 
 All `@gothassos/easepick-*` packages share one version number. Versions follow [Semantic Versioning](https://semver.org/).
 
-## Unreleased
+## 1.5.0 - 2026-11-06
 
 ### New features
 

@@ -35,6 +35,11 @@ jobs:
     # The live demos use the packages built from this repository.
     - run: npm run prod
     - run: npm run docs:build
+    # Coverage badge for the README, served at /coverage.json. The threshold is
+    # off here so a drop shows on the badge instead of blocking the docs
+    # deploy; the Node.js CI workflow still enforces it.
+    - run: npx jest --coverage --coverageReporters=json-summary --coverageThreshold='{}'
+    - run: node scripts/coverage-badge.js coverage/coverage-summary.json docs/.vitepress/dist/coverage.json
     - uses: actions/configure-pages@v6
     - uses: actions/upload-pages-artifact@v5
       with:

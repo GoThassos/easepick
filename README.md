@@ -1,6 +1,6 @@
 # easepick
 
-[![npm version](https://badge.fury.io/js/@gothassos%2Feasepick-bundle.svg)](https://www.npmjs.com/package/@gothassos/easepick-bundle) ![workflow](https://github.com/GoThassos/easepick/actions/workflows/node.js.yml/badge.svg)
+[![npm version](https://badge.fury.io/js/@gothassos%2Feasepick-bundle.svg)](https://www.npmjs.com/package/@gothassos/easepick-bundle) ![workflow](https://github.com/GoThassos/easepick/actions/workflows/node.js.yml/badge.svg) [![coverage](https://img.shields.io/endpoint?url=https://gothassos.github.io/easepick/coverage.json)](https://github.com/GoThassos/easepick/actions/workflows/node.js.yml)
 
 > **Unofficial, maintained fork of [easepick](https://github.com/easepick/easepick)**, which is no longer maintained. It fixes outstanding bugs, merges the useful open pull requests from the original repository, and brings in fixes from other community forks, including [YuaFox/easepick2](https://github.com/YuaFox/easepick2). It is not affiliated with the original author. Credit for the original library goes to [Rinat G.](https://github.com/wakirin) and the upstream contributors.
 

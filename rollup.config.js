@@ -24,11 +24,6 @@ const stripStyleImportsFromDeclarations = () => ({
   },
 });
 
-// Each package's `license` (SPDX id) for its build banner.
-const licenseName = (spdx) => ({
-  'MIT': 'MIT License',
-})[spdx] || `${spdx} license`;
-
 const output = (name) => {
   const pkg = require(path.join(__dirname, `packages/${name}/package.json`));
 
@@ -46,7 +41,7 @@ const output = (name) => {
 * https://github.com/GoThassos/easepick
 * Copyright (c) 2026 Rinat Garifyanov
 *
-* Licensed under the ${licenseName(pkg.license)}.
+* Licensed under the ${pkg.license} License.
 */`,
       globals(id) {
         if (/^@gothassos\//.test(id)) {

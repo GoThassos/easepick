@@ -4,7 +4,10 @@ export interface IAmpPlugin extends IBaseConfig {
   dropdown?: {
     minYear?: number;
     maxYear?: number;
-    months?: boolean;
+    // 'grid': a button that shows the months (or years) in place of the days.
+    months?: boolean | 'grid';
+    // 'asc': the years dropdown in ascending order. 'grid': as for months.
+    // (Kept as `string` so existing typed configs still compile.)
     years?: boolean | string;
   }
   resetButton?: (() => boolean) | boolean;

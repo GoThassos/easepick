@@ -27,8 +27,14 @@ export class AmpPkg extends BasePkg implements IPackage {
         children: [
           {
             name: 'months',
+            info: 'A dropdown, or a grid of the months in place of the days',
             default: false,
-            type: 'boolean',
+            type: 'dropdown',
+            values: [
+              { text: 'Off', value: 'false' },
+              { text: 'Dropdown', value: 'true' },
+              { text: 'Grid', value: 'grid' },
+            ],
             configurable: true,
             requirements: {
               conflict: [{ viewMode: 'month' }, { viewMode: 'year' }],
@@ -36,8 +42,15 @@ export class AmpPkg extends BasePkg implements IPackage {
           },
           {
             name: 'years',
+            info: 'A dropdown, or a grid of the years in place of the days',
             default: false,
-            type: 'boolean',
+            type: 'dropdown',
+            values: [
+              { text: 'Off', value: 'false' },
+              { text: 'Dropdown', value: 'true' },
+              { text: 'Dropdown, ascending', value: 'asc' },
+              { text: 'Grid', value: 'grid' },
+            ],
             configurable: true,
             requirements: {
               conflict: [{ viewMode: 'month' }, { viewMode: 'year' }],
@@ -50,7 +63,7 @@ export class AmpPkg extends BasePkg implements IPackage {
             configurable: true,
             requirements: {
               depends: [
-                { AmpPlugin: { dropdown: { years: true } } },
+                { AmpPlugin: { dropdown: { years: [true, 'asc', 'grid'] } } },
               ],
             },
           },
@@ -61,7 +74,7 @@ export class AmpPkg extends BasePkg implements IPackage {
             configurable: true,
             requirements: {
               depends: [
-                { AmpPlugin: { dropdown: { years: true } } },
+                { AmpPlugin: { dropdown: { years: [true, 'asc', 'grid'] } } },
               ],
             },
           },

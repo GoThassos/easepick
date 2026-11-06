@@ -339,6 +339,370 @@ describe('year dropdown', () => {
   });
 });
 
+describe('grid dropdown', () => {
+  beforeEach(() => {
+    jest.useFakeTimers().setSystemTime(new Date(2022, 5, 15));
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  const grid = (picker: easepick.Core) => picker.ui.container.querySelector<HTMLElement>('.amp-grid');
+
+  const cells = (picker: easepick.Core) =>
+    Array.from(picker.ui.container.querySelectorAll<HTMLButtonElement>('.amp-grid-cell'));
+
+  const cell = (picker: easepick.Core, text: string) => cells(picker).find(c => c.textContent === text);
+
+  const texts = (list: Element[]) => list.map(c => c.textContent);
+
+  const titleButton = (picker: easepick.Core, mode: 'months' | 'years', index = 0) =>
+    picker.ui.container.querySelectorAll('.calendars > .calendar')[index]
+      .querySelector<HTMLButtonElement>(`.month-name--${mode}`);
+
+  const header = (picker: easepick.Core, index = 0) =>
+    picker.ui.container.querySelectorAll<HTMLElement>('.calendars > .calendar > .header')[index];
+
+  const title = (picker: easepick.Core, index = 0) => header(picker, index).querySelector('.month-name').textContent;
+
+  const key = (element: Element, code: string) =>
+    element.dispatchEvent(new KeyboardEvent('keydown', { code, bubbles: true }));
+
+  const activeElement = (picker: easepick.Core) => picker.ui.shadowRoot.activeElement;
+
+  test('the title shows buttons in place of the month and year', () => {
+    const picker = create({ AmpPlugin: { dropdown: { months: 'grid', years: 'grid' } } });
+    const monthName = picker.ui.container.querySelector('.month-name');
+
+    expect(Array.from(monthName.childNodes)).toEqual([titleButton(picker, 'months'), titleButton(picker, 'years')]);
+    expect(titleButton(picker, 'months').textContent).toBe('November');
+    expect(titleButton(picker, 'years').textContent).toBe('2019');
+    expect(titleButton(picker, 'months').type).toBe('button');
+    expect(titleButton(picker, 'months').getAttribute('aria-expanded')).toBe('false');
+    expect(grid(picker)).toBeNull();
+  });
+
+  test('can be mixed with a dropdown', () => {
+    const picker = create({ AmpPlugin: { dropdown: { months: 'grid', years: true } } });
+    const monthName = picker.ui.container.querySelector('.month-name');
+
+    expect(Array.from(monthName.childNodes)).toEqual([titleButton(picker, 'months'), yearSelects(picker)[0]]);
+  });
+
+  test('the month button shows the months of the year over the days', () => {
+    const picker = create({ AmpPlugin: { dropdown: { months: 'grid' } } });
+
+    click(titleButton(picker, 'months'));
+
+    const calendar = picker.ui.container.querySelector('.calendar');
+    expect(calendar.classList.contains('amp-grid-open')).toBe(true);
+    expect(grid(picker).parentElement).toBe(calendar);
+    expect(grid(picker).getAttribute('aria-label')).toBe('Month');
+    // The days stay, hidden by the CSS, so the calendar keeps its size.
+    expect(calendar.querySelector('.days-grid')).not.toBeNull();
+    expect(texts(cells(picker))).toEqual(
+      ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    );
+    expect(cell(picker, 'Nov').classList.contains('selected')).toBe(true);
+    expect(cell(picker, 'Nov').getAttribute('aria-label')).toBe('November 2019');
+    expect(title(picker)).toBe('2019');
+    expect(activeElement(picker)).toBe(cell(picker, 'Nov'));
+  });
+
+  test('picking a month shows it without changing the date, and focuses the button', () => {
+    const picker = create({ AmpPlugin: { dropdown: { months: 'grid' } } });
+    const onSelect = jest.fn();
+    picker.on('select', onSelect);
+
+    click(titleButton(picker, 'months'));
+    click(cell(picker, 'Mar'));
+
+    expect(grid(picker)).toBeNull();
+    expect(shownMonths(picker)).toEqual(['2019-03']);
+    expect(titleButton(picker, 'months').textContent).toBe('March');
+    expect(picker.getDate().format('YYYY-MM-DD')).toBe('2019-11-23');
+    expect(onSelect).not.toHaveBeenCalled();
+    expect(activeElement(picker)).toBe(titleButton(picker, 'months'));
+  });
+
+  test('previous / next step a year in the months grid', () => {
+    const picker = create({ AmpPlugin: { dropdown: { months: 'grid' } } });
+
+    click(titleButton(picker, 'months'));
+    const previous = header(picker).querySelector('.previous-button');
+    expect(previous.getAttribute('aria-label')).toBe('Previous year');
+
+    click(previous);
+    expect(title(picker)).toBe('2018');
+    expect(cell(picker, 'Nov').classList.contains('selected')).toBe(false);
+    expect(activeElement(picker)).toBe(header(picker).querySelector('.previous-button'));
+
+    click(header(picker).querySelector('.next-button'));
+    click(header(picker).querySelector('.next-button'));
+    expect(title(picker)).toBe('2020');
+
+    click(cell(picker, 'Feb'));
+    expect(shownMonths(picker)).toEqual(['2020-02']);
+  });
+
+  test('the year button shows the decade; picking a year keeps the month', () => {
+    const picker = create({ AmpPlugin: { dropdown: { years: 'grid' } } });
+
+    click(titleButton(picker, 'years'));
+
+    expect(grid(picker).getAttribute('aria-label')).toBe('Year');
+    expect(title(picker)).toBe('2010 – 2019');
+    expect(texts(cells(picker))).toEqual(
+      ['2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020'],
+    );
+    expect(texts(cells(picker).filter(c => c.classList.contains('outside')))).toEqual(['2009', '2020']);
+    expect(cell(picker, '2019').classList.contains('selected')).toBe(true);
+    expect(header(picker).querySelector('.next-button').getAttribute('aria-label')).toBe('Next decade');
+
+    click(cell(picker, '2014'));
+
+    expect(grid(picker)).toBeNull();
+    expect(shownMonths(picker)).toEqual(['2014-11']);
+    expect(activeElement(picker)).toBe(titleButton(picker, 'years'));
+  });
+
+  test('previous / next step a decade, within minYear / maxYear', () => {
+    const picker = create({ AmpPlugin: { dropdown: { years: 'grid', minYear: 2005 } } });
+
+    click(titleButton(picker, 'years'));
+    // maxYear defaults to this year (2022), in the next decade.
+    expect(header(picker).classList.contains('amp-no-next')).toBe(false);
+
+    click(header(picker).querySelector('.next-button'));
+    expect(title(picker)).toBe('2020 – 2029');
+    expect(header(picker).classList.contains('amp-no-next')).toBe(true);
+    expect(texts(cells(picker).filter(c => c.disabled))).toEqual(['2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030']);
+    // The next button is hidden now: the focus moves to the grid.
+    expect(activeElement(picker)).toBe(cell(picker, '2019'));
+
+    click(header(picker).querySelector('.previous-button'));
+    click(header(picker).querySelector('.previous-button'));
+    expect(title(picker)).toBe('2000 – 2009');
+    expect(header(picker).classList.contains('amp-no-previous')).toBe(true);
+    expect(texts(cells(picker).filter(c => c.disabled))).toEqual(['1999', '2000', '2001', '2002', '2003', '2004']);
+    expect(cell(picker, '2004').classList.contains('locked')).toBe(true);
+  });
+
+  test('with both grids, the months grid title opens the years, and a year goes back to its months', () => {
+    const picker = create({ AmpPlugin: { dropdown: { months: 'grid', years: 'grid' } } });
+
+    click(titleButton(picker, 'months'));
+    click(header(picker).querySelector('.previous-button'));
+    expect(titleButton(picker, 'years').textContent).toBe('2018');
+
+    click(titleButton(picker, 'years'));
+    expect(title(picker)).toBe('2010 – 2019');
+
+    click(cell(picker, '2012'));
+    expect(title(picker)).toBe('2012');
+    expect(texts(cells(picker))[0]).toBe('Jan');
+    expect(shownMonths(picker)).toEqual(['2019-11']);
+
+    click(cell(picker, 'Jun'));
+    expect(shownMonths(picker)).toEqual(['2012-06']);
+  });
+
+  test('works in the second calendar', () => {
+    const picker = create({
+      calendars: 2,
+      grid: 2,
+      AmpPlugin: { dropdown: { months: 'grid', years: 'grid' } },
+    });
+
+    click(titleButton(picker, 'months', 1));
+
+    const calendars = picker.ui.container.querySelectorAll('.calendars > .calendar');
+    expect(calendars[0].classList.contains('amp-grid-open')).toBe(false);
+    expect(calendars[1].classList.contains('amp-grid-open')).toBe(true);
+    expect(cell(picker, 'Dec').classList.contains('selected')).toBe(true);
+
+    click(cell(picker, 'May'));
+    expect(picker.ui.container.querySelectorAll('.days-grid .day').length).toBeGreaterThan(0);
+    expect(Array.from(picker.ui.container.querySelectorAll('.month-name--months')).map(b => b.textContent))
+      .toEqual(['April', 'May']);
+
+    click(titleButton(picker, 'years', 1));
+    click(cell(picker, '2015'));
+    expect(Array.from(picker.ui.container.querySelectorAll('.month-name--years')).map(b => b.textContent))
+      .toEqual(['2015', '2015']);
+  });
+
+  test('LockPlugin minDate / maxDate lock the months and stop the years', () => {
+    const picker = create({
+      date: '2019-03-20',
+      plugins: [AmpPlugin, LockPlugin],
+      AmpPlugin: { dropdown: { months: 'grid' } },
+      LockPlugin: { minDate: '2019-03-15', maxDate: '2019-09-10' },
+    });
+
+    expect(header(picker).classList.contains('no-previous-month')).toBe(true);
+    click(titleButton(picker, 'months'));
+
+    expect(texts(cells(picker).filter(c => c.disabled))).toEqual(['Jan', 'Feb', 'Oct', 'Nov', 'Dec']);
+    expect(texts(cells(picker).filter(c => c.classList.contains('locked')))).toEqual(['Jan', 'Feb', 'Oct', 'Nov', 'Dec']);
+    expect(header(picker).classList.contains('amp-no-previous')).toBe(true);
+    expect(header(picker).classList.contains('amp-no-next')).toBe(true);
+    // LockPlugin's day-view classes are dropped while the grid is open.
+    expect(header(picker).classList.contains('no-previous-month')).toBe(false);
+  });
+
+  test('LockPlugin limits combine with minYear / maxYear in the years grid', () => {
+    const picker = create({
+      plugins: [AmpPlugin, LockPlugin],
+      AmpPlugin: { dropdown: { years: 'grid', minYear: 2012, maxYear: 2020 } },
+      LockPlugin: { minDate: '2014-05-01', maxDate: '2030-02-01' },
+    });
+
+    click(titleButton(picker, 'years'));
+
+    expect(texts(cells(picker).filter(c => !c.disabled))).toEqual(['2014', '2015', '2016', '2017', '2018', '2019', '2020']);
+  });
+
+  test('a click on a cell does not reach core, which would select it', () => {
+    const picker = create({ autoApply: false, AmpPlugin: { dropdown: { months: 'grid' } } });
+    const onPreselect = jest.fn();
+    picker.on('preselect', onPreselect);
+
+    click(titleButton(picker, 'months'));
+    click(cell(picker, 'Jan'));
+
+    expect(onPreselect).not.toHaveBeenCalled();
+    expect(picker.datePicked.length).toBe(0);
+  });
+
+  test('previous / next in the grid do not move the calendar', () => {
+    const picker = create({ AmpPlugin: { dropdown: { months: 'grid' } } });
+    const onNavigate = jest.fn();
+    picker.on('navigate', onNavigate);
+
+    click(titleButton(picker, 'months'));
+    click(header(picker).querySelector('.next-button'));
+
+    expect(onNavigate).not.toHaveBeenCalled();
+    expect(picker.calendars[0].format('YYYY-MM')).toBe('2019-11');
+  });
+
+  test('arrow keys move between cells; Escape goes back to the days', () => {
+    const picker = create({ AmpPlugin: { dropdown: { months: 'grid' } } });
+    picker.show();
+
+    click(titleButton(picker, 'months'));
+    key(cell(picker, 'Nov'), 'ArrowLeft');
+    expect(activeElement(picker)).toBe(cell(picker, 'Oct'));
+    key(cell(picker, 'Oct'), 'ArrowUp');
+    expect(activeElement(picker)).toBe(cell(picker, 'Jun'));
+    key(cell(picker, 'Jun'), 'ArrowDown');
+    key(cell(picker, 'Oct'), 'ArrowDown');
+    // Nothing below the last row.
+    expect(activeElement(picker)).toBe(cell(picker, 'Oct'));
+
+    key(cell(picker, 'Oct'), 'Escape');
+    expect(grid(picker)).toBeNull();
+    expect(shownMonths(picker)).toEqual(['2019-11']);
+    expect(picker.isShown()).toBe(true);
+    expect(activeElement(picker)).toBe(titleButton(picker, 'months'));
+  });
+
+  test('arrow keys do not move onto a locked cell', () => {
+    const picker = create({
+      date: '2019-06-15',
+      plugins: [AmpPlugin, LockPlugin],
+      AmpPlugin: { dropdown: { months: 'grid' } },
+      LockPlugin: { minDate: '2019-03-15' },
+    });
+
+    click(titleButton(picker, 'months'));
+    expect(activeElement(picker)).toBe(cell(picker, 'Jun'));
+
+    key(cell(picker, 'Jun'), 'ArrowUp');
+    expect(cell(picker, 'Feb').disabled).toBe(true);
+    expect(activeElement(picker)).toBe(cell(picker, 'Jun'));
+  });
+
+  test('Escape in the years grid opened from the months grid goes back to the days', () => {
+    const picker = create({ AmpPlugin: { dropdown: { months: 'grid', years: 'grid' } } });
+
+    click(titleButton(picker, 'months'));
+    click(titleButton(picker, 'years'));
+    key(cell(picker, '2015'), 'Escape');
+
+    expect(grid(picker)).toBeNull();
+    expect(activeElement(picker)).toBe(titleButton(picker, 'months'));
+  });
+
+  test('other keys are left alone', () => {
+    const picker = create({ AmpPlugin: { dropdown: { months: 'grid' } } });
+
+    click(titleButton(picker, 'months'));
+    key(cell(picker, 'Nov'), 'KeyA');
+
+    expect(grid(picker)).not.toBeNull();
+    expect(activeElement(picker)).toBe(cell(picker, 'Nov'));
+  });
+
+  test('marks this month and this year as today', () => {
+    const picker = create({ date: '2022-03-10', AmpPlugin: { dropdown: { months: 'grid', years: 'grid' } } });
+
+    click(titleButton(picker, 'months'));
+    expect(texts(cells(picker).filter(c => c.classList.contains('today')))).toEqual(['Jun']);
+    expect(cell(picker, 'Jun').getAttribute('aria-current')).toBe('date');
+    expect(cell(picker, 'Mar').hasAttribute('aria-current')).toBe(false);
+
+    click(titleButton(picker, 'years'));
+    expect(texts(cells(picker).filter(c => c.classList.contains('today')))).toEqual(['2022']);
+  });
+
+  test('minYear: null leaves the years open below', () => {
+    const picker = create({ date: '1905-01-01', AmpPlugin: { dropdown: { years: 'grid', minYear: null } } });
+
+    click(titleButton(picker, 'years'));
+
+    expect(header(picker).classList.contains('amp-no-previous')).toBe(false);
+    expect(cells(picker).filter(c => c.disabled)).toEqual([]);
+  });
+
+  test('closing the picker closes the grid', () => {
+    const picker = create({ AmpPlugin: { dropdown: { months: 'grid' } } });
+    picker.show();
+
+    click(titleButton(picker, 'months'));
+    picker.hide();
+
+    expect(grid(picker)).toBeNull();
+    expect(picker.ui.container.querySelector('.amp-grid-open')).toBeNull();
+
+    // Closing it again, with no grid open, does not render again.
+    picker.show();
+    const renderAll = jest.spyOn(picker, 'renderAll');
+    picker.hide();
+    // Only core's own render.
+    expect(renderAll).toHaveBeenCalledTimes(1);
+  });
+
+  test('is not used in the month and year views', () => {
+    const picker = create({ viewMode: 'month', AmpPlugin: { dropdown: { months: 'grid', years: 'grid' } } });
+
+    expect(picker.ui.container.querySelector('.month-name--button')).toBeNull();
+  });
+
+  test('detaching removes the buttons and an open grid', () => {
+    const picker = create({ AmpPlugin: { dropdown: { months: 'grid', years: 'grid' } } });
+
+    click(titleButton(picker, 'months'));
+    picker.PluginManager.removeInstance('AmpPlugin');
+    picker.renderAll();
+
+    expect(picker.ui.container.querySelector('.month-name--button, .amp-grid, .amp-grid-open')).toBeNull();
+    expect(picker.ui.container.querySelector('.month-name').textContent).toBe('November 2019');
+  });
+});
+
 describe('reset button', () => {
   const resetButtons = (picker: easepick.Core) =>
     Array.from(picker.ui.container.querySelectorAll<HTMLButtonElement>('.calendar > .header .reset-button'));

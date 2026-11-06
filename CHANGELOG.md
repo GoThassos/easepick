@@ -2,6 +2,12 @@
 
 All `@gothassos/easepick-*` packages share one version number. Versions follow [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+### New features
+
+- **AmpPlugin month and year grids**: set `dropdown.months` or `dropdown.years` to `'grid'` to turn the month or year in the title into a button. The button opens a grid of the 12 months, or of a decade of years, in place of the days, like the month and year pickers (`viewMode`). Picking a month or year shows it, without changing the selected date. While a grid is open, the previous and next buttons move a year or a decade. With both set to `'grid'`, the year in the months grid's title opens the years grid, and picking a year goes back to its months. LockPlugin's `minDate` and `maxDate` lock the months and years out of range, and so do `minYear` and `maxYear` in the years grid. The arrow keys move between cells, and Escape goes back to the days. `true` still gives the dropdowns.
+
 ## 1.4.1 - 2026-11-06
 
 ### Changes

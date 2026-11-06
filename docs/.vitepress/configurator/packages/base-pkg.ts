@@ -207,7 +207,12 @@ export class BasePkg {
   private dropdownListener(element: HTMLElement, opt: IOption) {
     element.addEventListener('change', (e) => {
       const el = e.target as HTMLSelectElement;
-      const v = /^\d+$/.test(String(opt.default)) ? Number(el.value) : el.value;
+      let v: unknown = /^\d+$/.test(String(opt.default)) ? Number(el.value) : el.value;
+      // Options that are off by default (false) but take strings too
+      // (AmpPlugin's dropdown: false, true or 'grid').
+      if (typeof opt.default === 'boolean' && (v === 'true' || v === 'false')) {
+        v = v === 'true';
+      }
       opt.modified = v !== opt.default;
       opt.value = v;
 

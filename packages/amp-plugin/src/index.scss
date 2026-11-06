@@ -10,7 +10,10 @@
           justify-content: center;
           column-gap: 5px;
 
-          select {
+          // The dropdowns, and the title buttons that open a grid
+          // (dropdown: 'grid'), look the same.
+          select,
+          .month-name--button {
             // Drop the native control chrome so desktop and mobile browsers
             // render the same thing, then rebuild it from the theme variables.
             -webkit-appearance: none;
@@ -51,10 +54,13 @@
               border-color: var(--color-fg-primary);
             }
 
-            &.month-name--dropdown {
+            &.month-name--dropdown,
+            &.month-name--months {
               font-weight: bold;
             }
+          }
 
+          select {
             option {
               font-weight: normal;
               color: var(--color-fg-default);
@@ -76,7 +82,8 @@
       .calendar > .header .month-name {
         justify-content: flex-start;
 
-        > select:first-child {
+        > select:first-child,
+        > .month-name--button:first-child {
           margin-left: -9px;
         }
       }
@@ -101,11 +108,109 @@
     }
   }
 
+  // dropdown: 'grid'. The months or years cover the day names and days,
+  // which stay in place (hidden) so the calendar keeps its size.
+  .calendars .calendar.amp-grid-open {
+    display: grid;
+    // Header, day names, days, footer. A calendar stretched to a taller
+    // neighbour gives the extra height to the days, under the grid.
+    grid-template-rows: auto auto 1fr auto;
+
+    // All in one column, or the auto-placed rows would move next to the
+    // grid (placed first, as its column is explicit) and widen the calendar.
+    > * {
+      grid-column: 1;
+    }
+
+    > .header {
+      grid-row: 1;
+
+      // Both buttons step the grid, in whichever calendar it is open.
+      .previous-button,
+      .next-button {
+        visibility: visible;
+      }
+
+      &.amp-no-previous .previous-button,
+      &.amp-no-next .next-button {
+        visibility: hidden;
+      }
+    }
+
+    > .daynames-row {
+      grid-row: 2;
+      visibility: hidden;
+    }
+
+    > .days-grid {
+      grid-row: 3;
+      visibility: hidden;
+    }
+
+    > .footer {
+      grid-row: 4;
+    }
+
+    > .amp-grid {
+      grid-row: 2 / 4;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-content: space-evenly;
+      gap: 2px;
+
+      > .amp-grid-cell {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        padding: 14px 0;
+        font: inherit;
+        font-size: 13px;
+        color: inherit;
+        background-color: transparent;
+        border: 1px solid transparent;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        appearance: none;
+        -webkit-tap-highlight-color: transparent;
+
+        &:hover {
+          border-color: var(--color-fg-primary);
+          color: var(--color-fg-primary);
+        }
+
+        &.outside {
+          color: var(--color-fg-offset);
+        }
+
+        &.today {
+          color: var(--color-fg-accent);
+        }
+
+        &.selected {
+          background-color: var(--color-fg-primary);
+          color: var(--color-fg-selected);
+        }
+
+        &.locked {
+          color: var(--color-fg-locked, var(--color-fg-muted));
+          background-color: transparent;
+          border-color: var(--color-border-locked);
+          font-style: italic;
+          cursor: default;
+        }
+      }
+    }
+  }
+
   &.week-numbers {
     // Line the title up with the "Wk" header instead: it sits centered in
     // the narrower 30px week-number column, ~3px further left than "Mon".
-    .calendars.grid-1 .calendar > .header .month-name > select:first-child {
-      margin-left: -12px;
+    .calendars.grid-1 .calendar > .header .month-name {
+      > select:first-child,
+      > .month-name--button:first-child {
+        margin-left: -12px;
+      }
     }
 
     .calendar {

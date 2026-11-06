@@ -196,6 +196,11 @@ export class PackageManager {
 
   private objIncludes(obj, searchObj): boolean {
     for (const key of Object.keys(searchObj)) {
+      // A list of values: any of them.
+      if (Array.isArray(searchObj[key])) {
+        return key in obj && searchObj[key].includes(obj[key]);
+      }
+
       if (searchObj[key] !== null
         && typeof searchObj[key] === 'object'
         && Object.keys(searchObj[key]).length > 0) {

@@ -5,14 +5,32 @@ import { DateTime } from '@gothassos/easepick-datetime';
 import { IAmpPlugin } from './interface';
 import './index.scss';
 
+type GridMode = 'months' | 'years';
+
+// The month or year grid shown in place of a calendar's days
+// (dropdown.months / dropdown.years: 'grid').
+interface IGridState {
+  mode: GridMode;
+  // Calendar that shows the grid.
+  index: number;
+  // Months: the year shown. Years: a year of the decade shown.
+  year: number;
+  // The years grid was opened from the months grid's title: picking a
+  // year goes back to the months of that year.
+  fromMonths?: boolean;
+}
+
 export class AmpPlugin extends BasePlugin implements IPlugin {
   public rangePlugin: RangePlugin;
   public lockPlugin: LockPlugin;
   public priority = 10;
 
+  protected grid: IGridState = null;
+
   public binds = {
     onView: this.onView.bind(this),
     onColorScheme: this.onColorScheme.bind(this),
+    onHide: this.onHide.bind(this),
   }
 
   public options: IAmpPlugin = {
@@ -63,6 +81,7 @@ export class AmpPlugin extends BasePlugin implements IPlugin {
     }
 
     this.picker.on('view', this.binds.onView);
+    this.picker.on('hide', this.binds.onHide);
   }
 
   /**
@@ -77,6 +96,8 @@ export class AmpPlugin extends BasePlugin implements IPlugin {
     this.picker.ui.container.classList.remove('week-numbers');
 
     this.picker.off('view', this.binds.onView);
+    this.picker.off('hide', this.binds.onHide);
+    this.grid = null;
   }
 
   /**
@@ -92,6 +113,17 @@ export class AmpPlugin extends BasePlugin implements IPlugin {
     this.handleDropdown(event);
     this.handleResetButton(event);
     this.handleWeekNumbers(event);
+    this.handleGrid(event);
+  }
+
+  /**
+   * Closing the picker closes an open grid, so it reopens on the days.
+   */
+  private onHide() {
+    if (this.grid) {
+      this.grid = null;
+      this.picker.renderAll();
+    }
   }
 
   /**
@@ -116,7 +148,12 @@ export class AmpPlugin extends BasePlugin implements IPlugin {
     if (view === 'CalendarHeader' && (!viewMode || viewMode === 'day')) {
       const monthNameWrapper = target.querySelector('.month-name');
 
-      if (this.options.dropdown.months) {
+      if (this.options.dropdown.months === 'grid') {
+        monthNameWrapper.childNodes[0].remove();
+        monthNameWrapper.prepend(this.getGridButton('months', this.getMonthTitle(date), () => {
+          this.openGrid({ mode: 'months', index, year: date.getFullYear() });
+        }));
+      } else if (this.options.dropdown.months) {
         monthNameWrapper.childNodes[0].remove();
 
         const selectMonths = document.createElement('select');
@@ -130,11 +167,7 @@ export class AmpPlugin extends BasePlugin implements IPlugin {
           const optionMonth = new DateTime(new Date(date.getFullYear(), x, 1, 0, 0, 0));
 
           option.value = String(x);
-          // Calendar.getMonthTitle gives the nominative form (Greek: "Νοέμβριος",
-          // not "Νοεμβρίου"); fall back for older core versions without it.
-          option.text = typeof this.picker.Calendar.getMonthTitle === 'function'
-            ? this.picker.Calendar.getMonthTitle(monthName, this.picker.options.lang)
-            : monthName.toLocaleString(this.picker.options.lang, { month: 'long' });
+          option.text = this.getMonthTitle(monthName);
 
           if (this.lockPlugin) {
             option.disabled = (this.lockPlugin.options.minDate
@@ -160,7 +193,12 @@ export class AmpPlugin extends BasePlugin implements IPlugin {
         monthNameWrapper.prepend(selectMonths);
       }
 
-      if (this.options.dropdown.years) {
+      if (this.options.dropdown.years === 'grid') {
+        monthNameWrapper.childNodes[1].remove();
+        monthNameWrapper.appendChild(this.getGridButton('years', date.format('YYYY'), () => {
+          this.openGrid({ mode: 'years', index, year: date.getFullYear() });
+        }));
+      } else if (this.options.dropdown.years) {
         monthNameWrapper.childNodes[1].remove();
 
         const selectYears = document.createElement('select');
@@ -230,6 +268,353 @@ export class AmpPlugin extends BasePlugin implements IPlugin {
         monthNameWrapper.appendChild(selectYears);
       }
     }
+  }
+
+  /**
+   * Month name in the nominative form (Greek: "Νοέμβριος", not "Νοεμβρίου").
+   * Falls back to `toLocaleString` on older core versions without
+   * Calendar.getMonthTitle.
+   *
+   * @param date
+   */
+  private getMonthTitle(date: DateTime): string {
+    return typeof this.picker.Calendar.getMonthTitle === 'function'
+      ? this.picker.Calendar.getMonthTitle(date, this.picker.options.lang)
+      : date.toLocaleString(this.picker.options.lang, { month: 'long' });
+  }
+
+  /**
+   * A title button that opens the months or years grid.
+   *
+   * @param mode
+   * @param text
+   * @param onClick
+   */
+  private getGridButton(mode: GridMode, text: string, onClick: () => void): HTMLButtonElement {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `month-name--button month-name--${mode} unit`;
+    button.textContent = text;
+    button.setAttribute('aria-expanded', 'false');
+    button.addEventListener('click', onClick);
+
+    return button;
+  }
+
+  /**
+   * Shows a grid in place of a calendar's days, and focuses it.
+   *
+   * @param state
+   */
+  private openGrid(state: IGridState) {
+    this.grid = state;
+    this.picker.renderAll();
+    this.focusGrid();
+  }
+
+  /**
+   * Back to the days. `focus` is the title button to focus.
+   *
+   * @param focus
+   */
+  private closeGrid(focus: GridMode) {
+    const { index } = this.grid;
+    this.grid = null;
+    this.picker.renderAll();
+
+    const button = this.getCalendar(index)?.querySelector<HTMLElement>(`.month-name--${focus}`);
+    button?.focus();
+  }
+
+  /**
+   * Shows `month` of `year` in calendar `index`; the others follow it.
+   *
+   * @param index
+   * @param year
+   * @param month
+   */
+  private showMonth(index: number, year: number, month: number) {
+    this.picker.calendars[0].setFullYear(year, month - index, 1);
+  }
+
+  /**
+   * @param index
+   * @returns the calendar element at `index`
+   */
+  private getCalendar(index: number): HTMLElement {
+    return this.picker.ui.container.querySelectorAll<HTMLElement>('.calendars > .calendar')[index];
+  }
+
+  /**
+   * Focuses the shown month or year in the open grid, or else its first
+   * cell that can be picked.
+   */
+  private focusGrid() {
+    const grid = this.getCalendar(this.grid.index).querySelector('.amp-grid');
+    const cell = grid.querySelector<HTMLElement>('.selected:not(:disabled)')
+      || grid.querySelector<HTMLElement>('.amp-grid-cell:not(:disabled)');
+
+    cell?.focus();
+  }
+
+  /**
+   * First and last year that can be reached: LockPlugin's minDate and
+   * maxDate, and in the years grid `dropdown.minYear` and `dropdown.maxYear`
+   * too. `null` is no limit.
+   *
+   * @param mode
+   */
+  private getYearLimits(mode: GridMode): { min: number, max: number } {
+    let min: number = null;
+    let max: number = null;
+
+    if (this.lockPlugin?.options.minDate) {
+      min = new DateTime(this.lockPlugin.options.minDate).getFullYear();
+    }
+
+    if (this.lockPlugin?.options.maxDate) {
+      max = new DateTime(this.lockPlugin.options.maxDate).getFullYear();
+    }
+
+    if (mode === 'years') {
+      const { minYear, maxYear } = this.options.dropdown;
+      const lastYear = maxYear ? maxYear : (new Date()).getFullYear();
+
+      if (minYear) min = min === null ? minYear : Math.max(min, minYear);
+      max = max === null ? lastYear : Math.min(max, lastYear);
+    }
+
+    return { min, max };
+  }
+
+  /**
+   * Function `view` event: on the calendar that shows a grid, puts the grid
+   * over its days and sets up its header.
+   *
+   * @param event
+   */
+  private handleGrid(event) {
+    const { view, target, date, index }: IEventDetail = event.detail;
+    const viewMode = this.picker.options.viewMode;
+
+    if (view !== 'CalendarItem' || !this.grid || this.grid.index !== index
+      || (viewMode && viewMode !== 'day')) {
+      return;
+    }
+
+    // The days stay in place, hidden, so the calendar keeps its size.
+    target.classList.add('amp-grid-open');
+    this.setGridHeader(target.querySelector('.header'));
+    target.appendChild(this.grid.mode === 'months' ? this.getMonthsGrid(date) : this.getYearsGrid(date));
+
+    target.addEventListener('keydown', (evt: KeyboardEvent) => {
+      if (evt.code === 'Escape') {
+        // Back to the days, rather than closing the picker (KbdPlugin).
+        evt.preventDefault();
+        evt.stopPropagation();
+        this.closeGrid(this.grid.fromMonths ? 'months' : this.grid.mode);
+      }
+    });
+  }
+
+  /**
+   * The open grid's title (the year, or the decade) and its previous / next
+   * buttons, which step a year or a decade.
+   *
+   * @param header
+   */
+  private setGridHeader(header: HTMLElement) {
+    const { mode, year, index } = this.grid;
+    const decade = Math.floor(year / 10) * 10;
+    const monthName = header.querySelector('.month-name');
+    monthName.textContent = '';
+
+    if (mode === 'months' && this.options.dropdown.years === 'grid') {
+      const button = this.getGridButton('years', String(year), () => {
+        this.openGrid({ mode: 'years', index, year: this.grid.year, fromMonths: true });
+      });
+      monthName.appendChild(button);
+    } else {
+      const title = document.createElement('span');
+      title.textContent = mode === 'months' ? String(year) : `${decade} – ${decade + 9}`;
+      monthName.appendChild(title);
+    }
+
+    // LockPlugin's classes are about the months of the day view.
+    header.classList.remove('no-previous-month', 'no-next-month');
+
+    const { min, max } = this.getYearLimits(mode);
+    const first = mode === 'months' ? year : decade;
+    const last = mode === 'months' ? year : decade + 9;
+    header.classList.toggle('amp-no-previous', min !== null && first <= min);
+    header.classList.toggle('amp-no-next', max !== null && last >= max);
+
+    const { locale } = this.picker.options;
+    const step = mode === 'months' ? 'Year' : 'Decade';
+
+    ['previous', 'next'].forEach((direction) => {
+      const button = header.querySelector<HTMLElement>(`.${direction}-button`);
+      button.setAttribute('aria-label', locale[`${direction}${step}Label`]);
+      button.addEventListener('click', (evt) => {
+        // Stop core from stepping a month.
+        evt.stopPropagation();
+
+        const years = mode === 'months' ? 1 : 10;
+        this.grid.year += direction === 'next' ? years : -years;
+        this.picker.renderAll();
+
+        // Keep the focus on the button, unless the limit now hides it.
+        const header = this.getCalendar(index).querySelector('.header');
+        if (header.classList.contains(`amp-no-${direction}`)) {
+          this.focusGrid();
+        } else {
+          header.querySelector<HTMLElement>(`.${direction}-button`).focus();
+        }
+      });
+    });
+  }
+
+  /**
+   * @param mode
+   * @returns an empty grid that moves the focus with the arrow keys
+   */
+  private createGrid(mode: GridMode): HTMLElement {
+    const grid = document.createElement('div');
+    grid.className = `amp-grid amp-grid--${mode}`;
+    grid.setAttribute('role', 'group');
+    grid.setAttribute('aria-label', mode === 'months' ? this.options.locale.month : this.options.locale.year);
+
+    const moves = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -4, ArrowDown: 4 };
+
+    grid.addEventListener('keydown', (evt: KeyboardEvent) => {
+      if (!(evt.code in moves)) return;
+
+      evt.preventDefault();
+      const cells = [...grid.querySelectorAll<HTMLButtonElement>('.amp-grid-cell')];
+      const next = cells[cells.indexOf(evt.target as HTMLButtonElement) + moves[evt.code]];
+
+      if (next && !next.disabled) {
+        next.focus();
+      }
+    });
+
+    return grid;
+  }
+
+  /**
+   * @param date first day of the period
+   * @param unit
+   * @param text
+   * @param title
+   * @param onClick
+   * @returns a month or year cell
+   */
+  private createGridCell(date: Date, unit: 'month' | 'year', text: string, title: string, onClick: () => void) {
+    const today = new Date();
+    const cell = document.createElement('button');
+    cell.type = 'button';
+    cell.className = 'amp-grid-cell unit';
+    cell.textContent = text;
+    cell.title = title;
+    cell.dataset.time = String(date.getTime());
+    cell.setAttribute('aria-label', title);
+
+    if (today.getFullYear() === date.getFullYear() && (unit === 'year' || today.getMonth() === date.getMonth())) {
+      cell.classList.add('today');
+      cell.setAttribute('aria-current', 'date');
+    }
+
+    cell.addEventListener('click', onClick);
+
+    return cell;
+  }
+
+  /**
+   * Locks a cell that can't be picked.
+   *
+   * @param cell
+   */
+  private lockGridCell(cell: HTMLButtonElement) {
+    cell.classList.add('locked');
+    cell.disabled = true;
+  }
+
+  /**
+   * The 12 months of the grid's year, in a 4×3 grid.
+   *
+   * @param date month shown in the calendar
+   */
+  private getMonthsGrid(date: DateTime): HTMLElement {
+    const { year, index } = this.grid;
+    const grid = this.createGrid('months');
+    const minDate = this.lockPlugin?.options.minDate ? new DateTime(this.lockPlugin.options.minDate) : null;
+    const maxDate = this.lockPlugin?.options.maxDate ? new DateTime(this.lockPlugin.options.maxDate) : null;
+
+    for (let m = 0; m < 12; m += 1) {
+      const month = new DateTime(new Date(year, m, 1));
+      const cell = this.createGridCell(
+        month,
+        'month',
+        month.toLocaleString(this.picker.options.lang, { month: 'short' }),
+        `${this.getMonthTitle(month)} ${year}`,
+        () => {
+          this.showMonth(index, year, m);
+          this.closeGrid('months');
+        },
+      );
+
+      if (year === date.getFullYear() && m === date.getMonth()) {
+        cell.classList.add('selected');
+      }
+
+      if ((minDate && month.isBefore(minDate, 'month')) || (maxDate && month.isAfter(maxDate, 'month'))) {
+        this.lockGridCell(cell);
+      }
+
+      grid.appendChild(cell);
+    }
+
+    return grid;
+  }
+
+  /**
+   * The grid's decade, with the years just before and after it, in a 4×3
+   * grid.
+   *
+   * @param date month shown in the calendar
+   */
+  private getYearsGrid(date: DateTime): HTMLElement {
+    const { year, index, fromMonths } = this.grid;
+    const decade = Math.floor(year / 10) * 10;
+    const grid = this.createGrid('years');
+    const { min, max } = this.getYearLimits('years');
+
+    for (let y = decade - 1; y <= decade + 10; y += 1) {
+      const cell = this.createGridCell(new Date(y, 0, 1), 'year', String(y), String(y), () => {
+        if (fromMonths) {
+          this.openGrid({ mode: 'months', index, year: y });
+        } else {
+          this.showMonth(index, y, date.getMonth());
+          this.closeGrid('years');
+        }
+      });
+
+      if (y < decade || y > decade + 9) {
+        cell.classList.add('outside');
+      }
+
+      if (y === date.getFullYear()) {
+        cell.classList.add('selected');
+      }
+
+      if ((min !== null && y < min) || (max !== null && y > max)) {
+        this.lockGridCell(cell);
+      }
+
+      grid.appendChild(cell);
+    }
+
+    return grid;
   }
 
   /**

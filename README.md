@@ -31,3 +31,7 @@ Each package also documents its options and methods in its own README:
 - [@gothassos/easepick-kbd-plugin](packages/kbd-plugin#readme)
 - [@gothassos/easepick-amp-plugin](packages/amp-plugin#readme)
 - [@gothassos/easepick-mselect-plugin](packages/mselect-plugin#readme) (multiple dates; not in the bundle, and not published yet)
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Any new code that can be tested must come with tests.

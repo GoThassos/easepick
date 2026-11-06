@@ -35,6 +35,14 @@ In order to run tests, you need to use the `test`.
 npm test
 ```
 
+Any new code that can be tested must come with tests, bug fixes included. The packages are at 100% coverage and CI fails if it drops. Check it with:
+
+```bash
+npm run test:coverage
+```
+
+See [CONTRIBUTING.md](https://github.com/GoThassos/easepick/blob/master/CONTRIBUTING.md) for what to run before opening a pull request.
+
 ## Creating a build
 
 Creating development version:

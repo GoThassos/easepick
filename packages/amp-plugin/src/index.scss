@@ -1,3 +1,5 @@
+@use "sass:meta";
+
 .container.amp-plugin {
   .calendars {
     .calendar {
@@ -124,4 +126,5 @@
   }
 }
 
-@import "./dark-theme";
+// Loaded here rather than with a top-level @use so its rules come last.
+@include meta.load-css("./dark-theme");

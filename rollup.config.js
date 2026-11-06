@@ -5,6 +5,8 @@ import resolve from '@rollup/plugin-node-resolve';
 import postcss from 'rollup-plugin-postcss';
 import autoprefixer from 'autoprefixer';
 import terser from '@rollup/plugin-terser';
+import * as sass from 'sass';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 const path = require('path');
 const pkg = require('./package.json');
@@ -23,6 +25,32 @@ const stripStyleImportsFromDeclarations = () => ({
     }
   },
 });
+
+// rollup-plugin-postcss's built-in Sass loader calls the legacy render() API,
+// which Dart Sass deprecates and will remove in 2.0. A loader registered under
+// the same name replaces it.
+const sassLoader = {
+  name: 'sass',
+  test: /\.scss$/,
+  process({ code }) {
+    const result = sass.compileString(code, {
+      url: pathToFileURL(this.id),
+      sourceMap: Boolean(this.sourceMap),
+      sourceMapIncludeSources: true,
+    });
+
+    for (const url of result.loadedUrls) {
+      if (url.protocol === 'file:') {
+        this.dependencies.add(fileURLToPath(url));
+      }
+    }
+
+    return {
+      code: result.css,
+      map: result.sourceMap && JSON.stringify(result.sourceMap),
+    };
+  },
+};
 
 const output = (name) => {
   const pkg = require(path.join(__dirname, `packages/${name}/package.json`));
@@ -86,6 +114,7 @@ const getPackageConfig = (name) => {
       }),
       postcss({
         extract: 'index.css',
+        loaders: [sassLoader],
         plugins: [autoprefixer],
         minimize: ENV_PROD,
       }),
@@ -135,6 +164,7 @@ export default [
       }),
       postcss({
         extract: 'index.css',
+        loaders: [sassLoader],
         plugins: [autoprefixer],
         minimize: ENV_PROD,
       }),

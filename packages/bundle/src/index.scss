@@ -1,6 +1,6 @@
-@import "../../core/src/scss/index.scss";
-@import "../../lock-plugin/src/index.scss";
-@import "../../preset-plugin/src/index.scss";
-@import "../../range-plugin/src/index.scss";
-@import "../../time-plugin/src/index.scss";
-@import "../../amp-plugin/src/index.scss";
+@use "../../core/src/scss/index.scss" as core;
+@use "../../lock-plugin/src/index.scss" as lock-plugin;
+@use "../../preset-plugin/src/index.scss" as preset-plugin;
+@use "../../range-plugin/src/index.scss" as range-plugin;
+@use "../../time-plugin/src/index.scss" as time-plugin;
+@use "../../amp-plugin/src/index.scss" as amp-plugin;

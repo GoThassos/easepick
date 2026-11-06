@@ -2,10 +2,12 @@
 
 All `@gothassos/easepick-*` packages share one version number. Versions follow [Semantic Versioning](https://semver.org/).
 
-## Unreleased
+## 1.4.1 - 2026-11-06
 
 ### Changes
 
+- **AmpPlugin's month and year dropdowns look the same in every browser**: they used the browser's own control, so desktop and mobile looked different (for example, a grey pill with blue text on iOS). They now use the picker's font and theme colours, with a small arrow, the same hover as the header buttons and a focus outline for keyboard users. In the dark theme, the browser's option list and the mobile pickers open dark too.
+- **AmpPlugin's title lines up with the days below it**: with a single calendar, the month and year now sit on the left, and the month text starts in line with the first day name. With `weekNumbers` on, it lines up with the "Wk" column instead. Several calendars side by side keep a centred title.
 - **Sample plugin and MSelectPlugin are now MIT-licensed**: [Rinat G.](https://github.com/wakirin), the author of the original code, agreed to relicense them from GPL-2.0-or-later. Every package in this repository is now MIT.
 
 ## 1.4.0 - 2026-11-05
